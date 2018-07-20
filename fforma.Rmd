@@ -115,9 +115,9 @@ These features have been previously used by @fforms and @hyndman2015large. A det
 
 ## Forecasting methods
 
-We considered seven forecasting algorithms implemented in the forecast package in R. They are i) automated ARIMA algorithm (`auto.arima`), ii) automated ETS algorithm (`ets`),  iii) random walk with drift, iv) TBATS model (`tbats`), v) Theta method forecast (`thetaaf`), vi) naive forecasts and vii) seasonal naive forecasts. 
+We considered nine forecasting algorithms implemented in the forecast package in R. They are(the specific R calls for fitting the models are given): i) automated ARIMA algorithm (`auto.arima`), ii) automated ETS algorithm (`ets`), iii) feed-forward neural network with a single hidden layer is fitted to the lags. The number of lags is automatically selected (`nnetar`)  iv) random walk with drift (`rwf` with drift=TRUE), v) TBATS model (`tbats`), vi) Theta method forecast (`thetaf`), vii) naive forecasts (`naive`) viii) STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series(`stlm` with modelfunction `ar`), ix) seasonal naive forecasts (`snaive`). \textcolor{red}{In the case of an error when fitting the series (e.g. a series is constant), the SNAIVE forecast method is used instead.}
 
-\textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series, ii) use of `nn` function neural network models?}
+\textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series}
 
 ## Loss function and definition of "optimal" weights 
 

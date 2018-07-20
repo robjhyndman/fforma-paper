@@ -496,14 +496,21 @@ are provided in \textcite{fforms}. All the features are implemented in
 
 \subsection{Forecasting methods}\label{forecasting-methods}
 
-We considered seven forecasting algorithms implemented in the forecast
-package in R. They are i) automated ARIMA algorithm
-(\texttt{auto.arima}), ii) automated ETS algorithm (\texttt{ets}), iii)
-random walk with drift, iv) TBATS model (\texttt{tbats}), v) Theta
-method forecast (\texttt{thetaaf}), vi) naive forecasts and vii)
-seasonal naive forecasts.
+We considered nine forecasting algorithms implemented in the forecast
+package in R. They are(the specific R calls for fitting the models are
+given): i) automated ARIMA algorithm (\texttt{auto.arima}), ii)
+automated ETS algorithm (\texttt{ets}), iii) feed-forward neural network
+with a single hidden layer is fitted to the lags. The number of lags is
+automatically selected (\texttt{nnetar}) iv) random walk with drift
+(\texttt{rwf} with drift=TRUE), v) TBATS model (\texttt{tbats}), vi)
+Theta method forecast (\texttt{thetaf}), vii) naive forecasts
+(\texttt{naive}) viii) STLM-AR Seasonal and Trend decomposition using
+Loess with AR modeling of the seasonally adjusted series(\texttt{stlm}
+with modelfunction \texttt{ar}), ix) seasonal naive forecasts
+(\texttt{snaive}).
+\textcolor{red}{In the case of an error when fitting the series (e.g. a series is constant), the SNAIVE forecast method is used instead.}
 
-\textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series, ii) use of `nn` function neural network models?}
+\textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series}
 
 \subsection{\texorpdfstring{Loss function and definition of ``optimal''
 weights}{Loss function and definition of optimal weights}}\label{loss-function-and-definition-of-optimal-weights}
