@@ -1,0 +1,525 @@
+\documentclass[11pt,a4paper,]{article}
+\usepackage{lmodern}
+
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\PassOptionsToPackage{hyphens}{url} % url is loaded by hyperref
+\usepackage[unicode=true]{hyperref}
+\hypersetup{
+            pdftitle={On combining forecasting methods using time series features},
+            pdfkeywords={FFORMA (Feature-based FORecast-model Averaging), FFORMS (Feature-based
+FORecast-model Selection), Time series features, Forecast combination,
+XGBoost, M4 Competition},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{geometry}
+\geometry{a4paper, text={16cm,24cm}}
+\usepackage[style=authoryear-comp,]{biblatex}
+\addbibresource{references.bib}
+\usepackage{longtable,booktabs}
+% Fix footnotes in tables (requires footnote package)
+\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{long table}}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+\title{On combining forecasting methods using time series features}
+
+%% MONASH STUFF
+
+%% CAPTIONS
+\RequirePackage{caption}
+\DeclareCaptionStyle{italic}[justification=centering]
+ {labelfont={bf},textfont={it},labelsep=colon}
+\captionsetup[figure]{style=italic,format=hang,singlelinecheck=true}
+\captionsetup[table]{style=italic,format=hang,singlelinecheck=true}
+
+%% FONT
+\RequirePackage{bera}
+\RequirePackage{mathpazo}
+
+%% HEADERS AND FOOTERS
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\rfoot{\Large\sffamily\raisebox{-0.1cm}{\textbf{\thepage}}}
+\makeatletter
+\lhead{\textsf{\expandafter{\@title}}}
+\makeatother
+\rhead{}
+\cfoot{}
+\setlength{\headheight}{15pt}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancypagestyle{plain}{%
+\fancyhf{} % clear all header and footer fields
+\fancyfoot[C]{\sffamily\thepage} % except the center
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}}
+
+%% MATHS
+\RequirePackage{bm,amsmath}
+\allowdisplaybreaks
+
+%% GRAPHICS
+\RequirePackage{graphicx}
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.8}
+
+%\RequirePackage[section]{placeins}
+
+%% SECTION TITLES
+\RequirePackage[compact,sf,bf]{titlesec}
+\titleformat{\section}[block]
+  {\fontsize{15}{17}\bfseries\sffamily}
+  {\thesection}
+  {0.4em}{}
+\titleformat{\subsection}[block]
+  {\fontsize{12}{14}\bfseries\sffamily}
+  {\thesubsection}
+  {0.4em}{}
+\titlespacing{\section}{0pt}{*5}{*1}
+\titlespacing{\section}{0pt}{*2}{*0.2}
+
+
+%% TITLE PAGE
+\def\Date{\number\day}
+\def\Month{\ifcase\month\or
+ January\or February\or March\or April\or May\or June\or
+ July\or August\or September\or October\or November\or December\fi}
+\def\Year{\number\year}
+
+\makeatletter
+\def\wp#1{\gdef\@wp{#1}}\def\@wp{??/??}
+\def\jel#1{\gdef\@jel{#1}}\def\@jel{??}
+\def\showjel{{\large\textsf{\textbf{JEL classification:}}~\@jel}}
+\def\nojel{\def\showjel{}}
+\def\addresses#1{\gdef\@addresses{#1}}\def\@addresses{??}
+\def\cover{{\sffamily\setcounter{page}{0}
+        \thispagestyle{empty}%
+        \vspace*{-2cm}
+        \centerline{\raisebox{-1.8cm}{\includegraphics[width=5cm]{MBSportrait}}\hspace*{9cm} ISSN 1440-771X}\vspace{0.99cm}
+        \begin{center}\Large
+        Department of Econometrics and Business Statistics\\[.5cm]
+        \scriptsize http://business.monash.edu/econometrics-and-business-statistics/research/publications
+        \end{center}\vspace{2cm}
+        \begin{center}
+        \fbox{\parbox{14cm}{\begin{onehalfspace}\centering\Huge\vspace*{0.3cm}
+                \textsf{\textbf{\expandafter{\@title}}}\vspace{1cm}\par
+                \LARGE\@author\end{onehalfspace}
+        }}
+        \end{center}
+        \vfill
+                \begin{center}\Large
+                \Month~\Year\\[1cm]
+                Working Paper \@wp
+        \end{center}}}
+\def\pageone{{\sffamily
+        \newpage%\blankpage
+        \thispagestyle{empty}
+        \vbox to 23cm{
+        \raggedright\baselineskip=1.2cm
+     {\fontsize{24.88}{30}\sffamily\textbf{\expandafter{\@title}}}
+        \vspace{2cm}\par
+        \hspace{1cm}\parbox{14cm}{\sffamily\large\@addresses}\vspace{1cm}\vfill
+        \hspace{1cm}{\large\Date~\Month~\Year}\\[1cm]
+        \hspace{1cm}\showjel\vss}}}
+\def\blindtitle{{\sffamily
+     \thispagestyle{plain}\raggedright\baselineskip=1.2cm
+     {\fontsize{24.88}{30}\sffamily\textbf{\expandafter{\@title}}}\vspace{1cm}\par
+        }}
+\def\titlepage{{\cover\newpage\setstretch{1}\pageone\newpage\blindtitle}}
+
+\def\blind{\def\titlepage{{\blindtitle}}\let\maketitle\blindtitle}
+\def\titlepageonly{\def\titlepage{{\pageone\end{document}}}}
+\def\nocover{\def\titlepage{{\newpage\setstretch{1}\pageone\newpage\blindtitle}}\let\maketitle\titlepage}
+\let\maketitle\titlepage
+\makeatother
+
+%% SPACING
+\RequirePackage{setspace}
+\spacing{1.5}
+
+%% LINE AND PAGE BREAKING
+\sloppy
+\clubpenalty = 10000
+\widowpenalty = 10000
+\brokenpenalty = 10000
+\RequirePackage{microtype}
+
+%% PARAGRAPH BREAKS
+\setlength{\parskip}{1.4ex}
+\setlength{\parindent}{0em}
+
+%% HYPERLINKS
+\RequirePackage{xcolor} % Needed for links
+\definecolor{darkblue}{rgb}{0,0,.6}
+\RequirePackage{url}
+
+\makeatletter
+\@ifpackageloaded{hyperref}{}{\RequirePackage{hyperref}}
+\makeatother
+\hypersetup{
+     citecolor=0 0 0,
+     breaklinks=true,
+     bookmarksopen=true,
+     bookmarksnumbered=true,
+     linkcolor=darkblue,
+     urlcolor=blue,
+     citecolor=darkblue,
+     colorlinks=true}
+
+%% KEYWORDS
+\newenvironment{keywords}{\par\vspace{0.5cm}\noindent{\sffamily\textbf{Keywords:}}}{\vspace{0.25cm}\par\hrule\vspace{0.5cm}\par}
+
+%% ABSTRACT
+\renewenvironment{abstract}{\begin{minipage}{\textwidth}\parskip=1.4ex\noindent
+\hrule\vspace{0.1cm}\par{\sffamily\textbf{\abstractname}}\newline}
+  {\end{minipage}}
+
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage[showonlyrefs]{mathtools}
+\usepackage[no-weekday]{eukdate}
+
+%% BIBLIOGRAPHY
+
+\makeatletter
+\@ifpackageloaded{biblatex}{}{\usepackage[style=authoryear-comp, backend=biber, natbib=true]{biblatex}}
+\makeatother
+\ExecuteBibliographyOptions{bibencoding=utf8,minnames=1,maxnames=3, maxbibnames=99,dashed=false,terseinits=true,giveninits=true,uniquename=false,uniquelist=false,doi=false, isbn=false,url=true,sortcites=false}
+
+\DeclareFieldFormat{url}{\texttt{\url{#1}}}
+\DeclareFieldFormat[article]{pages}{#1}
+\DeclareFieldFormat[inproceedings]{pages}{\lowercase{pp.}#1}
+\DeclareFieldFormat[incollection]{pages}{\lowercase{pp.}#1}
+\DeclareFieldFormat[article]{volume}{\mkbibbold{#1}}
+\DeclareFieldFormat[article]{number}{\mkbibparens{#1}}
+\DeclareFieldFormat[article]{title}{\MakeCapital{#1}}
+\DeclareFieldFormat[article]{url}{}
+%\DeclareFieldFormat[book]{url}{}
+%\DeclareFieldFormat[inbook]{url}{}
+%\DeclareFieldFormat[incollection]{url}{}
+%\DeclareFieldFormat[inproceedings]{url}{}
+\DeclareFieldFormat[inproceedings]{title}{#1}
+\DeclareFieldFormat{shorthandwidth}{#1}
+%\DeclareFieldFormat{extrayear}{}
+% No dot before number of articles
+\usepackage{xpatch}
+\xpatchbibmacro{volume+number+eid}{\setunit*{\adddot}}{}{}{}
+% Remove In: for an article.
+\renewbibmacro{in:}{%
+  \ifentrytype{article}{}{%
+  \printtext{\bibstring{in}\intitlepunct}}}
+
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryCitekey{\clearfield{month}}
+
+\makeatletter
+\DeclareDelimFormat[cbx@textcite]{nameyeardelim}{\addspace}
+\makeatother
+\renewcommand*{\finalnamedelim}{%
+  %\ifnumgreater{\value{liststop}}{2}{\finalandcomma}{}% there really should be no funny Oxford comma business here
+  \addspace\&\space}
+  
+
+\wp{no/yr}
+\jel{C10,C14,C22}
+
+
+\blind
+
+
+
+\date{\sf\Date~\Month~\Year}
+\makeatletter
+ \lfoot{\sf\@date}
+\makeatother
+
+%% Any special functions or other packages can be loaded here.
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{amsmath,bm}
+\usepackage{paralist}
+\usepackage{todonotes}
+\usepackage{ctable}
+
+\def\sectionautorefname{Section}
+\captionsetup[figure]{font=small}
+\captionsetup[table]{font=small}
+\def\var{\text{Var}}
+\allowdisplaybreaks
+\sloppy
+
+%% LINE AND PAGE BREAKING
+\clubpenalty = 4500
+\widowpenalty = 4500
+\brokenpenalty = 4500
+
+
+\def\yes{$\checkmark$}
+
+\setlength{\abovedisplayskip}{5pt}
+\setlength{\belowdisplayskip}{5pt}
+\setlength{\abovedisplayshortskip}{0pt}
+\setlength{\belowdisplayshortskip}{0pt}
+
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{conjecture}{Conjecture}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[section]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
+\begin{document}
+\maketitle
+\begin{abstract}
+It is well known that ensemble approaches produce improvements over
+single methods in statistical learning. Nevertheless, when calculating
+predictions over a large dataset, computation time for the whole
+ensemble can be prohibitive, so individual model selection becomes the
+preferred approach. We present a method for combining forecasting models
+by posing it as a classification problem using features extracted from
+the time series. Unlike regular classification problems, we minimize the
+average forecast error of the selected method rather than the
+classification error. Not only does this address the aim of accurate
+forecasting, it also provides measures of relative method accuracy
+across the time series, and relative difficulty across time series. In
+contrast, a classic classification approach would give the same
+importance to all series and methods. The presented classifier is
+compared with state-of-the-art approaches to forecasting and time series
+classification. The results show an improvement of error over
+alternative approaches. These experiments allow us to show the relevance
+of both the feature set and the proposed optimization approach to
+several collections of time series. The scalability of the approach
+allows it to be applied to forecasting a large collection of time
+series. It can also be efficiently trained to tailor specific domains or
+datasets.
+\end{abstract}
+\begin{keywords}
+FFORMA (Feature-based FORecast-model Averaging), FFORMS (Feature-based
+FORecast-model Selection), Time series features, Forecast combination,
+XGBoost, M4 Competition
+\end{keywords}
+
+\section{Introduction}\label{introduction}
+
+There are essentially two general approaches to forecast a time series:
+i) use of single model and ii) combination forecast or forecast model
+averaging. There is a growing consensus that the combination forecast is
+a way of improving forecast accuracy. Empirical work often provides
+evidence that the combination of forecasts resulting from several
+candidate forecasting models are often superior to their individual
+forecasts. Combining forecasts across different models is considered as
+a way of reducing the risk of selecting an inappropriate model. However,
+the main challenge in forecast combination is the selection of
+appropriate set of weights.
+
+Granger (1969), was the first to forward the idea of ``the combination
+of forecasts''. Since then many approaches have been proposed to derive
+weights for forecast combination (Timmerman, 2006). Simple
+averages(ref\_clemen1989), regression-based approaches, \ldots{} are
+name to few.
+
+Recently, a few researchers have explored the use of time series
+features in selecting the most appropriate forecasting method. However,
+use of time series features to derive weights for forecast combination
+has been rarely addressed in the literature. In this paper we propose a
+general framework to obtain weights for forecast combination based on
+features computed from the time series. We call this framework
+FFORMA(Feature-based FORecast Model Averaging). The proposed FFORMA
+framework has been used over the course of M4 competition and placed in
+second in forecast accuracy in both point forecasts and prediction
+intervals.
+
+The rest of the paper is organized as follows. Section 3 presents the
+methodology underlying the FFORMA framework followed by Section 4 that
+describes the application of the framework to M4 competition. Finally
+Section 5 presents the conclusions and future work.
+
+\section{Methodology}\label{methodology}
+
+This section describes the rational behind the proposed framework. In
+the proposed framework we use meta-learning approach to derive weights
+for forecast combination. Figure 1 presents the Pseudo code of the
+proposed framework. This approach has been influenced by the work of
+\textcite{fforms}.
+
+FFORMA framework works in two phases: offline phase and online phase. In
+the offline phase a meta-learner is trained using a diverse collection
+of time series. We call the collection of time series use to train the
+classifier as the reference set. Each time series in the reference set
+is divided in to training period and test period. Features are computed
+based on the training period of each time series. A set of features
+extracted from the time series are used as inputs to the meta-learner.
+Further, in order to train a FFORMA meta-learning model, we need a pool
+of forecasting methods. The forecasting methods in the pool is applied
+to training period of each time series and forecast error measures are
+calculated over the test period. In a typical classification problem,
+extreme gradient boosting algorithm is trained to minimize a loss
+function with respect to classification error. In this experimental
+setting, we are not interested in the classification error but we are
+interested in forecast error. Hence, a customized loss function is used
+to include the information of forecast error rather than the
+classification error. For technical reasons, we use extreme gradient
+boosting algorithm to train the meta-learner. Extreme gradient boosting
+algorithm implementation allows easy changes to the objective function.
+It only requires the output the gradient and hessian of the objective
+while other methods require re-implementation big part of the code.
+
+\begin{algorithm}[!ht]
+  \caption{The FFORMA framework - Forecast combination based on meta-learning. }
+  \label{alg:algo-lab}
+  \begin{algorithmic}[1]
+    \Statex \textbf{Offline phase - train the classifier}
+    \Statex \text{Given:}
+    \Statex \hspace{1cm}$O=\{x_1, x_2, \dots,x_n\}:$ the collection of $n$ observed time series.
+      \Statex \hspace{1cm}$L:$ forecast error measure calculated based on different forecasting algorithms such as ARIMA, ETS, SNAIVE, etc.
+         \Statex \hspace{1cm}$F:$ the set of functions to calculate time series features.
+         \Statex \hspace{1cm}$B:$ number of trees in the XGboost algorithm.
+     \Statex \text{Output:}
+      \Statex \hspace{1cm}\text{FFORMA meta-learner}
+    \Statex \textit{Prepare the meta-data}
+    \Statex For $j=1$ to $N$:
+            \State Split $x_j$ into a training period and test period.
+            \State Calculate features $F$ based on the training period.
+            \State Fit $L$ models to the training period.
+            \State Calculate forecasts for the test period from each model.
+            \State Calculate forecast error measure over the test period for all models in $L$.
+            \State Meta-data: input features (step 4), output labels (step 5).
+     \Statex
+    \Statex \textit{Train a meta-learner using extreme gradient boosting algorithm}
+            \State Train a extreme gradient boosting classifier based on the meta-data.
+            \State {meta-learner : extreme gradient boosting classifier}.
+    \Statex
+     \Statex \textbf{Online phase - forecast a new time series}
+    \Statex \text{Given:}
+    \Statex \hspace{1cm}\text{FFORMA classifier from step 8} .
+     \Statex \text{Output:}
+      \Statex \hspace{1cm}\text{class weights for new time series $x_{new}$}.
+  \State For $x_{new}$ calculate features $F$.
+  \State For a given series, let $W$ be the vector of weights assign for each forecasting method in $L$.  
+   \end{algorithmic}
+\end{algorithm}
+
+The extreme gradient boosting algorithm produce weights for each
+forecasting method. These weights can also be interpreted as the
+probability of each method being best. These weights can be used either
+to select the ``best'' forecasting method for each series or to combine
+the forecasts using weighted linear combination. Note that the accuracy
+of the FFORMA meta-learner depends on three main factors: i) forecasting
+methods used in the pool, ii) a set of time series features we
+considered and iii) a collection of time series used to train the
+classifier. Section 3 provides a more detailed description of
+application of the FFORMA framework over the course of M4 competition.
+The proposed framework is closely related to the previous work by
+ref\_prudencio which they use machine learning techniques to define
+weights for the linear combination of forecasts.
+
+\section{FFORMA framework: Application to M4
+Competition}\label{fforma-framework-application-to-m4-competition}
+
+\subsection{Data preprocessing}\label{data-preprocessing}
+
+The M4 competition database consists of 100,000 real-world time series
+of yearly, quarterly, monthly, weekly, daily and hourly data. The
+frequency for yearly, quarterly, monthly and weekly data are considered
+as 1, 4, 12 and 52 respectively. {[}Q: Daily and Hourly series, what are
+the frequencies considered?{]}. We used xxxx time series out of 100000
+to train a meta-learner and rest is used to evaluate the proposed
+framework. In addition to the time series provided in the M4 competition
+database we used the time series of M1 and M3 competitions
+\autocite{makridakis2000m3} to the reference set. Each time series in
+the reference set is split into training period and test period. The
+length of test period of each time series was set as according to the
+rules of M4 competition, 6 for yearly data, 8 for quarterly, 18 for
+monthly, 13 for weekly, 14 for daily and 48 for hourly.
+
+\subsection{Time series features}\label{time-series-features}
+
+Table xxx provides a detailed description of features used in this
+experiment.
+
+{[}include table{]}
+
+These features have been previously used by \textcite{fforms} and
+\textcite{hyndman2015large}. A detailed description of these features
+are provided in \textcite{fforms}. All the features are implemented in
+\texttt{tsfeatures} R package by xxx.
+
+\textcolor{red}{Question: calculation of features for time series with multiple seasonality, and short time series?}
+
+\subsection{Forecasting methods}\label{forecasting-methods}
+
+We considered seven forecasting algorithms implemented in the forecast
+package in R. They are i) automated ARIMA algorithm
+(\texttt{auto.arima}), ii) automated ETS algorithm (\texttt{ets}), iii)
+random walk with drift, iv) TBATS model (\texttt{tbats}), v) Theta
+method forecast (\texttt{thetaaf}), vi) naive forecasts and vii)
+seasonal naive forecasts.
+
+\textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series, ii) use of `nn` function neural network models?}
+
+\subsection{\texorpdfstring{Loss function and definition of ``optimal''
+weights}{Loss function and definition of optimal weights}}\label{loss-function-and-definition-of-optimal-weights}
+
+\subsection{Generate point forecasts}\label{generate-point-forecasts}
+
+\subsection{Prediction Intervals}\label{prediction-intervals}
+
+\section{Results (Do we need this?)}\label{results-do-we-need-this}
+
+\textcolor{blue}{ Fotios email: We would like to ask that this paper focuses on the clear description of the method (and possibly include flowcharts, pseudocode, etc) without any empirical evidence (that would be part of the main M4-competition paper). }
+
+\section{Discussion and Conclusions}\label{discussion-and-conclusions}
+
+\textcolor{blue}{Fotios email: We would like, though, to see a short section that discusses the reasons behind the good performance of your method. }
+
+\printbibliography[title=References]
+
+\end{document}

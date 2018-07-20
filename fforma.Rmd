@@ -1,0 +1,136 @@
+---
+title: "On combining forecasting methods using time series features"
+author:
+- familyname: Pablo
+  othernames: 
+  address: 
+  email: 
+  correspondingauthor: true
+- familyname: 
+  othernames: 
+  address: 
+abstract: It is well known that ensemble approaches produce improvements over single methods in statistical learning. Nevertheless, when calculating predictions over a large dataset, computation time for the whole ensemble can be prohibitive, so individual model selection becomes the preferred approach. We present a method for combining forecasting models by posing it as a classification problem using features extracted from the time series. Unlike regular classification problems, we minimize the average forecast error of the selected method rather than the classification error. Not only does this address the aim of accurate forecasting, it also provides measures of relative method accuracy across the time series, and relative difficulty across time series. In contrast, a classic classification approach would give the same importance to all series and methods. The presented classifier is compared with state-of-the-art approaches to forecasting and time series classification. The results show an improvement of error over alternative approaches. These experiments allow us to show the relevance of both the feature set and the proposed optimization approach to several collections of time series. The scalability of the approach allows it to be applied to forecasting a large collection of time series. It can also be efficiently trained to tailor specific domains or datasets.
+keywords:  FFORMA (Feature-based FORecast-model Averaging), FFORMS (Feature-based FORecast-model Selection), Time series features, Forecast combination, XGBoost, M4 Competition
+wpnumber: no/yr
+jelcodes: C10,C14,C22
+blind: true
+cover: true
+toc: false
+bibliography: references.bib
+biblio-style: authoryear-comp
+output:
+  MonashEBSTemplates::workingpaper:
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 8
+    includes:
+      in_header: preamble.tex
+    keep_tex: yes
+    number_sections: yes
+    citation_package: biblatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache=TRUE, messages=FALSE, warning=FALSE)
+# Make sure you have the latest version of rmarkdown and bookdown
+#devtools::install_github("rstudio/rmarkdown")
+#devtools::install_github("rstudio/bookdown")
+library(ggplot2)
+```
+
+
+# Introduction
+
+There are essentially two general approaches to forecast a time series: i) use of single model and ii) combination forecast or forecast model averaging. There is a growing consensus that the combination forecast is a way of improving forecast accuracy. Empirical work often provides evidence that the combination of forecasts resulting from several candidate forecasting models are often superior to their individual forecasts. Combining forecasts across different models is considered as a way of reducing the risk of selecting an inappropriate model. However, the main challenge in forecast combination is the selection of appropriate set of weights. 
+
+Granger (1969), was the first to forward the idea of "the combination of forecasts".  Since then many approaches have been proposed to derive weights for forecast combination (Timmerman, 2006). Simple averages(ref_clemen1989), regression-based approaches, ... are name to few. 
+
+Recently, a few researchers have explored the use of time series features in selecting the most appropriate forecasting method. However, use of time series features to derive weights for forecast combination has been rarely addressed in the literature. In this paper we propose a general framework to obtain weights for forecast combination based on features computed from the time series. We call this framework FFORMA(Feature-based FORecast Model Averaging). The proposed FFORMA framework has been used over the course of M4 competition and placed in second in forecast accuracy in both point forecasts and prediction intervals.
+
+The rest of the paper is organized as follows. Section 3 presents the methodology underlying the FFORMA framework followed by Section 4 that describes the application of the framework to M4 competition. Finally Section 5 presents the conclusions and future work.
+
+# Methodology
+
+This section describes the rational behind the proposed framework. In the proposed framework we use meta-learning approach to derive weights for forecast combination. Figure 1 presents the Pseudo code of the proposed framework. This approach has been influenced by the work of @fforms.
+
+FFORMA framework works in two phases: offline phase and online phase. In the offline phase a meta-learner is trained using a diverse collection of time series. We call the collection of time series use to train the classifier as the reference set. Each time series in the reference set is divided in to training period and test period. Features are computed based on the training period of each time series. A set of features extracted from the time series are used as inputs to the meta-learner. Further, in order to train a FFORMA meta-learning model, we need a pool of forecasting methods.  The forecasting methods in the pool is applied to training period of each time series and forecast error measures are calculated over the test period. In a typical classification problem, extreme gradient boosting algorithm is trained to minimize a loss function with respect to classification error. In this experimental setting, we are not interested in the classification error but we are interested in forecast error. Hence, a customized loss function is used to include the information of forecast error rather than the classification error. For technical reasons, we use extreme gradient boosting algorithm to train the meta-learner. Extreme gradient boosting algorithm implementation allows easy changes to the objective function. It only requires the output the gradient and hessian of the objective while other methods require re-implementation big part of the code.
+
+
+\begin{algorithm}[!ht]
+  \caption{The FFORMA framework - Forecast combination based on meta-learning. }
+  \label{alg:algo-lab}
+  \begin{algorithmic}[1]
+    \Statex \textbf{Offline phase - train the classifier}
+    \Statex \text{Given:}
+    \Statex \hspace{1cm}$O=\{x_1, x_2, \dots,x_n\}:$ the collection of $n$ observed time series.
+      \Statex \hspace{1cm}$L:$ forecast error measure calculated based on different forecasting algorithms such as ARIMA, ETS, SNAIVE, etc.
+         \Statex \hspace{1cm}$F:$ the set of functions to calculate time series features.
+         \Statex \hspace{1cm}$B:$ number of trees in the XGboost algorithm.
+     \Statex \text{Output:}
+      \Statex \hspace{1cm}\text{FFORMA meta-learner}
+    \Statex \textit{Prepare the meta-data}
+    \Statex For $j=1$ to $N$:
+            \State Split $x_j$ into a training period and test period.
+            \State Calculate features $F$ based on the training period.
+            \State Fit $L$ models to the training period.
+            \State Calculate forecasts for the test period from each model.
+            \State Calculate forecast error measure over the test period for all models in $L$.
+            \State Meta-data: input features (step 4), output labels (step 5).
+     \Statex
+    \Statex \textit{Train a meta-learner using extreme gradient boosting algorithm}
+            \State Train a extreme gradient boosting classifier based on the meta-data.
+            \State {meta-learner : extreme gradient boosting classifier}.
+    \Statex
+     \Statex \textbf{Online phase - forecast a new time series}
+    \Statex \text{Given:}
+    \Statex \hspace{1cm}\text{FFORMA classifier from step 8} .
+     \Statex \text{Output:}
+      \Statex \hspace{1cm}\text{class weights for new time series $x_{new}$}.
+  \State For $x_{new}$ calculate features $F$.
+  \State For a given series, let $W$ be the vector of weights assign for each forecasting method in $L$.  
+   \end{algorithmic}
+\end{algorithm}
+
+
+
+
+The extreme gradient boosting algorithm produce weights for each forecasting method. These weights can also be interpreted as the probability of each method being best. These weights can be used either to select the "best" forecasting method for each series or to combine the forecasts using weighted linear combination. Note that the accuracy of the FFORMA meta-learner depends on three main factors: i) forecasting methods used in the pool, ii) a set of time series features we considered and iii) a collection of time series used to train the classifier. Section 3 provides a more detailed description of application of the FFORMA framework over the course of M4 competition. The proposed framework is closely related to the previous work by ref_prudencio which they use machine learning techniques to define weights for the linear combination of forecasts.
+
+# FFORMA framework: Application to M4 Competition
+
+## Data preprocessing
+
+The M4 competition database consists of 100,000 real-world time series of yearly, quarterly, monthly, weekly, daily and hourly data. The frequency for yearly, quarterly, monthly and weekly data are considered as 1, 4, 12 and 52 respectively. [Q: Daily and Hourly series, what are the frequencies considered?]. We used xxxx time series out of 100000 to train a meta-learner and rest is used to evaluate the proposed framework. In addition to the time series provided in the M4 competition database we used the time series of M1 and M3 competitions [@makridakis2000m3] to the reference set. Each time series in the reference set is split into training period and test period. The length of test period of each time series was set as according to the rules of M4 competition, 6 for yearly data, 8 for quarterly, 18 for monthly, 13 for weekly, 14 for daily and 48 for hourly.
+
+
+## Time series features
+
+Table xxx provides a detailed description of features used in this experiment. 
+
+[include table]
+
+These features have been previously used by @fforms and @hyndman2015large. A detailed description of these features are provided in @fforms. All the features are implemented in `tsfeatures` R package by xxx.
+
+\textcolor{red}{Question: calculation of features for time series with multiple seasonality, and short time series?}
+
+## Forecasting methods
+
+We considered seven forecasting algorithms implemented in the forecast package in R. They are i) automated ARIMA algorithm (`auto.arima`), ii) automated ETS algorithm (`ets`),  iii) random walk with drift, iv) TBATS model (`tbats`), v) Theta method forecast (`thetaaf`), vi) naive forecasts and vii) seasonal naive forecasts. 
+
+\textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series, ii) use of `nn` function neural network models?}
+
+## Loss function and definition of "optimal" weights 
+
+## Generate point forecasts
+
+## Prediction Intervals
+
+# Results (Do we need this?)
+
+\textcolor{blue}{ Fotios email: We would like to ask that this paper focuses on the clear description of the method (and possibly include flowcharts, pseudocode, etc) without any empirical evidence (that would be part of the main M4-competition paper). }
+
+# Discussion and Conclusions
+
+\textcolor{blue}{Fotios email: We would like, though, to see a short section that discusses the reasons behind the good performance of your method. }
+
+# References
