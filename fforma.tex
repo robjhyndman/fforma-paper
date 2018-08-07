@@ -377,10 +377,27 @@ framework has been used over the course of M4 competition and placed in
 second in forecast accuracy in both point forecasts and prediction
 intervals.
 
+\emph{Highligh simplicity of the forecsint methods and no fine tuning
+(long series only last part, models per type weekly, daily,etc..)}
+\emph{No exogenous information, such as macroeconimic, finance, tourism}
+
+** EXAMPLE **
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Contribution LIST / Refutable} *
+\end{itemize}
+
 The rest of the paper is organized as follows. Section 3 presents the
 methodology underlying the FFORMA framework followed by Section 4 that
-describes the application of the framework to M4 competition. Finally
-Section 5 presents the conclusions and future work.
+describes the application of the framework to M4 competition, with
+specific decisions as the set of features, individual forecasting
+methods, and learning algortithms. \emph{The method to produce the
+prediction intervals for the M4 competitionis also explained in this
+section.}
+
+Finally Section 5 presents the conclusions and future work.
 
 \section{Methodology}\label{methodology}
 
@@ -390,76 +407,173 @@ for forecast combination. Figure 1 presents the Pseudo code of the
 proposed framework. This approach has been influenced by the work of
 \textcite{fforms}.
 
-FFORMA framework works in two phases: offline phase and online phase. In
-the offline phase a meta-learner is trained using a diverse collection
-of time series. We call the collection of time series use to train the
-classifier as the reference set. Each time series in the reference set
-is divided in to training period and test period. Features are computed
-based on the training period of each time series. A set of features
-extracted from the time series are used as inputs to the meta-learner.
-Further, in order to train a FFORMA meta-learning model, we need a pool
-of forecasting methods. The forecasting methods in the pool is applied
-to training period of each time series and forecast error measures are
-calculated over the test period. In a typical classification problem,
-extreme gradient boosting algorithm is trained to minimize a loss
-function with respect to classification error. In this experimental
-setting, we are not interested in the classification error but we are
-interested in forecast error. Hence, a customized loss function is used
-to include the information of forecast error rather than the
-classification error. For technical reasons, we use extreme gradient
-boosting algorithm to train the meta-learner. Extreme gradient boosting
-algorithm implementation allows easy changes to the objective function.
-It only requires the output the gradient and hessian of the objective
-while other methods require re-implementation big part of the code.
+\subsection{Overview / Intuition}\label{overview-intuition}
+
+The general objective of meta-learning is to learn to ``combine''
+individidual forecasting methods to minimize forecasting error. We start
+from a dataset of time series, which we call training set, which may
+include the time series we want to forecast, and a set of forecasting
+methods. The forecasting errors of each forecasting method on each time
+series are calculated, either using the true future values of the series
+if available or a temporal holdout version of the series.
+
+The meta-learning model is then fitted on the training set, essentially
+trying to find how to combine the methods in our pool to minimize the
+forecasting error on each series. The input for training the
+meta-learning model are features extracted from the series (e.g.~length,
+autocorrelation coefficients,\ldots{}) and the error that is produced by
+each of the forecasting methods. Once the meta-learning model is
+trained, the inductive step consist of assuming the series we want to
+forecast comes from a ``generating process'' similar to the one that
+generated the training set.
+
+One common meta-learning approach is to learn to select the best method
+for each series, the one that produces the least forecasting error. This
+transforms the problem into a traditional classification problem and
+allows the use of existing classifcation algorithms. However, this
+simplification removes relevant information which may be useful in the
+metalearning process, such as which methods producing similar error to
+the best on for a series, or series that produce larger errors than
+others. We do not apply this simplification and take into account the
+exact error that each method produces in each series, instead of just
+considering which one produces the minimum error. We then pose the
+problem as finding a function that assigns probabilities to each
+forecasting method for each series, with the goal of minimizing the
+expected error that is produced if the methods were picked at random
+following these probabilties. It can be seen that in the extreme, our
+approach can be easily transformed to a classification exercise if we
+pick the method with the largest probability, and that if we allow a
+sufficiently rich hyphotesis space to fit freely, we would end up
+assigning probability one to the methods with the least amount of error.
+
+The meta-learning process can therefore be summarized as:
+
+\begin{itemize}
+\tightlist
+\item
+  \(X_i\) the individual series on the training set.
+\item
+  \(e_{ij}\) the error the individual forecasting method \(j\) makes on
+  series \(i\).
+\item
+  \(x_{i}\) the feature vector extracted from series \(X_i\).
+\item
+  \(f\) is a function belonging to the hypothesis space \(H\) that maps
+  features to probabilities of the \(j\) forecasting methods.
+\end{itemize}
+
+\[ argmin_{f \in H} \sum_i \sum_j f(x_{i})_je_{ij} \]
+
+Given a new time series, a trained meta-learning algorithm produces
+probabilities for each of the forecasting methods considered in the
+pool. The final forecast can be computed from these probabilities in
+two-ways:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  A weighted average of the individual forecast methods. This tends to
+  produce the best forecast on average, but requires computing the
+  forecasts of all methods in out pool, which may be time consuming.
+\item
+  Selecting the method with the largest probability. This prevents the
+  need to calculate all the forecast of the individual methods in our
+  pool, but produces less acurate forecasts on average.
+\end{enumerate}
+
+\subsection{Algorithmic description}\label{algorithmic-description}
+
+The FFORMA framework has four main components:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The set of forecasting methods, pool of methods.
+\item
+  The set of features to be extracted from the time series
+\item
+  A training set of time series, the reference set.
+\item
+  The forecasting error measure, such as mean squared error, .
+\end{enumerate}
+
+The FFORMA framework works in two phases: an \textbf{offline} phase and
+an \textbf{online} phase.
+
+In the offline phase a meta-learner is trained using a diverse
+collection of time series, called the reference set. Each time series in
+the reference set is divided in to training period and test period.
+Features are extracted based on the training period of each time series.
+These features are one of the \textbf{two kinds} of inputs to the
+meta-learner. The second input is the forecasting error produced by each
+of the methods in the poo for each series. This error is calculated
+comparing the forecast of the methods fitted in the training period to
+the test period, using a error measure.
 
 \begin{algorithm}[!ht]
   \caption{The FFORMA framework - Forecast combination based on meta-learning. }
   \label{alg:algo-lab}
   \begin{algorithmic}[1]
-    \Statex \textbf{Offline phase - train the classifier}
+    \Statex \textbf{Offline phase - train the learning model}
     \Statex \text{Given:}
-    \Statex \hspace{1cm}$O=\{x_1, x_2, \dots,x_n\}:$ the collection of $n$ observed time series.
-      \Statex \hspace{1cm}$L:$ forecast error measure calculated based on different forecasting algorithms such as ARIMA, ETS, SNAIVE, etc.
+    \Statex \hspace{1cm}$O=\{X_1, X_2, \dots,X_n\}:$ the collection of $N$ observed time series.
+      \Statex \hspace{1cm}$P:$ Set of $K$ forecasting algorithms such as ARIMA, ETS, SNAIVE, etc.
          \Statex \hspace{1cm}$F:$ the set of functions to calculate time series features.
-         \Statex \hspace{1cm}$B:$ number of trees in the XGboost algorithm.
+         \Statex \hspace{1cm}$E:$ A forecasting error measure such as Mean Squared Error.
      \Statex \text{Output:}
-      \Statex \hspace{1cm}\text{FFORMA meta-learner}
+      \Statex \hspace{1cm}\text{FFORMA meta-learner:}
+      \Statex \text{A function from the extracted features to a set of $K$ probabilities, one for each method in $P$.}
     \Statex \textit{Prepare the meta-data}
     \Statex For $j=1$ to $N$:
-            \State Split $x_j$ into a training period and test period.
-            \State Calculate features $F$ based on the training period.
-            \State Fit $L$ models to the training period.
+            \State Split $X_j$ into a training period and test period.
+            \State Calculate the set of features for the training period by applying $F$.
+            \State Fit $P$ models to the training period.
             \State Calculate forecasts for the test period from each model.
-            \State Calculate forecast error measure over the test period for all models in $L$.
-            \State Meta-data: input features (step 4), output labels (step 5).
+            \State Calculate forecast error measure $E$ over the test period for all models in $P$.
+            \State Meta-data: input features $x_i$ (step 4), output errors: $e_i$ (step 5).
      \Statex
-    \Statex \textit{Train a meta-learner using extreme gradient boosting algorithm}
-            \State Train a extreme gradient boosting classifier based on the meta-data.
-            \State {meta-learner : extreme gradient boosting classifier}.
+    \Statex \textit{Train the meta-learner}
+            \State Train a learning model based on the meta-data and errors, by minimizing:
+            $$ argmin_f \sum_{i=1}^n \sum_{k=1}^K f(x_i)_k e_k  $$
+            \State {meta-learner}.
     \Statex
      \Statex \textbf{Online phase - forecast a new time series}
     \Statex \text{Given:}
     \Statex \hspace{1cm}\text{FFORMA classifier from step 8} .
      \Statex \text{Output:}
-      \Statex \hspace{1cm}\text{class weights for new time series $x_{new}$}.
+      \Statex \hspace{1cm}\text{Forecast for the new time series $x_{new}$}.
   \State For $x_{new}$ calculate features $F$.
-  \State For a given series, let $W$ be the vector of weights assign for each forecasting method in $L$.  
+  \State From the features, use the meta-learner to produce $w$ the vector of probabilities. 
+  \State Compute the individual forecasts of the methods in $P$
+  \State Compute the final forecast by weighted average using $w$ and the individual forecasts.
    \end{algorithmic}
 \end{algorithm}
 
-The extreme gradient boosting algorithm produce weights for each
-forecasting method. These weights can also be interpreted as the
-probability of each method being best. These weights can be used either
-to select the ``best'' forecasting method for each series or to combine
-the forecasts using weighted linear combination. Note that the accuracy
-of the FFORMA meta-learner depends on three main factors: i) forecasting
-methods used in the pool, ii) a set of time series features we
-considered and iii) a collection of time series used to train the
-classifier. Section 3 provides a more detailed description of
-application of the FFORMA framework over the course of M4 competition.
-The proposed framework is closely related to the previous work by
-ref\_prudencio which they use machine learning techniques to define
-weights for the linear combination of forecasts.
+The algorithm produces weights for each forecasting method. These
+weights can also be interpreted as the probability of each method being
+best. These weights can be used either to select the ``best''
+forecasting method for each series or to combine the forecasts using
+weighted linear combination. Note that the accuracy of the FFORMA
+meta-learner depends on three main factors:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Forecasting methods used in the pool
+\item
+  The set of time series features we considered
+\item
+  The collection of time series used to train the classifier.
+\end{enumerate}
+
+Section 3 provides a more detailed description of application of the
+FFORMA framework over the course of M4 competition. The proposed
+framework is closely related to the previous work by ref\_prudencio
+which they use machine learning techniques to define weights for the
+linear combination of forecasts.
 
 \section{FFORMA framework: Application to M4
 Competition}\label{fforma-framework-application-to-m4-competition}
@@ -512,20 +626,179 @@ with modelfunction \texttt{ar}), ix) seasonal naive forecasts
 
 \textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series}
 
-\subsection{\texorpdfstring{Loss function and definition of ``optimal''
-weights}{Loss function and definition of optimal weights}}\label{loss-function-and-definition-of-optimal-weights}
+\subsection{Metal-learning model}\label{metal-learning-model}
+
+We choose the gradient tree boosting of \textbf{xgboost} as the
+underlying implementation of the learning model for the following
+reasons:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Ability to customize the model to fit our objective function
+\item
+  Computational efficiency: The size of the M4 dataset requires a
+  efficient model
+\item
+  Good performance in structure based problems
+\end{enumerate}
+
+\subsubsection{The xgboost objetive
+function}\label{the-xgboost-objetive-function}
+
+We can consider two kinds of inputs to our learning model, the features
+and the errors of the individual methods in the pool. The xgboost
+algorithm produces numeric values from the features, one for each
+forecasting method in our pool. We apply the softmax transform to these
+values and the compute our objective function (the loss function) using
+these probabilities and the errors produced by the methods in our pool.
+
+xgboost fits the model by gradient boosting, for which requires the
+gradient and hessian of the objective function. In our case, the
+gradient is the direct gradient of the objective, but the \emph{correct}
+hessian is prone to numerical problems that need to be fixed for xgboost
+to converge. This is a relative common problem and one simple fix is to
+use an upper bound of the hessian by clampling small values to a larger
+one. In our case, we compute an alternate upper bound of the hessian by
+removing some terms from the \emph{correct} hessian . Although both
+alternatives converge, our approach works much fastes, requiring less
+boosting steps to converge. This not only increases the computational
+efficiency, in our scenario it also generalizes better due to a less
+complex set of trees produced in the final solution.
+
+The functions involved in computing the objective are the following:
+
+\begin{itemize}
+\tightlist
+\item
+  \(y(x)\) is the output of the xgboost algorithm
+\item
+  \(p_j = \frac{e^{y(x)_j}}{ \sum_k e^{y(x)_k}}\) is the transformation
+  to probabilities by applying the softmax transform.
+\item
+  \(L = \sum p_j e_j\) is the loss of the function \(p\).
+\item
+  \(G_j = \frac{\partial{L}}{\partial{p_j}} = p_j(e_j -\sum_k e_kp_k)\)
+  \[ H_j = \frac{\partial{G_j}}{\partial{p_j}} \approx \hat{H}_j = p_j(e_j(1-p_j) - G_j)  \]
+\end{itemize}
+
+\subsubsection{Hyperparameters}\label{hyperparameters}
+
+The results of xgboost are particularly dependent on its hyperparameters
+such as learning rate, number of boosting steps, maximum complexity
+allowed for the trees or subsampling sizes. In our case we limit the
+hyperparameter search space based on some initial results and rules of
+thumb and explore it using bayesian optimization, measuring performance
+on a 10\% holdout version of the training set. We pick the most simple
+hyperparameter set from the top solutions of the exploration.
 
 \subsection{Generate point forecasts}\label{generate-point-forecasts}
 
 \subsection{Prediction Intervals}\label{prediction-intervals}
 
+The M4 Competition also featured a subcompetition over the accuracy of
+prediction intervals. For this part of the competition, we used a
+different approach that for the point forecasts. In order to compute the
+intervals we used the point forecast produced by our meta-learner as the
+centre of the interval and computed the 95\% bounds of the interval by a
+linear combination of the bounds of three forecasting methods: Thetaf,
+SNAIVE and NAIVE methods. The coefficients for the linear combination
+were calculated in a data driven way. The procedure is as follows:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  For the training period each series in the dataset:
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \tightlist
+  \item
+    Compute the point forecast of the meta-learning.
+  \item
+    Compute the 95\% \emph{predicion radius} for the thetaf, snaive and
+    naive, this is the difference between the 95\% upper bound and the
+    point forecast for each horizon.
+  \end{enumerate}
+\item
+  For each horizon in the dataset:
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \tightlist
+  \item
+    Find the coefficients that minimize the MSIS error of the interval
+    with the meta-learning point forecast as center and a linear
+    combination of the radiuses of thetaf, snaive and naive as radius.
+    The coefficients are calculated by gradient descent.
+  \end{enumerate}
+\end{enumerate}
+
+This procedure produces at set of three coefficients for each of the
+prediction horizons in the M4 dataset and these coefficients will be the
+same independently of the series we want to forecast. These coefficients
+are also not restricted to be probabilities, the optimization is
+unrestricted.
+
 \section{Results (Do we need this?)}\label{results-do-we-need-this}
 
 \textcolor{blue}{ Fotios email: We would like to ask that this paper focuses on the clear description of the method (and possibly include flowcharts, pseudocode, etc) without any empirical evidence (that would be part of the main M4-competition paper). }
 
+Maybe we can show here results about the metalearning, how weights
+evolve with series length. What is the difference between
+weightedaveraging and selection in our model? What happens if we remove
+individual forecasting methods? How robust are we against this? wHich
+features are more important?
+
 \section{Discussion and Conclusions}\label{discussion-and-conclusions}
 
 \textcolor{blue}{Fotios email: We would like, though, to see a short section that discusses the reasons behind the good performance of your method. }
+
+\subsection{Reasons behind the
+performance}\label{reasons-behind-the-performance}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  As opposed to individual methods in our pool, it is being trained to
+  the specific error in the M4 Competition. The methods in our pool do
+  not minimize the OWA error, but the squared loss, while we generated
+  probabilities based on the OWA error.
+\item
+  As opposed to individual selection methods, it exploits domain bias.
+  One method could be discarded in a series when the error is low,
+  because on average it performs bad in the rest of the dataset, while
+  individual methods would pick it up. "
+\item
+  Exploiting dependencies between time series. In the M4 competition,
+  some time series are similar, which can be hypothesized as
+  macroeconomic indicators of neighbouring countries, etc. This effect
+  is explited in the metalearning model and the series would produce
+  similar features, and the errors that the model minimizes are more
+  accurate.
+\item
+  AS opossed to traditional classification meta-learning approaches:
+  Take the individual errors into account. This works two ways,
+  capturing similarity the results in methods to keep the model simple
+  (. Capturing differences in time series to keep the model simple
+  (difficult do not end up affecting the model much).
+\item
+  Compared to a naive averaging of individual methods, it exploits
+  easily discardable methods. Many ensemble approaches work by averaging
+  the output of individual methods. This is especially when the number
+  of individual forecasting methods grows and allows us to include
+  methods with radically different assumptions that would not be
+  appropiate to average. e.g.``for really short time series you really
+  cant do better than naive, others just overfit''
+\item
+  As opposed to just holdout crossvalidation, our method performs
+  better. If we allow the method to overfit, i will reproduce the
+  results of the holddout crossvaliation error, but in our case it
+  improves it.
+\end{enumerate}
 
 \printbibliography[title=References]
 
