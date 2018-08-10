@@ -169,7 +169,7 @@ Some series were removed because they were constant after removing the holdout p
 
 ## Time series features
 
-We used a set of 42 features in for the model. \autoref{feature} provides a brief description of features used in this experiment. The functions to calculate these features are implemented in `tsfeatures` R package by @tsfeatures. Most of the features have been previously used by @fforms and @hyndman2015large.  The last five heterogenity features are calculated as below. First, the time series is pre-whitened using an AR model to give a new series $z$. Then, a GARCH(1, 1) model is fitted to the pre-whited series and obtain the residual($r$) series. Subsequently, the features 39-42 are computed.  A detailed description of other features are provided in @fforms. 
+We use a set of 42 features. \autoref{feature} provides a brief description of features used in this experiment. The functions to calculate these features are implemented in `tsfeatures` R package by @tsfeatures. Most of the features have been previously used by @hyndman2015large and @fforms.  The last five heterogenity features are calculated as below. First, the time series is pre-whitened using an AR model and obtain a new series $z$. Then, a GARCH(1, 1) model is fitted to the pre-whitened series and obtain the residual($r$) series. Subsequently, the features 39-42 are computed.  A detailed description of other features are provided in @fforms. The features corresponds to seasonal time series only are set to zero for the case of non-seasonal time series. Note that, we have not used any of the domain-specific features such as macro, micro, finance, etc., eventhough these information are available in the M4 dataset.
 
 <!--No exogenous features were used, even though they were available in the M4 dataset, such as which domain the series belongs to (e.g. macroeconomics, finance, tourism...).--> 
 
@@ -183,7 +183,7 @@ We used a set of 42 features in for the model. \autoref{feature} provides a brie
 \midrule
 1  & T              & length of time series                                                                   & \yes  & \yes \\
 2  & trend          & strength of trend                                                                       & \yes  & \yes\\
-3  & seasonality    & strength of seasonality                                                                 & -     & \yes \\
+3  & seasonality   & strength of seasonality                                                                 & -     & \yes \\
 4  & linearity      & linearity                                                                               & \yes  & \yes \\
 5  & curvature      & curvature                                                                               & \yes  & \yes \\
 6  & spikiness      & spikiness                                                                               & \yes  & \yes \\
@@ -230,21 +230,10 @@ We used a set of 42 features in for the model. \autoref{feature} provides a brie
 
 ## Forecasting methods
 
-We considered nine forecasting algorithms implemented in the `forecast` R package. They are (the specific R calls for fitting the models are given):
-
- * i) automated ARIMA algorithm (`auto.arima`)
- * ii) automated ETS algorithm (`ets`)
- * iii) feed-forward neural network with a single hidden layer is fitted to the lags. The number of lags is automatically selected (`nnetar`)
- * iv) random walk with drift (`rwf` with drift=TRUE)
- * v) TBATS model (`tbats`)
- * vi) Theta method forecast (`thetaf`)
- * vii) naive forecasts (`naive`)
- * viii) STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series(`stlm` with modelfunction `ar`)
- * ix) seasonal naive forecasts (`snaive`).
+We considered nine forecasting algorithms implemented in the `forecast` R package. They are (the specific R calls for fitting the models are given):i) automated ARIMA algorithm (`auto.arima`), ii) automated ETS algorithm (`ets`),
+iii) feed-forward neural network with a single hidden layer is fitted to the lags. The number of lags is automatically selected (`nnetar`), iv) random walk with drift (`rwf` with drift=TRUE), v) TBATS model (`tbats`), vi) Theta method forecast (`thetaf`), vii) naive forecasts (`naive`), viii) STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series(`stlm` with modelfunction `ar`) and ix) seasonal naive forecasts (`snaive`).  In all cases, the default setting is used. Further, in the case of an error when fitting the series (e.g. a series is constant), the SNAIVE forecast method is used instead.
  
-It is worthy to emphasize that we used the default parameters in most methods without any hand tunning. Only in `auto.arima` we specified a more thorough search for hyperparameters than its default version. In the case of an error when fitting the series (e.g. a series is constant), the SNAIVE forecast method is used instead.
-
-\textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series}
+<!--It is worthy to emphasize that we used the default parameters in most methods without any hand tunning. Only in `auto.arima` we specified a more thorough search for hyperparameters than its default version.--> 
 
 ## Metal-learning model
 

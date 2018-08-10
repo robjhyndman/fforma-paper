@@ -529,17 +529,21 @@ because they were constant after removing the holdout part.
 
 \subsection{Time series features}\label{time-series-features}
 
-We used a set of 42 features in for the model. \autoref{feature}
-provides a brief description of features used in this experiment. The
-functions to calculate these features are implemented in
-\texttt{tsfeatures} R package by \textcite{tsfeatures}. Most of the
-features have been previously used by \textcite{fforms} and
-\textcite{hyndman2015large}. The last five heterogenity features are
-calculated as below. First, the time series is pre-whitened using an AR
-model to give a new series \(z\). Then, a GARCH(1, 1) model is fitted to
-the pre-whited series and obtain the residual(\(r\)) series.
-Subsequently, the features 39-42 are computed. A detailed description of
-other features are provided in \textcite{fforms}.
+We use a set of 42 features. \autoref{feature} provides a brief
+description of features used in this experiment. The functions to
+calculate these features are implemented in \texttt{tsfeatures} R
+package by \textcite{tsfeatures}. Most of the features have been
+previously used by \textcite{hyndman2015large} and \textcite{fforms}.
+The last five heterogenity features are calculated as below. First, the
+time series is pre-whitened using an AR model and obtain a new series
+\(z\). Then, a GARCH(1, 1) model is fitted to the pre-whitened series
+and obtain the residual(\(r\)) series. Subsequently, the features 39-42
+are computed. A detailed description of other features are provided in
+\textcite{fforms}. The features corresponds to seasonal time series only
+are set to zero for the case of non-seasonal time series. Note that, we
+have not used any of the domain-specific features such as macro, micro,
+finance, etc., eventhough these information are available in the M4
+dataset.
 
 \begin{table}[!htp]
 \centering\footnotesize\tabcolsep=0.12cm
@@ -551,7 +555,7 @@ other features are provided in \textcite{fforms}.
 \midrule
 1  & T              & length of time series                                                                   & \yes  & \yes \\
 2  & trend          & strength of trend                                                                       & \yes  & \yes\\
-3  & seasonality    & strength of seasonality                                                                 & -     & \yes \\
+3  & seasonality   & strength of seasonality                                                                 & -     & \yes \\
 4  & linearity      & linearity                                                                               & \yes  & \yes \\
 5  & curvature      & curvature                                                                               & \yes  & \yes \\
 6  & spikiness      & spikiness                                                                               & \yes  & \yes \\
@@ -600,93 +604,18 @@ other features are provided in \textcite{fforms}.
 
 We considered nine forecasting algorithms implemented in the
 \texttt{forecast} R package. They are (the specific R calls for fitting
-the models are given):
-
-\begin{itemize}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\roman{enumi})}
-  \tightlist
-  \item
-    automated ARIMA algorithm (\texttt{auto.arima})
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\roman{enumi})}
-  \setcounter{enumi}{1}
-  \tightlist
-  \item
-    automated ETS algorithm (\texttt{ets})
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\roman{enumi})}
-  \setcounter{enumi}{2}
-  \tightlist
-  \item
-    feed-forward neural network with a single hidden layer is fitted to
-    the lags. The number of lags is automatically selected
-    (\texttt{nnetar})
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\roman{enumi})}
-  \setcounter{enumi}{3}
-  \tightlist
-  \item
-    random walk with drift (\texttt{rwf} with drift=TRUE)
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\alph{enumi})}
-  \setcounter{enumi}{21}
-  \tightlist
-  \item
-    TBATS model (\texttt{tbats})
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\roman{enumi})}
-  \setcounter{enumi}{5}
-  \tightlist
-  \item
-    Theta method forecast (\texttt{thetaf})
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\roman{enumi})}
-  \setcounter{enumi}{6}
-  \tightlist
-  \item
-    naive forecasts (\texttt{naive})
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\roman{enumi})}
-  \setcounter{enumi}{7}
-  \tightlist
-  \item
-    STLM-AR Seasonal and Trend decomposition using Loess with AR
-    modeling of the seasonally adjusted series(\texttt{stlm} with
-    modelfunction \texttt{ar})
-  \end{enumerate}
-\item
-  \begin{enumerate}
-  \def\labelenumi{\roman{enumi})}
-  \setcounter{enumi}{8}
-  \tightlist
-  \item
-    seasonal naive forecasts (\texttt{snaive}).
-  \end{enumerate}
-\end{itemize}
-
-It is worthy to emphasize that we used the default parameters in most
-methods without any hand tunning. Only in \texttt{auto.arima} we
-specified a more thorough search for hyperparameters than its default
-version. In the case of an error when fitting the series (e.g.~a series
-is constant), the SNAIVE forecast method is used instead.
-
-\textcolor{red}{Question: i) Calculation of ets models to daily, hourly and weekly series}
+the models are given):i) automated ARIMA algorithm
+(\texttt{auto.arima}), ii) automated ETS algorithm (\texttt{ets}), iii)
+feed-forward neural network with a single hidden layer is fitted to the
+lags. The number of lags is automatically selected (\texttt{nnetar}),
+iv) random walk with drift (\texttt{rwf} with drift=TRUE), v) TBATS
+model (\texttt{tbats}), vi) Theta method forecast (\texttt{thetaf}),
+vii) naive forecasts (\texttt{naive}), viii) STLM-AR Seasonal and Trend
+decomposition using Loess with AR modeling of the seasonally adjusted
+series(\texttt{stlm} with modelfunction \texttt{ar}) and ix) seasonal
+naive forecasts (\texttt{snaive}). In all cases, the default setting is
+used. Further, in the case of an error when fitting the series (e.g.~a
+series is constant), the SNAIVE forecast method is used instead.
 
 \subsection{Metal-learning model}\label{metal-learning-model}
 
