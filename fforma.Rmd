@@ -45,21 +45,13 @@ library(ggplot2)
 
 There are essentially two general approaches to forecast a time series: i) use of single model and ii) combination forecast or forecast model averaging. There is a growing consensus that the combination forecast is a way of improving forecast accuracy. Empirical work often provides evidence that the combination of forecasts resulting from several candidate forecasting models are often superior to their individual forecasts. Combining forecasts across different models is considered as a way of reducing the risk of selecting an inappropriate model. However, the main challenge in forecast combination is the selection of appropriate set of weights. 
 
-Granger (1969), was the first to forward the idea of "the combination of forecasts".  Since then many approaches have been proposed to derive weights for forecast combination (Timmerman, 2006). Simple averages(ref_clemen1989), regression-based approaches, ... to name a few. 
+@Bates1969-cu, was the first to forward the idea of "the combination of forecasts".  Since then, it has been extended in various ways and many approaches have been proposed to derive weights for forecast combination (@Aiolfi2011-yz). Simple averages(ref_clemen1989), regression-based approaches, ... to name a few. 
 
-Recently, a few researchers have explored the use of time series features in selecting the most appropriate forecasting method. However, the use of time series features to derive weights for forecast combination has been rarely addressed in the literature. In this paper we propose a general framework to obtain weights for forecast combination based on features computed from the time series. We call this framework FFORMA(Feature-based FORecast Model Averaging). The proposed FFORMA framework has been used over the course of M4 competition and placed in second in forecast accuracy in both point forecasts and prediction intervals.
-
-This approach has been influenced by the work of @fforms and is related to the previous work by ref_prudencio in which they use machine learning techniques to define weights for the linear combination of forecasts.
+Recently, a few researchers have explored the use of time series features in selecting the most appropriate forecasting method. However, the use of time series features to derive weights for forecast combination has been rarely addressed in the literature. In this paper we propose a general framework to obtain weights for forecast combination based on features computed from the time series. We call this framework FFORMA (Feature-based FORecast Model Averaging). The proposed FFORMA framework has been used over the course of M4 competition and placed in second in forecast accuracy in both point forecasts and prediction intervals. This approach has been influenced by the work of @fforms and is related to the previous work by ref_prudencio in which they use machine learning techniques to define weights for the linear combination of forecasts.
 
 
 
-The rest of the paper is organized as follows:
-
-In Section 2 we describe the FFORMA framework in a general sense, without specifying the set of features, forecasting methods and learning model implementation. This section contains the main contribution: posing the learning problem in a way that includes the information about the errors produced by each forecasting method and combines it with the features extracted from the series.
-
-Section 3 gives the details of our implementation of FFORMA which achieved second place in the M4 Competition. The required preprocessing steps, the sets of features and forecast methods, as well as the specific implementation of the meta-learning model.  *The method to produce the prediction intervals for the M4 competition is also explained in this section.*
-
-We show empirical evidence on the good performance of the approach in Section 4 by quantifiying the difference between our proposal and a traditional classifier approach using the same features and underlying learning implementation.
+The rest of the paper is organized as follows: In Section 2 we describe the FFORMA framework in a general sense, without specifying the set of features, forecasting methods and learning model implementation. This section contains the main contribution: posing the learning problem in a way that includes the information about the errors produced by each forecasting method and combines it with the features extracted from the series. Section 3 gives the details of our implementation of FFORMA which achieved second place in the M4 Competition. The required preprocessing steps, the sets of features and forecast methods, as well as the specific implementation of the meta-learning model.  *The method to produce the prediction intervals for the M4 competition is also explained in this section.* We show empirical evidence on the good performance of the approach in Section 4 by quantifiying the difference between our proposal and a traditional classifier approach using the same features and underlying learning implementation.
 
 # Methodology
 
@@ -178,55 +170,56 @@ Some series were removed because they were constant after removing the holdout p
 
 ## Time series features
 
-We used a set of 42 features in for the model. The functions to calculate these features are implemented in `tsfeatures` R package by xxx. These features have been previously used by @fforms and @hyndman2015large. 
-Table xxx provides a brief description of features used in this experiment. A detailed description of these features is provided in @fforms. 
+We used a set of 42 features in for the model. The functions to calculate these features are implemented in `tsfeatures` R package by @tsfeatures. These features have been previously used by @fforms and @hyndman2015large. 
+\autoref{features} provides a brief description of features used in this experiment. A detailed description of these features is provided in @fforms. 
 
 \textcolor{red}{Question: calculation of features for time series with multiple seasonality, and short time series?}
 
- 1. *x_acf* The first autocorrelation coefficient of the series.
- 2. *x_acf10* The sum of the squared first ten autocorrelation coefficients of the series.
- 3. *diff1_acf1* The first autocorrelation coefficient of the first differenced series
- 4. *diff1_acf10* The sum of the squared first ten autocorrelation coefficients of the first differenced series.
- 5. *diff2_acf1* The first autocorelation coefficient of the twice-differenced series.
- 6. *diff2_acf10* The sum of squared fist ten autocorrelation coefficients of the original series.
- 7. *seas_acf1* The autocorrelation coefficient at the first seasonal lag. If the series is non seasonal, this feature is set to 0.
- 8. *ARCH.LM* A statistic based on the Lagrange Multiplier test of Engle (1982) for autoregressive conditional heteroscedasticity.The $R^2$ of an autoregressive model of 12 lags applied to $x^2$ after the its mean has been subtracted.
- 9. *crossing_point* The number of times the time series crosses the median.
- 10. *entropy* The spectral entropy of the series.
- $H_s(x_t) = - \int_{-\Pi}^{\Pi} f_x(\lambda) \log f_x(\lambda) d\lambda$ where the density is normalized so $\int_{-\pi}^{\pi} f_x(\lambda) d\lambda = 1$
- 11. *flat_spots* The number of flat spots in the series, calculated by discretizing the series into 10 equal sized intervals and counting the maximung run length within any single interval.
- 12. *arch_acf* After the series is pre-whitened using an AR model and squared, the sum of squares of the first 12 autocorrelations.
- 13. *garch_acf* After the series is pre-whitened using an AR model, a GARCH(1,1) model is fitted to it and the residuals are calculated. The sum of squares of the first 12 autocorrelations of the squared residuals.
- 14. *arch_r2* After the series is pre-whitened using an AR model and squared, the $R^2$ value of an AR model applied to it.
- 15. *garch_r2* After the series is pre-whitened using an AR model, a GARCH(1,1) model is fitted to it and the residuals are calculated. The 
- sum of squares of the first 12 autocorrelations of the squared residuals.
- 16. *alpha* $\alpha$ The smoothing parameter for the level in a ets(A,A,N) model fitted to the series.
- 17. *beta* $\beta$ The smoothing parameter for the trend in a ets(A,A,N) model fitted to de series.
- 18. *hurst* The hurst coefficient indicating the level of fractional differencing of a time series.
- 19. *lumpiness* The variance of the variances based on a division of the series in non-overlapping portions. The size of the portions if the frequency of the series, or 10 is the series has frequency 1.
- 20. *nonlinearity*  A nonlinearity statistic based on Terasvirta's nonlinearity test of a time series.
- 21. *x_pacf5* The sum of squared first 5 partial autocorrelation coefficients of the series.
- 22. *diff1x_pacf5* The sum of squared first 5 partial autocorrelation coefficients of the first differenced series.
- 23. *diff2x_pacf5* The sum of squared first 5 partial autocorrelation coefficients of the twice differenced series.
- 24. *seas_pacf* The partial autocorrelation coefficient at the first seasonal lag. 0 if the series is non seasonal.
- 25. *nperiods* The number of seasonal periods in the series.
- 26. *seasonal_period* The length of the seasonal period.
- 27. *trend* In a STL decomposition of the series with $r_t$ the remainder series and $z_t$ the deseasonalized series: $max[0, 1- Var(r_t) / Var(z_t)]$
- 28. *spike* In a STL decomposition of the series with $r_t$ the remainder series, the variance of the leave one out variances of $r_t$
- 29. *linearity* In a STL decomposition of the series with $T_t$ the trend component, a quadratic model depending on time is fitted: $T_t = \beta_{0} + \beta_{1}t + \beta_{2}t^2 + \epsilon_t$. *linearity* is $\beta_{1}$.
- 30. *curvature* In a STL decomposition of the series with $T_t$ the trend component, a quadratic model depending on time is fitted: $T_t = \beta_{0} + \beta_{1}t + \beta_{2}t^2 + \epsilon_t$. *curvature* is $\beta_{2}$.
- 31. *e_acf1* The first autocorrelation coefficient of the remainder series in an STL decomposition of the series.
- 32. *e_acf10* The sum of the first 10 squared autocorrelation coefficients of the remainder series in an STL decomposition of the series.
- 33. *seasonal_strength* In a STL decomposition of the series with $r_t$ the remainder series and $x_t$ the detrended series: $max[0, 1- Var(r_t) / Var(x_t)]$.
- 34. *peak* The location of the peak (maximum value) in the seasonal component of and STL decomposition of the series.
- 35. *trough* The location of the trough (minimum value) in the seasonal component of and STL decomposition of the series.
- 36. *stability* The variance of the means based on a division of the series in non-overlapping portions. The size of the portions is the frequency of the series, or 10 is the series has frequency 1.
- 37. *hw_alpha* $\alpha$ parameter of an ets(A,A,A) model fitted on the series.
- 38. *hw_beta* $\beta$ parameter of an ets(A,A,A) model fitted on the series.
- 39. *hw_gamma* $\gamma$ parameter of an ets(A,A,A) model fitted on the series.
- 40. *unitroot_kpss* The statistic for the Kwiatkowski et al. unit root test with linear trend and lag 1.
- 41. *unitroot_pp* The statistic for the ''Z-alpha” version of Phillips & Perron unit root test with constant trend and lag 1.
- 42. *series_length* The length of the series.
+
+\begin{table}[!htp]
+\centering\footnotesize\tabcolsep=0.12cm
+\caption{Features used for selecting a forecast-model.}
+\label{feature}
+\begin{tabular}{llp{8,8cm}cc}
+\toprule
+\multicolumn{2}{c}{Feature} & Description & Non-seasonal & Seasonal\\
+\midrule
+1  & T              & length of time series                                                                   & \yes  & \yes \\
+2  & trend          & strength of trend                                                                       & \yes  & \yes\\
+3  & seasonality    & strength of seasonality                                                                 & -     & \yes \\
+4  & linearity      & linearity                                                                               & \yes  & \yes \\
+5  & curvature      & curvature                                                                               & \yes  & \yes \\
+6  & spikiness      & spikiness                                                                               & \yes  & \yes \\
+7  & e\_acf1        & first ACF value of remainder series                                                     & \yes  & \yes \\
+8  & stability      & stability                                                                               & \yes  & \yes \\
+9  & lumpiness      & lumpiness                                                                               & \yes  & \yes \\
+10 & entropy        & spectral entropy                                                                        & \yes  & \yes \\
+11 & hurst          & Hurst exponent                                                                          & \yes  & \yes \\
+12 & nonlinearity   & nonlinearity                                                                            & \yes\ & \yes \\
+13 & alpha          & ETS(A,A,N) $\hat\alpha$                                                                 & \yes  & \yes \\
+14 & beta           & ETS(A,A,N) $\hat\beta$                                                                  & \yes  & \yes\\
+15 & hwalpha        & ETS(A,A,A) $\hat\alpha$                                                                 & -     & \yes \\
+16 & hwbeta         & ETS(A,A,A) $\hat\beta$                                                                  & -     & \yes \\
+17 & hwgamma        & ETS(A,A,A) $\hat\gamma$                                                                 & -     & \yes \\
+18 & ur\_pp         & test statistic based on Phillips-Perron test                                            & \yes  & - \\
+19 & ur\_kpss       & test statistic based on KPSS test                                                       & \yes  & - \\
+20 & y\_acf1        & first ACF value of the original series                                                  & \yes  & \yes \\
+21 & diff1y\_acf1   & first ACF value of the differenced series                                               & \yes  & \yes \\
+22 & diff2y\_acf1   & first ACF value of the twice-differenced series                                         & \yes  & \yes \\
+23 & y\_acf5        & sum of squares of first 5 ACF values of original series                                 & \yes  & \yes \\
+24 & diff1y\_acf5   & sum of squares of first 5 ACF values of differenced series                              & \yes  & \yes \\
+25 & diff2y\_acf5   & sum of squares of first 5 ACF values of twice-differenced series                        & \yes  & \yes \\
+26 & seas\_acf1     & autocorrelation coefficient at first seasonal lag                                       & -     & \yes \\
+27 & sediff\_acf1   & first ACF value of seasonally-differenced series                                        & -     & \yes\\
+28 & sediff\_seacf1 & ACF value at the first seasonal lag of seasonally-differenced series                    & -     & \yes \\
+29 & sediff\_acf5   & sum of squares of first 5 autocorrelation coefficients of seasonally-differenced series & -     & \yes \\
+30 & lmres\_acf1    & first ACF value of residual series of linear trend model                                & \yes  & - \\
+31 & y\_pacf5       & sum of squares of first 5 PACF values of original series                                & \yes  & \yes \\
+32 & diff1y\_pacf5  & sum of squares of first 5 PACF values of differenced series                             & \yes  & \yes \\
+33 & diff2y\_pacf5  & sum of squares of first 5 PACF values of twice-differenced series                       & \yes  & \yes \\
+\bottomrule
+ \end{tabular}
+\end{table}
 
 No exogenous features were used, even though they were available in the M4 dataset, such as which domain the series belongs to (e.g. macroeconomics, finance, tourism...).
 
