@@ -420,12 +420,12 @@ one that generated the reference set.
 One common meta-learning approach is to learn to select the best method
 in the pool for each series, the one that produces the least forecasting
 error. This approach transforms the problem into a traditional
-classification one by setting the individual forecasting methods as the
-classes and the best method as the target class for each time series,
-enabling the use of existing classification algorithms. However, this
-simplification removes relevant information which may be useful in the
-metalearning process, such as which methods produce similar errors to
-the best one for a series, or which series are more \emph{difficult}
+classification problem by setting the individual forecasting methods as
+the classes and the best method as the target class for each time
+series, enabling the use of existing classification algorithms. However,
+this simplification removes relevant information which may be useful in
+the metalearning process, such as which methods produce similar errors
+to the best one for a series, or which series are more \emph{difficult}
 than others. We do not apply this simplification and take into account
 the exact error that each method produces in each series, instead of
 just considering which one produces the minimum error. This information
@@ -454,7 +454,7 @@ for forecast combination and subsequently generate relevant forecasts.
 The offline phase of the FFORMA framework has four main components: i)
 reference set, ii) the set of features to be extracted from the time
 series, iii) The set of forecasting methods and forecast error measure
-and iv)Meta-learning model . In Section 3, we describe these components
+and iv) Meta-learning model . In Section 3, we describe these components
 in more details with application to M4 competition.
 
 \begin{algorithm}[!ht]
@@ -587,8 +587,8 @@ data set.
 \subsection{Forecasting methods}\label{forecasting-methods}
 
 We considered nine forecasting algorithms implemented in the
-\texttt{forecast}\autocite{forecast} package in R. They are (the
-specific R calls for fitting the models are given):i) automated ARIMA
+\texttt{forecast} \autocite{forecast} package in R. They are (the
+specific R calls for fitting the models are given): i) automated ARIMA
 algorithm (\texttt{auto.arima}), ii) automated ETS algorithm
 (\texttt{ets}), iii) feed-forward neural network with a single hidden
 layer is fitted to the lags. The number of lags is automatically
@@ -596,7 +596,7 @@ selected (\texttt{nnetar}), iv) random walk with drift (\texttt{rwf}
 with drift=TRUE), v) TBATS model (\texttt{tbats}), vi) Theta method
 forecast (\texttt{thetaf}), vii) naive forecasts (\texttt{naive}), viii)
 STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of
-the seasonally adjusted series(\texttt{stlm} with model function
+the seasonally adjusted series (\texttt{stlm} with model function
 \texttt{ar}) and ix) seasonal naive forecasts (\texttt{snaive}). In all
 cases, the default setting is used. Further, in the case of an error
 when fitting the series (e.g.~a series is constant), the SNAIVE forecast
