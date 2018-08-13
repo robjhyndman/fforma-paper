@@ -47,25 +47,24 @@ There are essentially two general approaches to forecast a time series: i) use o
 
 @Bates1969-cu, was the first to forward the idea of "the combination of forecasts".  Since then, it has been extended in various ways and many approaches have been proposed to derive weights for forecast combination (@Aiolfi2011-yz). 
 
-Recently, a few researchers have explored the use of time series features in selecting the most appropriate forecasting method. However, the use of time series features to derive weights for forecast combination has been rarely addressed in the literature. In this paper we propose a general framework to obtain weights for forecast combination based on features computed from the time series. We call this framework FFORMA (Feature-based FORecast Model Averaging). The proposed FFORMA framework has been used over the course of M4 competition and placed in second in forecast accuracy in both point forecasts and prediction intervals. This approach has been influenced by the work of @fforms and is related to the previous work by @prudencio2004using in which they use machine learning techniques to define weights for the linear combination of forecasts.
+Recently, a few researchers have explored the use of time series features in selecting the most appropriate forecasting method. However, the use of time series features to derive weights for forecast combination has been rarely addressed in the literature. In this paper we propose a general framework to obtain weights for forecast combination based on features computed from the time series. We call this framework FFORMA (Feature-based FORecast Model Averaging). The proposed FFORMA framework has been used over the course of M4 competition and placed in second in forecast accuracy in both point forecasts and prediction intervals. This approach has been influenced by the work of @fforms and is related to the previous work by @prudencio2004using in which they use machine learning techniques to define weights for the linear combination of forecasts based on five features extracted from the time series.
 
-The rest of the paper is organized as follows: In \autoref{methodology} we describe the FFORMA framework in a general sense, without specifying the set of features, forecasting methods and learning model implementation. This section contains the main contribution: posing the learning problem in a way that includes the information about the errors produced by each forecasting method and combines it with the features extracted from the series. \autoref{M4application} gives the details of our implementation of FFORMA which achieved second place in the M4 Competition. The required preprocessing steps, the sets of features and forecast methods, as well as the specific implementation of the meta-learning model.  *The method to produce the prediction intervals for the M4 competition is also explained in this section.* We show empirical evidence on the good performance of the approach in \autoref{results} by quantifiying the difference between our proposal and a traditional classifier approach using the same features and underlying learning implementation, followed by discussion and conclusions in \autoref{conclusion}.
+The rest of the paper is organized as follows: In \autoref{methodology} we describe the FFORMA framework in a general sense, without specifying the set of features, forecasting methods and learning model implementation. This section contains the main contribution: posing the learning problem in a way that includes the information about the errors produced by each forecasting method and combines it with the features extracted from the series. \autoref{M4application} gives the details of our implementation of FFORMA which achieved second place in the M4 Competition. The required preprocessing steps, the sets of features and forecast methods, as well as the specific implementation of the meta-learning model.  *The method to produce the prediction intervals for the M4 competition is also explained in this section.* We show empirical evidence on the good performance of the approach in \autoref{results} by quantifiying the difference between our proposal and a traditional classifier approach using the same features and underlying learning implementation. \autoref{conclusion}  provides some final remarks and conclusions.
 
 # Methodology {#methodology}
 
 ## Overview / Intuition
 
-The objective of our meta-learning approach is to combine a set of individidual forecasting methods (e.g. ARIMA, exponential smoothing) to produce more accurate forecasts. This combination is a weighted average of the forecasts of individual methods. Our framework requires a dataset of time series, called the *reference set*, from which we learn to produce the weights for any given time series.
+The objective of our meta-learning approach is to derive weights to combine a set of individidual forecasting methods (e.g. ARIMA, exponential smoothing) to produce more accurate forecasts. Our framework requires a dataset of time series, called the *reference set*, from which we learn to produce the weights for any given time series.
 
-We start from the reference set and a fixed set of forecasting methods, called the *pool of methods*. The forecasting errors of each method in the pool are calculated for each time series in the reference set, using the true future values of the series if available or by dividing the each series into a training period and test period by applying temporal holdout.
+We start from the reference set and a fixed set of forecasting methods, called the *pool of methods*. Each time series in the reference set is divided in to training period and test period. The forecasting methods in the pool is applied to training period of each time series and forecast error measues are calculated over the test period. Further, features are computed based on the training period of each time series.The inputs for training the meta-learning model are: i) features (e.g. length, autocorrelation coefficients,etc.)  extracted from the training period of the series and ii) The forecast errors produced by the forecasting methods.
+<!--The forecasting errors of each method in the pool are calculated for each time series in the reference set, using the true future values of the series if available or by dividing the each series into a training period and test period by applying temporal holdout.-->
 
-The inputs for training the meta-learning model are: i) features (e.g. length, autocorrelation coefficients,etc.)  extracted from the training period of the series and ii) The forecast errors produced by the forecasting methods.
-  
 The model will learn to produce weights for each method in the pool as a function of the features of the series. Once the meta-learning model is trained, the inductive step consist of assuming that a new series we want to forecast comes from a *generating process* similar to the one that generated the reference set.
 
 One common meta-learning approach is to learn to select the best method in the pool for each series, the one that produces the least forecasting error. This approach transforms the problem into a traditional classification one by setting the individual forecasting methods as the classes and the best method as the target class for each time series, enabling the use of existing classification algorithms. However, this simplification removes relevant information which may be useful in the metalearning process, such as which methods produce similar errors to the best one for a series, or which series are more *difficult* than others. We do not apply this simplification and take into account the exact error that each method produces in each series, instead of just considering which one produces the minimum error. This information is introduced into the model by posing the problem as finding a function that assigns *probabilities* to each forecasting method for each series, with the objective of minimizing the expected error that is produced if the methods were picked at random following these probabilities.
 
-Our approach can be easily transformed into a classification exercise by selecting the method corresponds to the largest probability produced by our model. If we allow a sufficiently rich hyphotesis space to fit freely, we also end up assigning probability one to the methods with the least amount of error. Our approach can also be seen as a classification exercise but with *per class weights* (the forecasting errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.
+Our approach can be easily transformed into a classification exercise by selecting the method corresponds to the largest probability produced by our model. If we allow a sufficiently rich hypothesis space to fit freely, we also end up assigning probability one to the methods with the least amount of error. Our approach can also be seen as a classification exercise but with *per class weights* (the forecasting errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.
 
 <!-- The meta-learning process can therefore be summarized the following way: -->
 
@@ -85,7 +84,7 @@ Our approach can be easily transformed into a classification exercise by selecti
 
 ## Algorithmic description
 
-Algorithm \@ref(alg:algo-lab) presents the Pseudo code of the poposed framework. The operation of FFORMA framework can be divided into two phases: (i) offline phase, in which we train a meta-learner, ii) online phase, in which we use the pre-trained meta-learner to identify weights for forecast combination and subsequently generate relevant forecasts. The offline phase of the FFORMA famework has four main components: i) reference set, ii) the set of features to be extracted from the time series, iii) The set of forecasting methods and  forecast error measure and iv)Meta-learning model . In Section 3, we describe these components in more details with application to M4 competition.
+Algorithm \@ref(alg:algo-lab) presents the Pseudo code of the proposed framework. The operation of FFORMA framework can be divided into two phases: (i) offline phase, in which we train a meta-learner, ii) online phase, in which we use the pre-trained meta-learner to identify weights for forecast combination and subsequently generate relevant forecasts. The offline phase of the FFORMA framework has four main components: i) reference set, ii) the set of features to be extracted from the time series, iii) The set of forecasting methods and  forecast error measure and iv)Meta-learning model . In Section 3, we describe these components in more details with application to M4 competition.
 
 <!--
   1. The set of forecasting methods, the pool of methods.
@@ -150,14 +149,14 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
 
 ## Reference set 
 
-For the M4 competition, we used the whole M4 dataset as the reference set. The M4 competition database consists of 100,000 real-world time series of yearly, quarterly, monthly, weekly, daily and hourly data. To divide the series into training and testing period, we used the forecast horizon specified in the database as the size of the temporal holdout. When the training period resulted too short (less than 2 periods), the size of the temporal holdout was reduced.
+For the M4 competition, we used the whole M4 data set as the reference set. The M4 competition database consists of 100,000 real-world time series of yearly, quarterly, monthly, weekly, daily and hourly data. To divide the series into training and testing period, we used the forecast horizon specified in the database as the size of the temporal holdout. When the training period resulted too short (less than 2 periods), the size of the temporal holdout was reduced.
 Some series were removed because they were constant after removing the holdout part.
 <!-- The frequency for yearly, quarterly, monthly and weekly data are considered as 1, 4, 12 and 52 respectively. [Q: Daily and Hourly series, what are the frequencies considered?]. We used xxxx time series out of 100000 to train a meta-learner and rest is used to evaluate the proposed framework. In addition to the time series provided in the M4 competition database we used the time series of M1 and M3 competitions [@makridakis2000m3] to the reference set. Each time series in the reference set is split into training period and test period. The length of test period of each time series was set as according to the rules of M4 competition, 6 for yearly data, 8 for quarterly, 18 for monthly, 13 for weekly, 14 for daily and 48 for hourly. -->
 
 
 ## Time series features
 
-We use a set of 42 features. \autoref{feature} provides a brief description of features used in this experiment. The functions to calculate these features are implemented in `tsfeatures` R package by @tsfeatures. Most of the features have been previously used by @hyndman2015large and @fforms.  The last five heterogenity features are calculated as below. First, the time series is pre-whitened using an AR model and obtain a new series $z$. Then, a GARCH(1, 1) model is fitted to the pre-whitened series and obtain the residual($r$) series. Subsequently, the features 39-42 are computed.  A detailed description of other features are provided in @fforms. The features corresponds to seasonal time series only are set to zero for the case of non-seasonal time series. Note that, we have not used any of the domain-specific features such as macro, micro, finance, etc., eventhough these information are available in the M4 dataset.
+We use a set of 42 features. \autoref{feature} provides a brief description of features used in this experiment. The functions to calculate these features are implemented in `tsfeatures` R package by @tsfeatures. Most of the features have been previously used by @hyndman2015large and @fforms.  The last five heterogeneity features are calculated as below. First, the time series is pre-whitened using an AR model and obtain a new series $z$. Then, a GARCH(1, 1) model is fitted to the pre-whitened series and obtain the residual($r$) series. Subsequently, the features 39-42 are computed.  A detailed description of other features are provided in @fforms. The features corresponds to seasonal time series only are set to zero for the case of non-seasonal time series. Note that, we have not used any of the domain-specific features such as macro, micro, finance, etc., even though these information are available in the M4 data set.
 
 <!--No exogenous features were used, even though they were available in the M4 dataset, such as which domain the series belongs to (e.g. macroeconomics, finance, tourism...).--> 
 
@@ -202,7 +201,7 @@ We use a set of 42 features. \autoref{feature} provides a brief description of f
 30 & diff2y\_pacf5  & sum of squares of first 5 PACF values of twice-differenced series                       & \yes  & \yes \\
 31 & seas\_pacf  & partial autocorrelation coefficient at first seasonal lag                       & \yes  & \yes \\
 32 & crossing\_point  & number of times the time series crosses the median                     & \yes  & \yes \\
-33 & flat\_spots  & number of flat splots, calculated by discretizing the series into 10 equal sized intervals and counting the maximung run length within any single interval                       & \yes  & \yes \\
+33 & flat\_spots  & number of flat spots, calculated by discretizing the series into 10 equal sized intervals and counting the maximum run length within any single interval                       & \yes  & \yes \\
 34 & nperiods  & number of seasonal periods in the series & -  & \yes \\
 35 & seasonal\_period  & length of seasonal period                       & -  & \yes \\
 36 & peak  & strength of peak                      & \yes  & \yes \\
@@ -219,7 +218,7 @@ We use a set of 42 features. \autoref{feature} provides a brief description of f
 ## Forecasting methods
 
 We considered nine forecasting algorithms implemented in the `forecast`[@forecast] package in R. They are (the specific R calls for fitting the models are given):i) automated ARIMA algorithm (`auto.arima`), ii) automated ETS algorithm (`ets`),
-iii) feed-forward neural network with a single hidden layer is fitted to the lags. The number of lags is automatically selected (`nnetar`), iv) random walk with drift (`rwf` with drift=TRUE), v) TBATS model (`tbats`), vi) Theta method forecast (`thetaf`), vii) naive forecasts (`naive`), viii) STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series(`stlm` with modelfunction `ar`) and ix) seasonal naive forecasts (`snaive`).  In all cases, the default setting is used. Further, in the case of an error when fitting the series (e.g. a series is constant), the SNAIVE forecast method is used instead.
+iii) feed-forward neural network with a single hidden layer is fitted to the lags. The number of lags is automatically selected (`nnetar`), iv) random walk with drift (`rwf` with drift=TRUE), v) TBATS model (`tbats`), vi) Theta method forecast (`thetaf`), vii) naive forecasts (`naive`), viii) STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series(`stlm` with model function `ar`) and ix) seasonal naive forecasts (`snaive`).  In all cases, the default setting is used. Further, in the case of an error when fitting the series (e.g. a series is constant), the SNAIVE forecast method is used instead.
  
 <!--It is worthy to emphasize that we used the default parameters in most methods without any hand tunning. Only in `auto.arima` we specified a more thorough search for hyperparameters than its default version.--> 
 
@@ -227,10 +226,10 @@ iii) feed-forward neural network with a single hidden layer is fitted to the lag
 
 ## Metal-learning model
 
-We chose the gradient tree boosting model of **xgboost** (@chen2016xgboost) as the underlying implementation of the learning model due to following reasons:
+We choose the gradient tree boosting model of **xgboost** (@chen2016xgboost) as the underlying implementation of the learning model due to following reasons:
 
  1. Ability to customize the model to fit our objective function 
- 2. Computational efficiency: The size of the M4 dataset requires a efficient model
+ 2. Computational efficiency: The size of the M4 data set requires a efficient model
  3. Good performance in structure based problems
  
 <!-- https://blog.cambridgespark.com/getting-started-with-xgboost-3ba1488bb7d4 -->
@@ -238,7 +237,7 @@ We chose the gradient tree boosting model of **xgboost** (@chen2016xgboost) as t
 
 The vanilla xgboost algorithm produces numeric values from the features, one for each forecasting method in our pool. We apply the softmax transform to these values prior to computing the the objective function shown in Algorithm \@ref(alg:algo-lab) step 7, implemented as a custom objective function.
 
-xgboost fits the model by gradient boosting, for which requires a gradient and hessian of the objective function. In our case, the gradient is the direct gradient of the objective, but the *correct* hessian is prone to numerical problems that need to be fixed for xgboost to converge. This is a relative common problem and one simple fix is to use an upper bound of the hessian by clampling small values to a larger one. In our case, we compute an alternate upper bound of the hessian by removing some terms from the *correct* hessian. Although both alternatives converge, our approach works faster, requiring less boosting steps to converge. This not only increases the computational efficiency, it also generalizes better due to a less complex set of trees produced in the final solution.
+xgboost fits the model by gradient boosting, for which requires a gradient and hessian of the objective function. In our case, the gradient is the direct gradient of the objective, but the *correct* hessian is prone to numerical problems that need to be fixed for xgboost to converge. This is a relative common problem and one simple fix is to use an upper bound of the hessian by clamping small values to a larger one. In our case, we compute an alternate upper bound of the hessian by removing some terms from the *correct* hessian. Although both alternatives converge, our approach works faster, requiring less boosting steps to converge. This not only increases the computational efficiency, it also generalizes better due to a less complex set of trees produced in the final solution.
 
 The functions involved in computing the objective are the following:
      
@@ -251,21 +250,21 @@ The functions involved in computing the objective are the following:
     
 ### Hyperparameters
  
- The results of xgboost  are particularly dependent on its hyperparameters such as learning rate, number of boosting steps, maximum complexity allowed for the trees or subsampling sizes. In our case we limit the hyperparameter search space based on some initial results and rules of thumb and explore it using bayesian optimization, (implemented in the `rBayesianOptimization` R package[@rBayesianOptimization]) measuring performance on a 10% holdout version of the reference set. We picked the most simple hyperparameter set from the top solutions of the exploration.
+ The results of xgboost  are particularly dependent on its hyper-parameters such as learning rate, number of boosting steps, maximum complexity allowed for the trees or subsampling sizes. In our case we limit the hyper-parameter search space based on some initial results and rules of thumb and explore it using Bayesian optimization, (implemented in the `rBayesianOptimization` R package [@rBayesianOptimization]) measuring performance on a 10% holdout version of the reference set. We picked the most simple hyper-parameter set from the top solutions of the exploration.
 
 
 ## Prediction Intervals
 
-The M4 Competition also featured a subcompetition over the accuracy of prediction intervals. For this part, we used a different approach. In order to compute the intervals we used the point forecast produced by our meta-learner as the centre of the interval and computed the 95% bounds of the interval by a linear combination of the bounds of three forecasting methods: Thetaf, SNAIVE and NAIVE methods.
+The M4 Competition also featured a sub competition over the accuracy of prediction intervals. For this part, we used a different approach. In order to compute the intervals we used the point forecast produced by our meta-learner as the center of the interval and computed the 95% bounds of the interval by a linear combination of the bounds of three forecasting methods: Thetaf, SNAIVE and NAIVE methods.
 The coefficients for the linear combination were calculated in a data driven way also over the M4 database. The procedure is as follows:
 
-  1. For the training period each series in the dataset:
+  1. For the training period each series in the data set:
     1. Compute the point forecast of the meta-learning. 
     2. Compute the 95% *predicion radius* for the thetaf, snaive and naive, this is the difference between the 95% upper bound and the point forecast for each horizon.
-  2. For each forecasting horizon required in the dataset:
+  2. For each forecasting horizon required in the data set:
     1. Find the coefficients that minimize the MSIS error of the interval with the meta-learning point forecast as center and a linear combination of the radiuses of thetaf, snaive and naive as radius. The minimization is done by gradient descent.
     
-This procedure produces at set of three coefficients for each prediction horizon in the M4 dataset and these coefficients will be the same independently of the series we want to forecast. *These coefficients are not restricted to be probabilities, the optimization is unrestricted.* In order to prevent overfitting for the center of the intervals, the M4 dataset was divided in two halfs, and our metalearning approach was trained in one half and applied to the other.
+This procedure produces at set of three coefficients for each prediction horizon in the M4 dataset and these coefficients will be the same independently of the series we want to forecast. *These coefficients are not restricted to be probabilities, the optimization is unrestricted.* In order to prevent overfitting for the center of the intervals, the M4 dataset was divided in two halves, and our metalearning approach was trained in one half and applied to the other.
 
 
 
