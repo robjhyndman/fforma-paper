@@ -304,11 +304,10 @@ XGBoost, M4 Competition},
 \usepackage{amsthm}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}{Lemma}[section]
-\newtheorem{corollary}{Corollary}[section]
-\newtheorem{proposition}{Proposition}[section]
-\newtheorem{conjecture}{Conjecture}[section]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[section]
 \theoremstyle{definition}
@@ -329,9 +328,9 @@ approach works in two phases. In the first, we use a dataset of time
 series to train a meta-model to assign probabilities to the forecasting
 methods with the goal of minimizing the average forecasting error. In
 the second phase, we forecast new series by assigning probabilities to
-methods using our previously trained meta-model, and combining their
-individual forecasts using a weighted average. The inputs to this model
-are features extracted from the series.
+methods using our previously trained meta-model, and then combine their
+individual forecasts using a weighted average with these probabilities.
+The inputs to the meta-model are features extracted from the series.
 \end{abstract}
 \begin{keywords}
 FFORMA (Feature-based FORecast-model Averaging), FFORMS (Feature-based
@@ -380,15 +379,14 @@ learning problem in a way that includes the information about the errors
 produced by each forecasting method and combines it with the features
 extracted from the series. \autoref{M4application} gives the details of
 our implementation of FFORMA which achieved second place in the M4
-Competition. The required preprocessing steps, the sets of features and
-forecast methods, as well as the specific implementation of the
-meta-learning model. \emph{The method to produce the prediction
+Competition. This includes thr required preprocessing steps, the sets of
+features and forecast methods, as well as the specific implementation of
+the meta-learning model. \emph{The method to produce the prediction
 intervals for the M4 competition is also explained in this section.} We
 show empirical evidence on the good performance of the approach in
-\autoref{results} by quantifiying the difference between our proposal
-and a traditional classifier approach using the same features and
-underlying learning implementation. \autoref{conclusion} provides some
-final remarks and conclusions.
+\autoref{results} by quantifying the difference between our proposed
+learning model and a traditional classifier approach.
+\autoref{conclusion} provides some final remarks and conclusions.
 
 \section{Methodology}\label{methodology}
 
@@ -402,14 +400,13 @@ which we learn to produce the weights for any given time series.
 
 We start from the reference set and a fixed set of forecasting methods,
 called the \emph{pool of methods}. Each time series in the reference set
-is divided in to training period and test period. The forecasting
-methods in the pool is applied to training period of each time series
-and forecast error measues are calculated over the test period. Further,
-features are computed based on the training period of each time
-series.The inputs for training the meta-learning model are: i) features
-(e.g.~length, autocorrelation coefficients,etc.) extracted from the
-training period of the series and ii) The forecast errors produced by
-the forecasting methods.
+is divided into training period and test period. Each forecasting method
+in the pool is applied to the training period of each time series and
+forecast error measures are calculated over the test period. The inputs
+for training the meta-learning model are: i) features (e.g.~length,
+autocorrelation coefficients,etc.) extracted from the training period of
+the series and ii) The forecast errors produced by the forecasting
+methods.
 
 The model will learn to produce weights for each method in the pool as a
 function of the features of the series. Once the meta-learning model is
@@ -454,8 +451,10 @@ for forecast combination and subsequently generate relevant forecasts.
 The offline phase of the FFORMA framework has four main components: i)
 reference set, ii) the set of features to be extracted from the time
 series, iii) The set of forecasting methods and forecast error measure
-and iv) Meta-learning model . In Section 3, we describe these components
-in more details with application to M4 competition.
+and iv) Meta-learning model.
+\todo{Find a better name for the *underlying implementation of the learning model*, to distinguish it from the meta-learning model, which i think is the whole }
+In Section 3, we describe these components in more detail with
+application to M4 competition.
 
 \begin{algorithm}[!ht]
   \caption{The FFORMA framework - Forecast combination based on meta-learning. }
@@ -587,7 +586,7 @@ data set.
 \subsection{Forecasting methods}\label{forecasting-methods}
 
 We considered nine forecasting algorithms implemented in the
-\texttt{forecast} \autocite{forecast} package in R. They are (the
+\texttt{forecast} \autocite{forecast} package R package. They are (the
 specific R calls for fitting the models are given): i) automated ARIMA
 algorithm (\texttt{auto.arima}), ii) automated ETS algorithm
 (\texttt{ets}), iii) feed-forward neural network with a single hidden
@@ -602,9 +601,12 @@ cases, the default setting is used. Further, in the case of an error
 when fitting the series (e.g.~a series is constant), the SNAIVE forecast
 method is used instead.
 
-\todo{Forecast-error measure calculation: OWI}
+\todo{Forecast-error measure calculation: OWA}
 
-\subsection{Metal-learning model}\label{metal-learning-model}
+\subsection{Metal-learning model
+implementation}\label{metal-learning-model-implementation}
+
+\todo{again, find a better name?}
 
 We choose the gradient tree boosting model of \textbf{xgboost}
 (\textcite{chen2016xgboost}) as the underlying implementation of the
@@ -625,7 +627,7 @@ learning model due to following reasons:
 \subsubsection{The xgboost objective
 function}\label{the-xgboost-objective-function}
 
-The vanilla xgboost algorithm produces numeric values from the features,
+The basic xgboost algorithm produces numeric values from the features,
 one for each forecasting method in our pool. We apply the softmax
 transform to these values prior to computing the the objective function
 shown in Algorithm \ref{alg:algo-lab} step 7, implemented as a custom
@@ -669,7 +671,7 @@ case we limit the hyper-parameter search space based on some initial
 results and rules of thumb and explore it using Bayesian optimization,
 (implemented in the \texttt{rBayesianOptimization} R package
 \autocite{rBayesianOptimization}) measuring performance on a 10\%
-holdout version of the reference set. We picked the most simple
+holdout version of the reference set. We picked the most regularized
 hyper-parameter set from the top solutions of the exploration.
 
 \subsection{Prediction Intervals}\label{prediction-intervals}
@@ -682,12 +684,13 @@ bounds of the interval by a linear combination of the bounds of three
 forecasting methods: Thetaf, SNAIVE and NAIVE methods. The coefficients
 for the linear combination were calculated in a data driven way also
 over the M4 database. The procedure is as follows:
+\todo{maybe too verbose/redundant?}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  For the training period each series in the data set:
+  For the training period of each series in the data set:
 
   \begin{enumerate}
   \def\labelenumii{\arabic{enumii}.}
@@ -709,23 +712,34 @@ over the M4 database. The procedure is as follows:
     Find the coefficients that minimize the MSIS error of the interval
     with the meta-learning point forecast as center and a linear
     combination of the radiuses of thetaf, snaive and naive as radius.
-    The minimization is done by gradient descent.
+    The minimization is done by gradient descent over the test period of
+    the series.
   \end{enumerate}
 \end{enumerate}
 
 This procedure produces at set of three coefficients for each prediction
 horizon in the M4 dataset and these coefficients will be the same
-independently of the series we want to forecast. \emph{These
-coefficients are not restricted to be probabilities, the optimization is
-unrestricted.} In order to prevent overfitting for the center of the
-intervals, the M4 dataset was divided in two halves, and our
-metalearning approach was trained in one half and applied to the other.
+independently of the series we want to forecast. \emph{Unlike the point
+forecast, these coefficients are not restricted to be probabilities, the
+optimization is unrestricted.} In order to prevent overfitting for the
+center of the intervals, the training part of the M4 dataset was divided
+in two halves, and our metalearning approach was trained in one half and
+applied to the other.
 
 \section{Results}\label{results}
 
-We quantify the improvement in accuracy produced by our approach,
-compared to a classification implementation using the same underlying
-implementation, xgboost.
+We measure the impact of our main contribution by comparing the average
+forecasting error produced by our proposed combination model to a
+reference implementation of a traditional classification approach, in
+which a model is trained to pick the best method, which will then be
+used for the final forecast. We use the same set of features, the same
+pool of forecasting methods, the same underlying implementation
+(xgboost), and in both approaches we perform hyperparameter search prior
+to fitting the model using bayesian optimization. This way, we isolate
+the model differences. In the M4 competition dataset for point forecast,
+our approach produces a \textbf{relative improvement of 10\%} over the
+reference, measured as
+\(\frac{classifier\ error}{proposed\ method\ error}\).
 
 \section{Discussion and Conclusions}\label{conclusion}
 
