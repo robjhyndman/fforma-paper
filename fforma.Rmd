@@ -43,28 +43,30 @@ library(ggplot2)
 
 # Introduction{#intro}
 
-There are essentially two general approaches to forecast a time series: i) use of single model and ii) combination forecast or forecast model averaging. There is a growing consensus that the combination forecast is a way of improving forecast accuracy. Empirical work often provides evidence that the combination of forecasts resulting from several candidate forecasting models are often superior to their individual forecasts. Combining forecasts across different models is considered as a way of reducing the risk of selecting an inappropriate model. However, the main challenge in forecast combination is the selection of appropriate set of weights. 
+There are essentially two general approaches for forecasting a time series: (i) generating forecasts from a single model, and (ii) combining forecasts from many models or forecast model averaging. There has been a vast literature on the latter motivated by the seminal work of @Bates1969-cu and followed by a plethora of empirical applications showing that combination forecasts are often superior to their individual counterparts (see among others, @clemen1989combining, \todo{maybe add more here}). Combining forecasts is considered a successful way of hedging against the risk of selecting a misspecified model. Of course the main challenge is in selecting an appropriate set of weights with many contributions (see for example Timmermann 2006, @Aiolfi2011-yz) attempting to overcome the so called ``forecast combination puzzle''. \todo{Pablo to add on the literature on ensemble methods}
 
-@Bates1969-cu, was the first to forward the idea of "the combination of forecasts".  Since then, it has been extended in various ways and many approaches have been proposed to derive weights for forecast combination (@Aiolfi2011-yz). 
+Recently, @fforms have explored the idea of using time series features combined with meta-learning for forecast-model selection; a framework labelled as FFORMS (Feature-based FORecast Model Selection). In this paper we build on this framework posing the learning problem in a way that includes information about the forecast errors produced by the set of forecasting methods considered and combines these with features extracted from the time series in order to derive a set of weights for forecast combinations\todo{Pablo please review this}. We label this framework FFORMA (Feature-based FORecast Model Averaging). The proposed FFORMA framework has been used over the course of the M4 competition and resulted in the second most accurate point forecasts and prediction intervals amongst all competitors.
 
-Recently, a few researchers have explored the use of time series features in selecting the most appropriate forecasting method. However, the use of time series features to derive weights for forecast combination has been rarely addressed in the literature. In this paper we propose a general framework to obtain weights for forecast combination based on features computed from the time series. We call this framework FFORMA (Feature-based FORecast Model Averaging). The proposed FFORMA framework has been used over the course of M4 competition and placed in second in forecast accuracy in both point forecasts and prediction intervals. This approach has been influenced by the work of @fforms and is related to the previous work by @prudencio2004using in which they use machine learning techniques to define weights for the linear combination of forecasts based on five features extracted from the time series.
-
-The rest of the paper is organized as follows: In \autoref{methodology} we describe the FFORMA framework in a general sense, without specifying the set of features, forecasting methods and learning model implementation. This section contains the main contribution: posing the learning problem in a way that includes the information about the errors produced by each forecasting method and combines it with the features extracted from the series. \autoref{M4application} gives the details of our implementation of FFORMA which achieved second place in the M4 Competition. This includes the required preprocessing steps, the sets of features and forecast methods, as well as the specific implementation of the meta-learning model.  *The method to produce the prediction intervals for the M4 competition is also explained in this section.* We show empirical evidence on the good performance of the approach in \autoref{results} by quantifying the difference between our proposed learning model and a traditional classifier approach. \autoref{conclusion}  provides some final remarks and conclusions.
+The rest of the paper is organized as follows: In \autoref{methodology} we describe the FFORMA framework in a very general sense. \autoref{M4application} gives the details of our implementation of FFORMA in the M4 Competition for generating both point and interval forecasts. This includes the required preprocessing steps, the set of features and forecast methods, as well as the specific implementation of the meta-learning model. We show empirical evidence on the performance of the approach in \autoref{results} by quantifying the difference between our proposed learning model and a traditional classifier approach. \autoref{conclusion}  provides some final remarks and conclusions.
 
 # Methodology {#methodology}
 
-## Overview / Intuition
+## Overview / Intuition of FFORMA
 
-The objective of our meta-learning approach is to derive weights to combine a set of individidual forecasting methods (e.g. ARIMA, exponential smoothing) to produce more accurate forecasts. Our framework requires a dataset of time series, called the *reference set*, from which we learn to produce the weights for any given time series.
+The objective of our meta-learning approach is to derive a set of weights to combine forecasts generated from a *pool of methods* (e.g., naïve, ETS, ARIMA, etc.). The FFORMA framework requires a set of time series we refer to as the *reference set*. From these the algorithm learns in order to produce forecast combination weights for any given time series.
 
-We start from the reference set and a fixed set of forecasting methods, called the *pool of methods*. Each time series in the reference set is divided into training period and test period. Each forecasting method in the pool is applied to the training period of each time series and forecast error measures are calculated over the test period. The inputs for training the meta-learning model are: i) features (e.g. length, autocorrelation coefficients,etc.) extracted from the training period of the series and ii) The forecast errors produced by the forecasting methods.
+Each time series in the reference set is divided into a training period and a test period. From the training period a set of *time series features* are calculated (e.g., length of time series, strength of trend, etc.). These form the inputs for training the meta-learning model. Moreover, each method in the pool is fitted to the training period and forecasts are generated over the test period. From these  a *forecast error measure* is computed for each method. These form the labels?outputs? for the training of the meta-learning model. 
 <!--The forecasting errors of each method in the pool are calculated for each time series in the reference set, using the true future values of the series if available or by dividing the each series into a training period and test period by applying temporal holdout.-->
 
-The model will learn to produce weights for each method in the pool as a function of the features of the series. Once the meta-learning model is trained, the inductive step consist of assuming that a new series we want to forecast comes from a *generating process* similar to the one that generated the reference set.
+The meta-learning model learns to produce weights for each method in the pool as a function of the features of the series. Once the model is trained, the inductive step consist of assuming that a new series for which we require forecasts comes from a *generating process* similar to the one that generated the reference set.
 
-One common meta-learning approach is to learn to select the best method in the pool for each series, the one that produces the least forecasting error. This approach transforms the problem into a traditional classification problem by setting the individual forecasting methods as the classes and the best method as the target class for each time series, enabling the use of existing classification algorithms. However, this simplification removes relevant information which may be useful in the metalearning process, such as which methods produce similar errors to the best one for a series, or which series are more *difficult* than others. We do not apply this simplification and take into account the exact error that each method produces in each series, instead of just considering which one produces the minimum error. This information is introduced into the model by posing the problem as finding a function that assigns *probabilities* to each forecasting method for each series, with the objective of minimizing the expected error that is produced if the methods were picked at random following these probabilities.
+A common meta-learning approach is to learn to select the best method in the pool of methods for each series, i.e., the one that produces the smallest forecast error. This approach transforms the problem into a traditional classification problem by setting the individual forecasting methods as the classes and the best method as the target class for each time series, enabling the use of existing classification algorithms. This is what was implemented by @fforms and formed the basis of the FFORMS approaph.
 
-Our approach can be easily transformed into a classification exercise by selecting the method corresponds to the largest probability produced by our model. If we allow a sufficiently rich hypothesis space to fit freely, we also end up assigning probability one to the methods with the least amount of error. Our approach can also be seen as a classification exercise but with *per class weights* (the forecasting errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.
+However, this simplification removes relevant information which may be useful in the meta-learning process, such as which methods produce similar errors to the most accurate one, or which series are more *difficult* than others\todo{Not sure what difficult means here and how it is used - difficult to forecast? and then?}. In this paper we advance the FFORMS framework by not applying this simplification and taking into account the exact error that each method produces in each series, instead of just considering the one that produces the minimum error.
+
+This information is introduced into the model by posing the problem as finding a function that assigns *probabilities* to each forecasting method for each series, with the objective of minimizing the expected error that is produced if the methods were picked at random following these probabilities.
+
+Our approach can be easily transformed into a classification exercise by selecting the method corresponding to the largest probability produced by our model. If we allow a sufficiently rich hypothesis space to fit freely, we also end up assigning probability one to the method with the smallest error. Hence our approach can also be seen as a classification exercise, but with *per class weights* (the forecasting errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.\todo{I think a lot of this - even all of it - can go if we need more space.}
 
 <!-- The meta-learning process can therefore be summarized the following way: -->
 
@@ -84,9 +86,7 @@ Our approach can be easily transformed into a classification exercise by selecti
 
 ## Algorithmic description
 
-Algorithm \@ref(alg:algo-lab) presents the Pseudo code of the proposed framework. The operation of FFORMA framework can be divided into two phases: (i) offline phase, in which we train a meta-learner, ii) online phase, in which we use the pre-trained meta-learner to identify weights for forecast combination and subsequently generate relevant forecasts. The offline phase of the FFORMA framework has four main components: i) reference set, ii) the set of features to be extracted from the time series, iii) The set of forecasting methods and  forecast error measure and iv) Meta-learning model.
-\todo{Find a better name for the *underlying implementation of the learning model*, to distinguish it from the meta-learning model, which i think is the whole }
-In Section 3, we describe these components in more detail with application to M4 competition.
+The operation of the FFORMA framework comprises two phases: (i) offline phase, in which we train a meta-learner and (ii) online phase, in which we use the pre-trained meta-learner to identify forecast combination weights. Algorithm \@ref(alg:algo-lab) presents in detail the Pseudo code of the proposed framework. 
 
 <!--
   1. The set of forecasting methods, the pool of methods.
@@ -103,36 +103,37 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
   \begin{algorithmic}[1]
     \Statex \textbf{Offline phase - train the learning model}
     \Statex \text{Given:}
-    \Statex \hspace{1cm}$O=\{X_1, X_2, \dots,X_n\}:$ the collection of $N$ observed time series, the reference set.
-      \Statex \hspace{1cm}$P:$ Set of $K$ forecasting algorithms such as ARIMA, ETS, SNAIVE, etc.
-         \Statex \hspace{1cm}$F:$ the set of functions to calculate time series features.
-         \Statex \hspace{1cm}$E:$ A forecasting error measure such as Mean Squared Error.
+    \Statex \hspace{1cm}$\{X_1, X_2, \dots,X_N\}:$ $N$ observed time series forming the reference set.
+      \Statex \hspace{1cm}$P:$ the pool of $K$ forecasting methods, e.g., naïve, ETS, ARIMA, etc.
+         \Statex \hspace{1cm}$F:$ the set of functions for calculating time series features.
+         \Statex \hspace{1cm}$E:$ A forecast error measure, e.g., MASE, sMAPE, etc.
+           \Statex \hspace{1cm}$L:$ Loss function.
+           \Statex \hspace{1cm}$M:$ number of iterations in the xgboost algorithm.
      \Statex \text{Output:}
       \Statex \hspace{1cm}\text{FFORMA meta-learner: A function from the extracted features }
       \Statex \text{\hspace{1cm} to a set of $K$ probabilities, one for each method in $P$.}
     \Statex \textit{Prepare the meta-data}
     \Statex For $j=1$ to $N$:
             \State Split $X_j$ into a training period and test period.
-            \State Calculate the set of features for the training period by applying $F$.
-            \State Fit the models in $P$ to the training period.
-            \State Calculate forecasts for the test period from each model.
-            \State Calculate forecast error measure $E$ over the test period for all models in $P$.
-            \State Meta-data: input features $x_j$ (step 2), output errors: $e_j$ (step 5).
+            \State Calculate the set of features $\bm{f}_j$ over the training period by applying $F$.
+            \State Fit each method in $P$ over the training period and generate forecasts over the test period.
+            \State Calcuate forecast error measure  $e_{jk}$ over the test period for each method $k=1,\ldots, K$ in $P$.
+ \textcolor{green}{\State Meta-data: input features $\bm{f}_j$ (step 2), output errors: $\bm{e}_{jk}$ (step 5).
      \Statex
     \Statex \textit{Train the meta-learner}
             \State Train a learning model based on the meta-data and errors, by minimizing:
             $$ argmin_f \sum_{j=1}^N \sum_{k=1}^K f(x_j)_k e_{jk}  $$
-            \State {meta-learner}.
+            \State {Meta-learner}.}
     \Statex
      \Statex \textbf{Online phase - forecast a new time series}
     \Statex \text{Given:}
-    \Statex \hspace{1cm}\text{FFORMA classifier from step 8} .
+    \Statex \hspace{1cm}\text{FFORMA classifier from step 7} .
      \Statex \text{Output:}
       \Statex \hspace{1cm}\text{Forecast for the new time series $X_{new}$}.
-  \State For $X_{new}$ calculate features $x_{new}$ by applying $F$.
-  \State From the features, use the meta-learner to produce $w$ the vector of probabilities. 
+  \State For $X_{new}$ calculate features $\bm{f}_{new}$ by applying $F$.
+  \State From the features, use the meta-learner to produce $\bf{w}$ the vector of probabilities. 
   \State Compute the individual forecasts of the methods in $P$ for $X_{new}$
-  \State Compute the final forecast by weighted average using $w$ and the individual forecasts.
+  \State Combine individual forecasts using $\bm{w}$ to generate final forecasts for {$X_{new}$}.
    \end{algorithmic}
 
 \end{algorithm}
@@ -146,17 +147,18 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
 
 <!--   Section 3 provides a more detailed description of application of the FFORMA framework over the course of M4 competition.  -->
 
+\clearpage
+
 #Implementation and Application to M4 Competition {#M4application}
 
 
 ## Reference set 
 
-For the M4 competition, we used the whole M4 data set as the reference set. The M4 competition database consists of 100,000 real-world time series of yearly, quarterly, monthly, weekly, daily and hourly data. To divide the series into training and testing period, we used the forecast horizon specified in the database as the size of the temporal holdout. When the training period resulted too short (less than 2 periods), the size of the temporal holdout was reduced.
-Some series were removed because they were constant after removing the holdout part.
+The M4 dataset includes 100,000 real-world time series of yearly, quarterly, monthly, weekly, daily and hourly data. All 100,000 series form the reference set. Each series is split into training period and a test period. The length of the test period for each time series was set to be equal to the forecast horizon set by the competition. When the resulting training period was too short (fewer tahn 2 observations), the size of the test period was reduced. The series that were simply a constant over the training period were eliminated from any further analysis.
 
 ## Time series features
 
-We use a set of 42 features. \autoref{feature} provides a brief description of features used in this experiment. The functions to calculate these features are implemented in `tsfeatures` R package by @tsfeatures. Most of the features have been previously used by @hyndman2015large and @fforms.  The last five heterogeneity features are calculated as below. First, the time series is pre-whitened using an AR model and obtain a new series $z$. Then, a GARCH(1, 1) model is fitted to the pre-whitened series and obtain the residual($r$) series. Subsequently, the features 39-42 are computed.  A detailed description of other features are provided in @fforms. The features corresponds to seasonal time series only are set to zero for the case of non-seasonal time series. Note that, we have not used any of the domain-specific features such as macro, micro, finance, etc., even though these information are available in the M4 data set.
+\autoref{feature} provides a brief description of the 42 features used in this experiment. The functions to calculate these are implemented in the `tsfeatures` R package by @tsfeatures. Most of the features have been previously used by @hyndman2015large and @fforms.  The last five heterogeneity features are calculated as follows. First, the time series is pre-whitened using an AR model resulting to a new series $z$. A GARCH(1, 1) model is then fitted to the pre-whitened series to obtain the residual series, $r$. Subsequently, features 39-42 are computed. The ARCH.LM statistic is calculated based on Lagrange Multiplier test of @engle1982autoregressive for autoregressive conditional heteroscedasticity (ARCH). A detailed description of the other features is provided in @fforms. The features corresponding to seasonal time series only, are set to zero for the case of non-seasonal time series. Note that, we have not used any of the domain-specific features such as macro, micro, finance, etc., even though this information was available in the M4 data set.\todo{Should we add here in an effort to be as general as possible.}
 
 <!--No exogenous features were used, even though they were available in the M4 dataset, such as which domain the series belongs to (e.g. macroeconomics, finance, tourism...).--> 
 
@@ -170,12 +172,12 @@ We use a set of 42 features. \autoref{feature} provides a brief description of f
 \midrule
 1  & T              & length of time series                                                                   & \yes  & \yes \\
 2  & trend          & strength of trend                                                                       & \yes  & \yes\\
-3  & seasonality   & strength of seasonality                                                                 & -     & \yes \\
+3  & seasonality    & strength of seasonality                                                                 & -     & \yes \\
 4  & linearity      & linearity                                                                               & \yes  & \yes \\
 5  & curvature      & curvature                                                                               & \yes  & \yes \\
 6  & spikiness      & spikiness                                                                               & \yes  & \yes \\
 7  & e\_acf1        & first ACF value of remainder series                                                     & \yes  & \yes \\
-8  & e\_acf10        & sum of squares of first 10 ACF values of remainder series                                                    & \yes  & \yes \\
+8  & e\_acf10       & sum of squares of first 10 ACF values of remainder series                                                    & \yes  & \yes \\
 9  & stability      & stability                                                                               & \yes  & \yes \\
 10  & lumpiness      & lumpiness                                                                               & \yes  & \yes \\
 11 & entropy        & spectral entropy                                                                        & \yes  & \yes \\
@@ -209,16 +211,33 @@ We use a set of 42 features. \autoref{feature} provides a brief description of f
 38 & ARCH.LM  & ARCH LM statistic                      & \yes  & \yes \\
 39 & arch\_acf  &    sum of squares of the first 12 autocorrelations of $z^2$               & \yes  & \yes \\
 40 & garch\_acf  &  sum of squares of the first 12 autocorrelations of $r^2$                 & \yes  & \yes \\
-41 & arch\_r2  &     $R^2$ value of an AR model applied to $Z^2$              & \yes  & \yes \\
-42 & garch\_r2  &   $R^2$ value of an AR model applied to $e^2$                 & \yes  & \yes \\
+41 & arch\_r2  &     $R^2$ value of an AR model applied to $z^2$              & \yes  & \yes \\
+42 & garch\_r2  &   $R^2$ value of an AR model applied to \textcolor{blue}{$r^2$}               & \yes  & \yes \\
 \bottomrule
  \end{tabular}
 \end{table}
 
-## Forecasting methods
+## Pool of forecasting methods
 
-We considered nine forecasting algorithms implemented in the `forecast` [@forecast] package R package. They are (the specific R calls for fitting the models are given): i) automated ARIMA algorithm (`auto.arima`), ii) automated ETS algorithm (`ets`),
-iii) feed-forward neural network with a single hidden layer is fitted to the lags. The number of lags is automatically selected (`nnetar`), iv) random walk with drift (`rwf` with drift=TRUE), v) TBATS model (`tbats`), vi) Theta method forecast (`thetaf`), vii) naive forecasts (`naive`), viii) STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`) and ix) seasonal naive forecasts (`snaive`).  In all cases, the default setting is used. Further, in the case of an error when fitting the series (e.g. a series is constant), the SNAIVE forecast method is used instead.
+We consider nine methods implemented in the `forecast` [@forecast] package R package. They are (the specific R calls for fitting the models are given): 
+
+i) automated ARIMA algorithm (`auto.arima`), 
+
+ii) automated ETS algorithm (`ets`),
+
+iii) feed-forward neural network with a single hidden layer fitted to the lags. The number of lags is automatically selected (`nnetar`), iv) random walk with drift (`rwf` with drift=TRUE),
+
+v) TBATS model (`tbats`), 
+
+vi) Theta method (`thetaf`), 
+
+vii) naive (`naive`), 
+
+viii) STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`) and 
+
+ix) seasonal naive (`snaive`).
+
+In all cases, the default setting is used. Further, in the case of an error when fitting the series (e.g. a series is constant), the SNAIVE forecast method is used instead.
  
 <!--It is worthy to emphasize that we used the default parameters in most methods without any hand tunning. Only in `auto.arima` we specified a more thorough search for hyperparameters than its default version.--> 
 
@@ -236,9 +255,9 @@ We choose the gradient tree boosting model of **xgboost** (@chen2016xgboost) as 
 <!-- https://blog.cambridgespark.com/getting-started-with-xgboost-3ba1488bb7d4 -->
 ### The xgboost objective function
 
-The basic xgboost algorithm produces numeric values from the features, one for each forecasting method in our pool. We apply the softmax transform to these values prior to computing the the objective function shown in Algorithm \@ref(alg:algo-lab) step 7, implemented as a custom objective function.
+The basic boost algorithm produces numeric values from the features, one for each forecasting method in our pool. We apply the soft max transform to these values prior to computing the the objective function shown in Algorithm \@ref(lag:ago-lab) step 7, implemented as a custom objective function.
 
-xgboost fits the model by gradient boosting, for which requires a gradient and hessian of the objective function. In our case, the gradient is the direct gradient of the objective, but the *correct* hessian is prone to numerical problems that need to be fixed for xgboost to converge. This is a relative common problem and one simple fix is to use an upper bound of the hessian by clamping small values to a larger one. In our case, we compute an alternate upper bound of the hessian by removing some terms from the *correct* hessian. Although both alternatives converge, our approach works faster, requiring less boosting steps to converge. This not only increases the computational efficiency, it also generalizes better due to a less complex set of trees produced in the final solution.
+boost fits the model by gradient boosting, for which requires a gradient and hessian of the objective function. In our case, the gradient is the direct gradient of the objective, but the *correct* hessian is prone to numerical problems that need to be fixed for boost to converge. This is a relative common problem and one simple fix is to use an upper bound of the hessian by clamping small values to a larger one. In our case, we compute an alternate upper bound of the hessian by removing some terms from the *correct* hessian. Although both alternatives converge, our approach works faster, requiring less boosting steps to converge. This not only increases the computational efficiency, it also generalizes better due to a less complex set of trees produced in the final solution.
 
 The functions involved in computing the objective are the following:
 
@@ -310,4 +329,5 @@ In the M4 competition dataset for point forecast, our approach produces a **rela
 <!-- -Performance compared to naive averaging, or how much the weights deviate from equal weights, to give a sense of the impact of the meta learning. -->
 <!-- These need no to overlap with the general M4 paper, i.e. we are not discussing the performance of our method in weekly or monthly series and other results that I suppose they will talk about, and we only mention accuracy in a relative sense. -->
 <!-- I will write some draft and then we can edit from there. -->
+
 # References
