@@ -22,14 +22,13 @@
 \usepackage[unicode=true]{hyperref}
 \hypersetup{
             pdftitle={FFORMA: Feature-based FORecast-model Averaging},
-            pdfkeywords={FFORMA (Feature-based FORecast-model Averaging), FFORMS (Feature-based
-FORecast-model Selection), Time series features, Forecast combination,
-XGBoost, M4 Competition},
+            pdfkeywords={FFORMS (Feature-based FORecast-model Selection), Time series features,
+Forecast combination, XGBoost, M4 Competition},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
 \usepackage{geometry}
-\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\geometry{a4paper, text={16cm,24cm}}
 \usepackage[style=authoryear-comp,]{biblatex}
 \addbibresource{references.bib}
 \usepackage{longtable,booktabs}
@@ -147,9 +146,10 @@ XGBoost, M4 Competition},
                 \Month~\Year\\[1cm]
                 Working Paper \@wp
         \end{center}}}
-\def\pageone{{\sffamily\setstretch{1}%
-        \thispagestyle{empty}%
-        \vbox to \textheight{%
+\def\pageone{{\sffamily
+        \newpage%\blankpage
+        \thispagestyle{empty}
+        \vbox to 23cm{
         \raggedright\baselineskip=1.2cm
      {\fontsize{24.88}{30}\sffamily\textbf{\expandafter{\@title}}}
         \vspace{2cm}\par
@@ -160,11 +160,11 @@ XGBoost, M4 Competition},
      \thispagestyle{plain}\raggedright\baselineskip=1.2cm
      {\fontsize{24.88}{30}\sffamily\textbf{\expandafter{\@title}}}\vspace{1cm}\par
         }}
-\def\titlepage{{\cover\newpage\pageone\newpage\blindtitle}}
+\def\titlepage{{\cover\newpage\setstretch{1}\pageone\newpage\blindtitle}}
 
 \def\blind{\def\titlepage{{\blindtitle}}\let\maketitle\blindtitle}
 \def\titlepageonly{\def\titlepage{{\pageone\end{document}}}}
-\def\nocover{\def\titlepage{{\pageone\newpage\blindtitle}}\let\maketitle\titlepage}
+\def\nocover{\def\titlepage{{\newpage\setstretch{1}\pageone\newpage\blindtitle}}\let\maketitle\titlepage}
 \let\maketitle\titlepage
 \makeatother
 
@@ -255,7 +255,7 @@ XGBoost, M4 Competition},
 \renewcommand*{\finalnamedelim}{%
   %\ifnumgreater{\value{liststop}}{2}{\finalandcomma}{}% there really should be no funny Oxford comma business here
   \addspace\&\space}
-
+  
 
 \wp{no/yr}
 \jel{C10,C14,C22}
@@ -332,9 +332,8 @@ individual forecasts using a weighted average with these probabilities.
 The inputs to the meta-model are features extracted from the series.
 \end{abstract}
 \begin{keywords}
-FFORMA (Feature-based FORecast-model Averaging), FFORMS (Feature-based
-FORecast-model Selection), Time series features, Forecast combination,
-XGBoost, M4 Competition
+FFORMS (Feature-based FORecast-model Selection), Time series features,
+Forecast combination, XGBoost, M4 Competition
 \end{keywords}
 
 \section{Introduction}\label{intro}
@@ -361,11 +360,11 @@ In this paper we build on this framework posing the learning problem in
 a way that includes information about the forecast errors produced by
 the set of forecasting methods considered and combines these with
 features extracted from the time series in order to derive a set of
-weights for forecast combinations\todo{Pablo please review this}. We
-label this framework FFORMA (Feature-based FORecast Model Averaging).
-The proposed FFORMA framework has been used over the course of the M4
-competition and resulted in the second most accurate point forecasts and
-prediction intervals amongst all competitors.
+weights for forecast combinations. We label this framework FFORMA
+(Feature-based FORecast Model Averaging). The proposed FFORMA framework
+has been used over the course of the M4 competition and resulted in the
+second most accurate point forecasts and prediction intervals amongst
+all competitors.
 
 The rest of the paper is organized as follows: In \autoref{methodology}
 we describe the FFORMA framework in a very general sense.
@@ -386,7 +385,7 @@ FFORMA}\label{overview-intuition-of-fforma}
 
 The objective of our meta-learning approach is to derive a set of
 weights to combine forecasts generated from a \emph{pool of methods}
-(e.g., naïve, ETS, ARIMA, etc.). The FFORMA framework requires a set of
+(e.g., na?ve, ETS, ARIMA, etc.). The FFORMA framework requires a set of
 time series we refer to as the \emph{reference set}. From these the
 algorithm learns in order to produce forecast combination weights for
 any given time series.
@@ -398,7 +397,10 @@ trend, etc.). These form the inputs for training the meta-learning
 model. Moreover, each method in the pool is fitted to the training
 period and forecasts are generated over the test period. From these a
 \emph{forecast error measure} is computed for each method. These form
-the labels?outputs? for the training of the meta-learning model.
+the
+\textcolor{red}{ supervised part for the training of the meta-learning model.}
+(\textcolor{blue}{(Not sure if calling these labels may be confusing)labels ?)}
+\}
 
 The meta-learning model learns to produce weights for each method in the
 pool as a function of the features of the series. Once the model is
@@ -417,9 +419,10 @@ of the FFORMS approaph.
 
 However, this simplification removes relevant information which may be
 useful in the meta-learning process, such as which methods produce
-similar errors to the most accurate one, or which series are more
-\emph{difficult} than
-others\todo{Not sure what difficult means here and how it is used - difficult to forecast? and then?}.
+similar errors to the most accurate one, or which series
+\textcolor{red}{ have more impact in the total error}
+\textcolor{blue}{( are more *difficult* than others)}
+\todo{Not sure what difficult means here and how it is used - difficult to forecast? and then?}.
 In this paper we advance the FFORMS framework by not applying this
 simplification and taking into account the exact error that each method
 produces in each series, instead of just considering the one that
@@ -431,15 +434,10 @@ method for each series, with the objective of minimizing the expected
 error that is produced if the methods were picked at random following
 these probabilities.
 
-Our approach can be easily transformed into a classification exercise by
-selecting the method corresponding to the largest probability produced
-by our model. If we allow a sufficiently rich hypothesis space to fit
-freely, we also end up assigning probability one to the method with the
-smallest error. Hence our approach can also be seen as a classification
-exercise, but with \emph{per class weights} (the forecasting errors)
-that vary per instance, combined with \emph{per instance weights} that
-assign more importance to some
-series.\todo{I think a lot of this - even all of it - can go if we need more space.}
+\textcolor{red}{This approach approach is more general than classification, and can be thought of as classification  with *per class weights* (the forecasting errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.}
+
+\textcolor{blue}{
+Our approach can be easily transformed into a classification exercise by selecting the method corresponding to the largest probability produced by our model. If we allow a sufficiently rich hypothesis space to fit freely, we also end up assigning probability one to the method with the smallest error. Hence our approach can also be seen as a classification exercise, but with *per class weights* (the forecasting errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.}\todo{I think a lot of this - even all of it - can go if we need more space.}
 
 \subsection{Algorithmic description}\label{algorithmic-description}
 
@@ -456,7 +454,7 @@ of the proposed framework.
     \Statex \textbf{Offline phase - train the learning model}
     \Statex \text{Given:}
     \Statex \hspace{1cm}$\{X_1, X_2, \dots,X_N\}:$ $N$ observed time series forming the reference set.
-      \Statex \hspace{1cm}$P:$ the pool of $K$ forecasting methods, e.g., naïve, ETS, ARIMA, etc.
+      \Statex \hspace{1cm}$P:$ the pool of $K$ forecasting methods, e.g., na?ve, ETS, ARIMA, etc.
          \Statex \hspace{1cm}$F:$ the set of functions for calculating time series features.
          \Statex \hspace{1cm}$E:$ A forecast error measure, e.g., MASE, sMAPE, etc.
            \Statex \hspace{1cm}$L:$ Loss function.
@@ -472,10 +470,10 @@ of the proposed framework.
             \State Calcuate forecast error measure  $e_{jk}$ over the test period for each method $k=1,\ldots, K$ in $P$.
  \textcolor{green}{\State Meta-data: input features $\bm{f}_j$ (step 2), output errors: $\bm{e}_{jk}$ (step 5).
      \Statex
-    \Statex \textit{Train the meta-learner}
+    \Statex \textit{Train the meta-learner, $y$}
             \State Train a learning model based on the meta-data and errors, by minimizing:
-            $$ argmin_f \sum_{j=1}^N \sum_{k=1}^K f(x_j)_k e_{jk}  $$
-            \State {Meta-learner}.}
+            $$ argmin_y \sum_{j=1}^N \sum_{k=1}^K y(x_j)_k e_{jk}  $$
+            \State {Meta-learner, $y$}.}
     \Statex
      \Statex \textbf{Online phase - forecast a new time series}
     \Statex \text{Given:}
@@ -483,7 +481,7 @@ of the proposed framework.
      \Statex \text{Output:}
       \Statex \hspace{1cm}\text{Forecast for the new time series $X_{new}$}.
   \State For $X_{new}$ calculate features $\bm{f}_{new}$ by applying $F$.
-  \State From the features, use the meta-learner to produce $\bf{w}$ the vector of probabilities. 
+  \State From the features, use the meta-learner to produce $y(\bm{f}_{new})=\bf{w}$ the vector of probabilities. 
   \State Compute the individual forecasts of the methods in $P$ for $X_{new}$
   \State Combine individual forecasts using $\bm{w}$ to generate final forecasts for {$X_{new}$}.
    \end{algorithmic}
@@ -502,15 +500,16 @@ quarterly, monthly, weekly, daily and hourly data. All 100,000 series
 form the reference set. Each series is split into training period and a
 test period. The length of the test period for each time series was set
 to be equal to the forecast horizon set by the competition. When the
-resulting training period was too short (fewer tahn 2 observations), the
-size of the test period was reduced. The series that were simply a
-constant over the training period were eliminated from any further
-analysis.
+resulting training period was too short (fewer than 2
+\textcolor{red}{periods}\textcolor{blue}{(observations)}), the size of
+the test period was reduced. The series that were simply a constant over
+the training period were eliminated from any further analysis.
 
 \subsection{Time series features}\label{time-series-features}
 
 \autoref{feature} provides a brief description of the 42 features used
-in this experiment. The functions to calculate these are implemented in
+in this experiment, \textcolor{red}{$F$ in Algorithm}
+\ref{alg:algo-lab}. The functions to calculate these are implemented in
 the \texttt{tsfeatures} R package by \textcite{tsfeatures}. Most of the
 features have been previously used by \textcite{hyndman2015large} and
 \textcite{fforms}. The last five heterogeneity features are calculated
@@ -523,9 +522,9 @@ calculated based on Lagrange Multiplier test of
 heteroscedasticity (ARCH). A detailed description of the other features
 is provided in \textcite{fforms}. The features corresponding to seasonal
 time series only, are set to zero for the case of non-seasonal time
-series. Note that, we have not used any of the domain-specific features
-such as macro, micro, finance, etc., even though this information was
-available in the M4 data
+series. Note that, for the sake of generality, we have not used any of
+the domain-specific features such as macro, micro, finance, etc., even
+though this information was available in the M4 data
 set.\todo{Should we add here in an effort to be as general as possible.}
 
 \begin{table}[!htp]
@@ -586,9 +585,10 @@ set.\todo{Should we add here in an effort to be as general as possible.}
 \subsection{Pool of forecasting
 methods}\label{pool-of-forecasting-methods}
 
-We consider nine methods implemented in the \texttt{forecast}
-\autocite{forecast} package R package. They are (the specific R calls
-for fitting the models are given):
+\textcolor{red}{For the pool of methods, $P$ in Algorithm }
+\ref{alg:algo-lab}, we consider nine methods implemented in the
+\texttt{forecast} \autocite{forecast} package R package. They are (the
+specific R calls for fitting the models are given):
 
 \begin{enumerate}
 \def\labelenumi{\roman{enumi})}
@@ -599,7 +599,8 @@ for fitting the models are given):
 \item
   feed-forward neural network with a single hidden layer fitted to the
   lags. The number of lags is automatically selected (\texttt{nnetar}),
-  iv) random walk with drift (\texttt{rwf} with drift=TRUE),
+\item
+  random walk with drift (\texttt{rwf} with drift=TRUE),
 \item
   TBATS model (\texttt{tbats}),
 \item
@@ -618,7 +619,11 @@ In all cases, the default setting is used. Further, in the case of an
 error when fitting the series (e.g.~a series is constant), the SNAIVE
 forecast method is used instead.
 
-\todo{Forecast-error measure calculation: OWA}
+\section{Forecast-error measure}
+
+\textcolor{red}{
+The forecasting error measure ($E$ in Algorithm \\ref{alg:algo-lab}) is adapted from the Overall Weighted Average error described in the M4 competition guide, which adds together the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error. For each series and method, the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error are divided by the respective error of the Naive 2 method *over all series in the dataset* (i.e. MASE by the average MASE of Naive 2), and then added.
+}
 
 \subsection{Metal-learning model
 implementation}\label{metal-learning-model-implementation}
@@ -633,62 +638,74 @@ learning model due to following reasons:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Ability to customize the model to fit our objective function
+  Ability to customize the model to fit our objective function.
 \item
-  Computational efficiency: The size of the M4 data set requires a
-  efficient model
+  Computational efficiency: The size of the M4 data set
+  \textcolor{red}{require} a efficient model.
 \item
-  Good performance in structure based problems
+  Good performance in structure based problems, state of the art model
+  in machine learning challenges (\textcite{chen2016xgboost}).
 \end{enumerate}
 
 \subsubsection{The xgboost objective
 function}\label{the-xgboost-objective-function}
 
 The basic boost algorithm produces numeric values from the features, one
-for each forecasting method in our pool. We apply the soft max transform
-to these values prior to computing the the objective function shown in
-Algorithm \ref{lag:ago-lab} step 7, implemented as a custom objective
-function.
+for each forecasting method in our pool. We apply the
+\textcolor{red}{softmax} transform to these values prior to computing
+the the objective function shown in Algorithm \ref{alg:algo-lab} step 7,
+implemented as a custom objective function.
 
-boost fits the model by gradient boosting, for which requires a gradient
-and hessian of the objective function. In our case, the gradient is the
-direct gradient of the objective, but the \emph{correct} hessian is
-prone to numerical problems that need to be fixed for boost to converge.
-This is a relative common problem and one simple fix is to use an upper
-bound of the hessian by clamping small values to a larger one. In our
-case, we compute an alternate upper bound of the hessian by removing
-some terms from the \emph{correct} hessian. Although both alternatives
-converge, our approach works faster, requiring less boosting steps to
-converge. This not only increases the computational efficiency, it also
-generalizes better due to a less complex set of trees produced in the
-final solution.
+\textcolor{red}{xgboost requires a gradient and hessian of the objective function to fit the model.}
+The \emph{correct} hessian is prone to numerical problems that need to
+be addressed for \textcolor{red}{boosting} to converge. This is a
+relative common problem and one simple fix is to use an upper bound of
+the hessian by clamping small values to a larger one. We computed a
+\textcolor{red}{different} upper bound of the hessian by removing some
+terms from the correct hessian. Although both alternatives converge, the
+later works faster, requiring less boosting steps to converge. This not
+only increases the computational efficiency, it also generalizes better
+due to a less complex set of trees produced in the final solution.
 
-The functions involved in computing the objective are the following:
+The general meta-learning algorithm in \ref{alg:algo-lab} is
+instanciated to:
 
 \begin{itemize}
 \tightlist
 \item
-  \(y(x)\) is the output of the xgboost algorithm
+  \(p(\bm{f}_j)\) is the output of the xgboost algorithm for the
+  features extrated from series \(X_j\).
 \item
-  \(p_j = \frac{e^{y(x)_j}}{ \sum_k e^{y(x)_k}}\) is the transformation
-  to probabilities by applying the softmax transform.
+  \(y_j = \frac{exp(p(\bm{f}_j)_k)}{ \sum_k exp(p(\bm{f}_j)_k)}\) is the
+  transformation to probabilities of the xgboost output by applying the
+  softmax transform.
 \item
-  \(L = \sum p_j e_j\) is the loss of the function \(p\).
+  \(e_{jk}\) is the OWA error measure of forecasting method \(k\) in
+  series \(j\).
 \item
-  \(G_j = \frac{\partial{L}}{\partial{p_j}} = p_j(e_j -\sum_k e_kp_k)\)
-  \[ H_j = \frac{\partial{G_j}}{\partial{p_j}} \approx \hat{H}_j = p_j(e_j(1-p_j) - G_j)  \]
+  \(L_j = \sum_{k=1}^K y_{jk} e_{jk}\) is the loss function, step 6 of
+  Algorithm \ref{alg:algo-lab}.
+\item
+  \(G_j = \frac{\partial{L}}{\partial{y_j}} = y_j(e_j -\sum_k e_ky_k)\)
+  is the gradient of the loss function.
+\item
+  The hessian \(H_j\) is approximated by our upper bound \(\hat{H_j}\):
+  \[ H_j = \frac{\partial{G_j}}{\partial{y_j}} \approx \hat{H}_j = y_j(e_j(1-y_j) - G_j)  \]
 \end{itemize}
+
+The functions \(G\) and \(\hat{H}\) are passed to the xgboost algorithm
+to minimize our objective function \(L\).
 
 \subsubsection{Hyperparameters}\label{hyperparameters}
 
 The results of xgboost are particularly dependent on its
 hyper-parameters such as learning rate, number of boosting steps,
-maximum complexity allowed for the trees or subsampling sizes. In our
-case we limit the hyper-parameter search space based on some initial
-results and rules of thumb and explore it using Bayesian optimization,
-(implemented in the \texttt{rBayesianOptimization} R package
+maximum complexity allowed for the trees or subsampling sizes. We limit
+the hyper-parameter search space based on some initial results and rules
+of thumb and explore it using Bayesian optimization, (implemented in the
+\texttt{rBayesianOptimization} R package
 \autocite{rBayesianOptimization}) measuring performance on a 10\%
-holdout version of the reference set. We picked the most regularized
+holdout version of the reference set. We picked the simplest
 hyper-parameter set from the top solutions of the exploration.
 
 \subsection{Prediction Intervals}\label{prediction-intervals}
@@ -698,7 +715,7 @@ prediction intervals. For this part, we used a different approach. In
 order to compute the intervals we used the point forecast produced by
 our meta-learner as the center of the interval and computed the 95\%
 bounds of the interval by a linear combination of the bounds of three
-forecasting methods: Thetaf, SNAIVE and NAIVE methods. The coefficients
+forecasting methods: Thetaf, snaive and naive methods. The coefficients
 for the linear combination were calculated in a data driven way also
 over the M4 database. The procedure is as follows:
 \todo{maybe too verbose/redundant?}
@@ -707,45 +724,43 @@ over the M4 database. The procedure is as follows:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  For the training period of each series in the data set:
+  For the training period of each series:
 
   \begin{enumerate}
   \def\labelenumii{\arabic{enumii}.}
   \tightlist
   \item
-    Compute the point forecast of the meta-learning.
+    Compute the point forecast using FFORMA.
+    \textcolor{red}{At this stage we do not use the full dataset for training FFORMA, since it would produce too acurate forecasts in the same dataset, leading to very small prediction intervals. we divide the M4 dataset in two parts, A and B. We train FFORMA on part A and use it to produce the point forecasts over the series of part B, and the reverse.}
   \item
     Compute the 95\% \emph{predicion radius} for the thetaf, snaive and
     naive, this is the difference between the 95\% upper bound and the
-    point forecast for each horizon.
+    point forecast for each forecast horizon.
   \end{enumerate}
 \item
-  For each forecasting horizon required in the data set:
+  For each forecast horizon:
 
   \begin{enumerate}
   \def\labelenumii{\arabic{enumii}.}
   \tightlist
   \item
-    Find the coefficients that minimize the MSIS error of the interval
-    with the meta-learning point forecast as center and a linear
+    Find the coefficients that minimize the MSIS error,
+    \textcolor{red}{(defined in the M4 Competition guide)}, of the
+    interval with the FFORMA point forecast as center and a linear
     combination of the radiuses of thetaf, snaive and naive as radius.
     The minimization is done by gradient descent over the test period of
     the series.
   \end{enumerate}
 \end{enumerate}
 
-This procedure produces at set of three coefficients for each prediction
+This procedure produces a set of three coefficients for each prediction
 horizon in the M4 dataset and these coefficients will be the same
 independently of the series we want to forecast. \emph{Unlike the point
-forecast, these coefficients are not restricted to be probabilities, the
-optimization is unrestricted.} In order to prevent overfitting for the
-center of the intervals, the training part of the M4 dataset was divided
-in two halves, and our metalearning approach was trained in one half and
-applied to the other.
+forecast, these coefficients are not restricted to be probabilities.}
 
 \section{Results}\label{results}
 
-We measure the impact of our main contribution by comparing the average
+We measure the impact of our contribution by comparing the average
 forecasting error produced by our proposed combination model to a
 reference implementation of a traditional classification approach, in
 which a model is trained to pick the best method, which will then be
@@ -759,6 +774,27 @@ reference, measured as
 \(\frac{classifier\ error}{proposed\ method\ error}\).
 
 \section{Discussion and Conclusions}\label{conclusion}
+
+We have presented an algorithm for forecasting using weighted averaging
+of a set of models. These weights are probabilities and can also be
+interpreted as a model selection algorithm, if one picks the methods
+receiving largest probability. This can be useful for interpretability
+or computational reasons. The objective function of the learning model
+assigns probabilities to forecasting methods in order to minimize the
+forecasting error that would be produced if we picked the methods at
+random using these probabilities. This contrasts with how the final
+forecasts are produced, which is a weighted average. We explored
+minimizing the weighted average of the forecasts, but the results did
+not improve over the simple version.
+
+One advantage of the approach is that it is independent of the
+forecasting error measure, forcasting errors enter the model as
+additional precalculated constants This allows FFORMA to adapt to
+arbitrary error measures when models that directly minimize them would
+be restricted, e.g.~a non differentiable error.
+
+The source code for FFORMA is available at
+\url{https://github.com/robjhyndman/M4metalearning}.
 
 \printbibliography[title=References]
 
