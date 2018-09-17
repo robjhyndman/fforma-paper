@@ -23,7 +23,7 @@
 \hypersetup{
             pdftitle={FFORMA: Feature-based FORecast-model Averaging},
             pdfkeywords={FFORMS (Feature-based FORecast-model Selection), Time series features,
-Forecast combination, XGBoost, M4 Competition},
+Forecast combination, XGBoost, M4 Competition, Meta-learning},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -333,7 +333,7 @@ The inputs to the meta-model are features extracted from the series.
 \end{abstract}
 \begin{keywords}
 FFORMS (Feature-based FORecast-model Selection), Time series features,
-Forecast combination, XGBoost, M4 Competition
+Forecast combination, XGBoost, M4 Competition, Meta-learning
 \end{keywords}
 
 \section{Introduction}\label{intro}
@@ -351,20 +351,21 @@ selecting a misspecified model. Of course the main challenge is in
 selecting an appropriate set of weights with many contributions (see for
 example Timmermann 2006, \textcite{Aiolfi2011-yz}) attempting to
 overcome the so called ``forecast combination puzzle''.
-\todo{Pablo to add on the literature on ensemble methods}
 
 Recently, \textcite{fforms} have explored the idea of using time series
 features combined with meta-learning for forecast-model selection; a
 framework labelled as FFORMS (Feature-based FORecast Model Selection).
-In this paper we build on this framework posing the learning problem in
-a way that includes information about the forecast errors produced by
-the set of forecasting methods considered and combines these with
-features extracted from the time series in order to derive a set of
-weights for forecast combinations. We label this framework FFORMA
-(Feature-based FORecast Model Averaging). The proposed FFORMA framework
-has been used over the course of the M4 competition and resulted in the
-second most accurate point forecasts and prediction intervals amongst
-all competitors.
+\textcolor{red}{ maybe cite here some papers on feature-based approaches, }\textcite{prudencio2004using}
+\textcolor{red}{is a good one and } \textcite{LEMKE20102006}
+\textcolor{red}{is the most cited one.} In this paper we build on this
+framework posing the learning problem in a way that includes information
+about the forecast errors produced by the set of forecasting methods
+considered and combines these with features extracted from the time
+series in order to derive a set of weights for forecast combinations. We
+label this framework FFORMA (Feature-based FORecast Model Averaging).
+The proposed FFORMA framework has been used over the course of the M4
+competition and resulted in the second most accurate point forecasts and
+prediction intervals amongst all competitors.
 
 The rest of the paper is organized as follows: In \autoref{methodology}
 we describe the FFORMA framework in a very general sense.
@@ -420,7 +421,7 @@ of the FFORMS approaph.
 However, this simplification removes relevant information which may be
 useful in the meta-learning process, such as which methods produce
 similar errors to the most accurate one, or which series
-\textcolor{red}{ have more impact in the total error}
+\textcolor{red}{ have larger impact in the total error}
 \textcolor{blue}{( are more *difficult* than others)}
 \todo{Not sure what difficult means here and how it is used - difficult to forecast? and then?}.
 In this paper we advance the FFORMS framework by not applying this
@@ -619,16 +620,14 @@ In all cases, the default setting is used. Further, in the case of an
 error when fitting the series (e.g.~a series is constant), the SNAIVE
 forecast method is used instead.
 
-\section{Forecast-error measure}
+\subsection{Forecast-error measure}\label{forecast-error-measure}
 
 \textcolor{red}{
-The forecasting error measure ($E$ in Algorithm \\ref{alg:algo-lab}) is adapted from the Overall Weighted Average error described in the M4 competition guide, which adds together the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error. For each series and method, the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error are divided by the respective error of the Naive 2 method *over all series in the dataset* (i.e. MASE by the average MASE of Naive 2), and then added.
+The forecasting error measure ($E$ in Algorithm }\ref{alg:algo-lab})\textcolor{red}{ is adapted from the Overall Weighted Average error described in the M4 competition guide, which adds together the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error. For each series and method, the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error are divided by the respective error of the Naive 2 method *over all series in the dataset* (i.e. MASE by the average MASE of Naive 2), and then added.
 }
 
 \subsection{Metal-learning model
 implementation}\label{metal-learning-model-implementation}
-
-\todo{again, find a better name?}
 
 We choose the gradient tree boosting model of \textbf{xgboost}
 (\textcite{chen2016xgboost}) as the underlying implementation of the
@@ -640,35 +639,39 @@ learning model due to following reasons:
 \item
   Ability to customize the model to fit our objective function.
 \item
-  Computational efficiency: The size of the M4 data set
-  \textcolor{red}{require} a efficient model.
+  Computational complexity: The size of the M4 data set
+  \textcolor{red}{imposes} an efficient model, for training an testing
+  times.
 \item
-  Good performance in structure based problems, state of the art model
-  in machine learning challenges (\textcite{chen2016xgboost}).
+  Good performance in structure based problems, it is considered the
+  state of the art model in machine learning challenges
+  (\textcite{chen2016xgboost}).
 \end{enumerate}
 
 \subsubsection{The xgboost objective
 function}\label{the-xgboost-objective-function}
 
-The basic boost algorithm produces numeric values from the features, one
-for each forecasting method in our pool. We apply the
-\textcolor{red}{softmax} transform to these values prior to computing
-the the objective function shown in Algorithm \ref{alg:algo-lab} step 7,
-implemented as a custom objective function.
+The basic \textcolor{red}{xgboost} algorithm produces numeric values
+from the features, one for each forecasting method in our pool. We apply
+the \textcolor{red}{softmax} transform to these values prior to
+computing the the objective function
+\textcolor{red}{which includes the forecasting errors} shown in
+Algorithm \ref{alg:algo-lab} step 7. This implemented as a \emph{custom
+objective function} in the xgboost framework.
 
 \textcolor{red}{xgboost requires a gradient and hessian of the objective function to fit the model.}
 The \emph{correct} hessian is prone to numerical problems that need to
-be addressed for \textcolor{red}{boosting} to converge. This is a
+be addressed for \textcolor{red}{ the boosting} to converge. This is a
 relative common problem and one simple fix is to use an upper bound of
-the hessian by clamping small values to a larger one. We computed a
+the hessian by clamping its small values to a larger one. We computed a
 \textcolor{red}{different} upper bound of the hessian by removing some
 terms from the correct hessian. Although both alternatives converge, the
 later works faster, requiring less boosting steps to converge. This not
 only increases the computational efficiency, it also generalizes better
 due to a less complex set of trees produced in the final solution.
 
-The general meta-learning algorithm in \ref{alg:algo-lab} is
-instanciated to:
+The general paremeters of the meta-learning algorithm in
+\ref{alg:algo-lab} are set to:
 
 \begin{itemize}
 \tightlist
@@ -718,7 +721,6 @@ bounds of the interval by a linear combination of the bounds of three
 forecasting methods: Thetaf, snaive and naive methods. The coefficients
 for the linear combination were calculated in a data driven way also
 over the M4 database. The procedure is as follows:
-\todo{maybe too verbose/redundant?}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -776,22 +778,25 @@ reference, measured as
 \section{Discussion and Conclusions}\label{conclusion}
 
 We have presented an algorithm for forecasting using weighted averaging
-of a set of models. These weights are probabilities and can also be
-interpreted as a model selection algorithm, if one picks the methods
-receiving largest probability. This can be useful for interpretability
-or computational reasons. The objective function of the learning model
-assigns probabilities to forecasting methods in order to minimize the
+of a set of models. The objective function of the learning model assigns
+probabilities to forecasting methods in order to minimize the
 forecasting error that would be produced if we picked the methods at
 random using these probabilities. This contrasts with how the final
-forecasts are produced, which is a weighted average. We explored
-minimizing the weighted average of the forecasts, but the results did
-not improve over the simple version.
+forecasts are produced, which is a weighted average, not a selection.
+These weight can however be used as model selection algorithm, if one
+picks the methods receiving largest weight. This can be useful for
+interpretability or computational reasons, at the cost of forecasting
+performance.
 
-One advantage of the approach is that it is independent of the
+One advantage of the approach is that its form is not independent of the
 forecasting error measure, forcasting errors enter the model as
-additional precalculated constants This allows FFORMA to adapt to
+additional precalculated constants. This allows FFORMA to adapt to
 arbitrary error measures when models that directly minimize them would
-be restricted, e.g.~a non differentiable error.
+be restricted, e.g.~our approach can be applied to non-differentiable
+errors.
+
+We explored minimizing the weighted average of the forecasts, but the
+results did not improve over the simple version.
 
 The source code for FFORMA is available at
 \url{https://github.com/robjhyndman/M4metalearning}.
