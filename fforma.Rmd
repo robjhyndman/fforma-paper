@@ -45,7 +45,7 @@ library(ggplot2)
 
 There are essentially two general approaches for forecasting a time series: (i) generating forecasts from a single model, and (ii) combining forecasts from many models or forecast model averaging. There has been a vast literature on the latter motivated by the seminal work of @Bates1969-cu and followed by a plethora of empirical applications showing that combination forecasts are often superior to their individual counterparts [see among others, @Cle1989 \textcolor{red}{maybe add more here}]. Combining forecasts is considered a successful way of hedging against the risk of selecting a misspecified model. Of course the main challenge is in selecting an appropriate set of weights with many contributions [see for example, @Aiolfi2011-yz] attempting to overcome the so called ``forecast combination puzzle''. 
 
-There has have been various efforts in the literature using time series features combined with meta-learning for forecasting [see for example @prudencio2004using; @LEMKE20102006; @KucEtAl2016]. \textcolor{red}{(Leave this for Rob as a reminder: not sure how to include Kang et a. 2017 here).} Recently @fforms proposed FFORMS (Feature-based FORecast Model Selection) a framework that focuses on using time series features combined with meta-learning for forecast-model selection. In this paper we build on this framework posing the learning problem in a way that includes information about the forecast errors produced by the set of candidate forecasting methods and combines these with features extracted from the time series in order to derive a set of weights for forecast combinations. We label this framework, FFORMA (Feature-based FORecast Model Averaging). FFORMA resulted in the second most accurate point forecasts and prediction intervals amongst all competitors in the M4 competition.
+There have been various efforts in the literature using time series features combined with meta-learning for forecasting [see for example @prudencio2004using; @LEMKE20102006; @KucEtAl2016]. \textcolor{red}{(Leave this for Rob as a reminder: not sure how to include Kang et a. 2017 here).} Recently @fforms proposed FFORMS (Feature-based FORecast Model Selection) a framework that focuses on using time series features combined with meta-learning for forecast-model selection. In this paper we build on this framework posing the learning problem in a way that includes information about the forecast errors produced by the set of candidate forecasting methods and combines these with features extracted from the time series in order to derive a set of weights for forecast combinations. We label this framework, FFORMA (Feature-based FORecast Model Averaging). FFORMA resulted in the second most accurate point forecasts and prediction intervals amongst all competitors in the M4 competition.
 
 The rest of the paper is organized as follows: In \autoref{methodology} we describe the FFORMA framework in a very general sense. \autoref{M4application} gives the details of our implementation of FFORMA in the M4 Competition for generating both point and interval forecasts. This includes the required preprocessing steps, the set of features and forecast methods, as well as the specific implementation of the meta-learning model. We show empirical evidence on the performance of the approach in \autoref{results} by quantifying the difference between our proposed learning model and a traditional classifier approach. \autoref{conclusion}  provides some final remarks and conclusions.
 
@@ -53,7 +53,7 @@ The rest of the paper is organized as follows: In \autoref{methodology} we descr
 
 ## Intuition and overview of FFORMA
 
-The objective of our meta-learning approach is to derive a set of weights to combine forecasts generated from a *pool of methods* (e.g., \naive, exponential smoothing, ARIMA, etc.). The FFORMA framework requires a set of time series we refer to as the *reference set*. From these the algorithm learns in order to produce forecast combination weights for any given time series. Each time series in the reference set is divided into a training period and a test period. From the training period a set of *time series features* are calculated (e.g., length of time series, strength of trend, etc.). These form the inputs for training the meta-learning model. Moreover, each method in the pool is fitted to the training period and forecasts are generated over the test period. From these a *forecast errors* are computed for each method which form the supervised part for the training of the meta-learning model. These are subsequently summarised using a forecast error measure.
+The objective of our meta-learning approach is to derive a set of weights to combine forecasts generated from a *pool of methods* (e.g., \naive, exponential smoothing, ARIMA, etc.). The FFORMA framework requires a set of time series we refer to as the *reference set*. From these the algorithm learns in order to produce forecast combination weights for any given time series. Each time series in the reference set is divided into a training period and a test period. From the training period a set of *time series features* are calculated (e.g., length of time series, strength of trend, etc.). These form the inputs for training the meta-learning model. Moreover, each method in the pool is fitted to the training period and forecasts are generated over the test period. From these, *forecast errors* are computed for each method which form the supervised part for the training of the meta-learning model. These are subsequently summarised using a forecast error measure.
 
 <!--The forecasting errors of each method in the pool are calculated for each time series in the reference set, using the true future values of the series if available or by dividing the each series into a training period and test period by applying temporal holdout.-->
 
@@ -146,7 +146,7 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
 
 ## Reference set 
 
-The M4 dataset includes 100,000 real-world time series of yearly, quarterly, monthly, weekly, daily and hourly data. All 100,000 series form the reference set. Each series is split into training period and a test period. The length of the test period for each time series was set to be equal to the forecast horizon set by the competition. When the resulting training period was too short (fewer than two observations \textcolor{red}{I have left this as observations to avoid confusion with train and test period}), the size of the test period was reduced. The series that were simply a constant over the training period were eliminated from any further analysis.
+The M4 dataset includes 100,000 real-world time series of yearly, quarterly, monthly, weekly, daily and hourly data. All 100,000 series form the reference set. Each series is split into training period and a test period. The length of the test period for each time series was set to be equal to the forecast horizon set by the competition. When the resulting training period was too short (fewer than two observations \textcolor{red}{I have left this as observations to avoid confusion with train and test period} \textcolor{green}{ok, also it is not a very important detail, we can remove the whole sentence.}), the size of the test period was reduced. The series that were simply a constant over the training period were eliminated from any further analysis.
 
 ## Time series features
 
@@ -234,21 +234,22 @@ In all cases, the default settings are used. Further, in the case of an error wh
 
 \textcolor{red}{We don't need this at all as we stipulate the $L$  below. Let's remove this.}
 
+\textcolor{green}{We can remove the whole section, there is only one small detail:
+The OWA is defined in the guide as a measure for the whole dataset, what we use in FFORMA is the *contribution* to the OWA of each series.
+Added the clarification in $L$ below. Do you think is enough?
+Also, I think the OWA as written in the in the M4 guide *may* not be very clear, personally, I ended up going to the source code they provided.
+}
 
 The forecasting error measure, $E$ in Algorithm \@ref(alg:algo-lab), is adapted from the Overall Weighted Average error described in the M4 competition guide, which adds together the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error. For each series and method, the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error are divided by the respective error of the Naive 2 method *over all series in the dataset* (i.e. MASE by the average MASE of Naive 2), and then added.
 
 
 ## Metal-learning model implementation
-\todo{again, find a better name?}
 
-\textcolor{red}{Pablo are you happy with this?}
 We use the gradient tree boosting model of `xgboost` as the underlying implementation of the learning model.  This is a state of the art computationally efficient model that has shown good performance in structure based problems [@chen2016xgboost]. The great advantage here is that we are able to customise the model to fit our objective function.
 
-
-<!-- https://blog.cambridgespark.com/getting-started-with-xgboost-3ba1488bb7d4 -->
 ### The xgboost objective function
 
-The basic xgboost algorithm produces numeric values from the features, one for each forecasting method in our pool. We apply the softmax transform to these values prior to computing the the objective function \textcolor{red}{which includes the forecasting errors} shown in Algorithm \@ref(alg:algo-lab) Step 6. This implemented as a *custom objective function* in the xgboost framework.
+The basic xgboost algorithm produces numeric values from the features, one for each forecasting method in our pool. We apply the softmax transform to these values prior to computing the the objective function which includes the forecasting errors shown in Algorithm \@ref(alg:algo-lab) Step 6. This implemented as a *custom objective function* in the xgboost framework.
 
 xgboost requires a gradient and hessian of the objective function to fit the model. The *correct* hessian is prone to numerical problems that need to be addressed for the boosting to converge. This is a relative common problem and one simple fix is to use an upper bound of the hessian by clamping its small values to a larger one. We computed a different upper bound of the hessian by removing some terms from the correct hessian. Although both alternatives converge, the later works faster, requiring less boosting steps to converge. This not only increases the computational efficiency, it also generalizes better due to a less complex set of trees produced in the final solution. \textcolor{red}{I am not sure about the above. I leave to Rob to evaluate.}
 
@@ -257,11 +258,14 @@ The  general paremeters of the meta-learning in Algorithm \@ref(alg:algo-lab) ar
      
   * $p(\bm{f}_n)_m$ is the output of the xgboost algorithm, one value for each forecasting method m, for the features extracted from series $x_n$.
   * $w(x_n)_{m} = \frac{exp(p(\bm{f}_n)_m)}{ \sum_m exp(p(\bm{f}_j)_m)}$ is the transformation to probabilities of the xgboost output by applying the softmax transform.
-  * $L_{nm}$ is the OWA error measure.
+  * $L_{nm}$ is the contribution to the OWA error measure of method m for the series n.
   * $\bar{L}_n = \sum_{m=1}^M w(x_n)_m L_{nm}$ is the weighted average loss function, Step 6 of Algorithm \@ref(alg:algo-lab).
-  * \textcolor{red}{I am not sure at all how the following two are derived. Rob was not sure either. Pablo can you please help us understand here.} $G_n = \frac{\partial{\bar{L}}}{\partial{w(x_n)}} = w_n(L_n -\sum_m L_mw_m)$ is the gradient of the loss function.
+  * \textcolor{red}{I am not sure at all how the following two are derived. Rob was not sure either. Pablo can you please help us understand here.} $G_n = \frac{\partial{\bar{L}}}{\partial{p(\bm{f}_n)}} = w_n(L_n -\sum_m L_mw_m)$ is the gradient of the loss function. \textcolor{green}{!!The denominator of the derivative was incorrect. I wanted to show the gradient with respect to the xgboost prediction, $p$, not after the softmax transform, $w$ (which is only added because it is very convenient notation-wise).
+  \\The formula is written in a way that is computationally efficient, in "vector form" and to reuse many terms, maybe that is why it is not straightforward.
+  \\ NOTATION WISE, Do you think it is OK or should we use
+  $\frac{\partial{\bar{L}_n}}{\partial{p_n}}$}
   * The hessian $H_n$ is approximated by our upper bound $\hat{H_n}$:
-  $$ H_n = \frac{\partial{G_n}}{\partial{w_n}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)  $$
+  $$ H_n = \frac{\partial{G_n}}{\partial{p(\bm{f}_n)}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)  $$
 
 The functions $G$ and $\hat{H}$ are passed to the xgboost algorithm to minimize our objective function $L$.
     
@@ -271,31 +275,28 @@ The functions $G$ and $\hat{H}$ are passed to the xgboost algorithm to minimize 
 
 ## Prediction Intervals
 
-For each series $x_{new}$ we use as the center of the interval the point forecast produced by our meta-learner. Then the 95% bounds of the interval are generated by a linear combination of the bounds of three forecasting methods: \naive, theta and seasonal \naive\ \textcolor{red}{Pablo have we distinguished  between seasonal and non-seasonal series}. The coefficients for the linear combination are calculated in a data driven way over the M4 database. The complete  procedure is as follows:
+For each series $x_{new}$ we use as the center of the interval the point forecast produced by our meta-learner. Then the 95% bounds of the interval are generated by a linear combination of the bounds of three forecasting methods: \naive, theta and seasonal \naive\ . The coefficients for the linear combination are calculated in a data driven way over the M4 database. The complete  procedure is as follows:
 
-\textcolor{red}{Pablo I have re-written the following. Can you please check below, edit and delete the repetition from further below.}
+1. We divide the M4 dataset into two parts: A and B. We train the FFORMA learner using the training periods of the series in part A and produce point forecasts over the \textcolor{green}{training periods of the} series of part B, and vice versa.
 
-1. We divide the M4 dataset into two parts: A and B. We train the FFORMA learner using the training periods of the series in part A and produce point forecasts over the series of part B, and vice versa. 
+2. We compute the 95% *predicion radius* for the \naive, theta, and seasonal \naive\ methods. This is the difference between the 95% upper bound and the point forecast for each forecast horizon. 
 
-1. We compute the 95% *predicion radius* for the \naive, theta, and seasonal \naive\ methods. This is the difference between the 95% upper bound and the point forecast for each forecast horizon. 
+3. For each forecast horizon we find the coefficients that minimize the MSIS of the interval, as defined in the M4 Competition guide, with the FFORMA point forecast as the center and a linear combination of the radiuses of \naive, theta, seasonal \naive\ forecasts as the interval. The minimization is done by gradient descent over the test period of the series.
 
-1. For each forecast horizon we find the coefficients that minimize the MSIS of the interval, as defined in the M4 Competition guide, with the FFORMA point forecast as the center and a linear combination of the radiuses of \naive, theta, seasonal \naive\ forecasts as the interval. The minimization is done by gradient descent over the test period of the series.
-
-This procedure produces a set of three coefficients for each prediction horizon in the M4 dataset and these coefficients will be the same independently of the series we want to forecast. Unlike the point forecast, these coefficients are not restricted to be probabilities.
-
-
-1. Using the training period of each series:
-    a. Compute the point forecast using FFORMA. \textcolor{red}{At this stage we do not use the full dataset for training FFORMA, since it would produce too acurate forecasts in the same dataset, leading to very small prediction intervals. we divide the M4 dataset in two parts, A and B. We train FFORMA on part A and use it to produce the point forecasts over the series of part B, and the reverse.}
-    b. Compute the 95% *predicion radius* for the thetaf, snaive and naive, this is the difference between the 95% upper bound and the point forecast for each forecast horizon.
-  2. For each forecast horizon. Find the coefficients that minimize the MSIS error, \textcolor{red}{(defined in the M4 Competition guide)}, of the interval with the FFORMA point forecast as center and a linear combination of the radiuses of thetaf, snaive and naive as radius. The minimization is done by gradient descent over the test period of the series.
-    
-This procedure produces a set of three coefficients for each prediction horizon in the M4 dataset and these coefficients will be the same independently of the series we want to forecast. *Unlike the point forecast, these coefficients are not restricted to be probabilities.*
-
+This method produces a set of three coefficients for each prediction horizon in the M4 dataset and these coefficients will be the same independently of the series we want to forecast. Unlike the point forecast, these coefficients are not restricted to be probabilities.
 
 
 # Results{#results}
 
-In order to evaluate the impact of our contribution we compared the average forecast error produced by our proposed combination FFROMA approach to a reference implementation of a traditional classification approach, in which a model is trained to select the ``best method'' to generate the final forecast. We use the same set of features, the same pool of forecasting methods, the same underlying implementation (xgboost), and in both approaches we perform hyperparameter search prior to fitting the model using bayesian optimization. This ebales us to isolate the model differences. Using the M4 dataset for point forecast, our approach produces a **relative improvement of 10\%** over the reference, measured as $\frac{classifier\ error}{proposed\ method\ error}$. \textcolor{red}{Pablo can you elaborate a little here. A couple more sentences shoud be enough. It is not exactly clear to me what this does. What you have on the comments below are very interesting and I think really worth writing up in order to understand/evaluate FFORMA. I think it would really be worth putting all this work in a seprate paper. I cannot see why the IJF would not be interested in it.}
+In order to evaluate the impact of our contribution we compared the average forecast error produced by FFORMA with a *model selection* approach.
+
+In model selection meta-learning, a classifier is trained to predict the "best method" for each series based on the features instead the FFORMA scheme of producing probabilities to minimize overall OWA. The final forecasts are the ones produced by method in the pool predicted by the classifier to be the best, not by averaging. 
+
+All other implementation details are kept the same as in FFORMA, specifically it uses the same set of features, the same pool of forecasting methods, the same underlying implementation (xgboost) and the same hyperparameter search.  This enables to measure the impact of the FFORMA original loss function, with a "model selection approach", all other things being equal.
+
+We applied both FFORMA and the *model selection approach* to the M4 dataset and compared their overall point forecast errors. The error of the FFORMA approach is 10\% smaller than model selection, measured as $\frac{model\ selection\ OWA}{FFORMA \ OWA}$. 
+\textcolor{green}{SECTION HAS BEEN REWRITTEN}
+\textcolor{red}{Pablo can you elaborate a little here. A couple more sentences shoud be enough. It is not exactly clear to me what this does. What you have on the comments below are very interesting and I think really worth writing up in order to understand/evaluate FFORMA. I think it would really be worth putting all this work in a seprate paper. I cannot see why the IJF would not be interested in it.}
 
 <!--
 #classif 0.8566705
