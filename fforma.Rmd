@@ -109,12 +109,12 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
             \State Split $x_n$ into a training period and test period.
             \State Calculate the set of features $\bm{f}_n\in F$ over the training period.
             \State Fit each forecasting method $m\in M$ over the training period and generate forecasts over the test period.
-            \State Calcuate forecast losses $L_{nm}$ over the test period.
+            \State Calculate forecast losses $L_{nm}$ over the test period.
     \State Meta-data: input features $\bm{f}_n$ (Step 2), output loss $L_{nm}$ (Step 4).
      \Statex
     \Statex \textit{Train the meta-learner, $w$}  \vspace{0.1cm}
             \State Train a learning model based on the meta-data and errors, by minimizing:
-            $$ argmin_w \sum_{n=1}^N \sum_{m=1}^M w(x_n)_{m} L_{nm}$$ were $L$ is the loss function.
+            $$ argmin_w \sum_{n=1}^N \sum_{m=1}^M w(\bm{f}_n)_{m} L_{nm}$$ were $L$ is the loss function.
     \Statex
      \Statex \textbf{Online phase - forecast a new time series}
     \Statex \text{Input:}
@@ -257,15 +257,15 @@ The  general paremeters of the meta-learning in Algorithm \@ref(alg:algo-lab) ar
 
      
   * $p(\bm{f}_n)_m$ is the output of the xgboost algorithm, one value for each forecasting method m, for the features extracted from series $x_n$.
-  * $w(x_n)_{m} = \frac{exp(p(\bm{f}_n)_m)}{ \sum_m exp(p(\bm{f}_j)_m)}$ is the transformation to probabilities of the xgboost output by applying the softmax transform.
+  * $w(\bm{f}_n)_{m} = \frac{exp(p(\bm{f}_n)_m)}{ \sum_m exp(p(\bm{f}_j)_m)}$ is the transformation to probabilities of the xgboost output by applying the softmax transform.
   * $L_{nm}$ is the contribution to the OWA error measure of method m for the series n.
-  * $\bar{L}_n = \sum_{m=1}^M w(x_n)_m L_{nm}$ is the weighted average loss function, Step 6 of Algorithm \@ref(alg:algo-lab).
-  * \textcolor{red}{I am not sure at all how the following two are derived. Rob was not sure either. Pablo can you please help us understand here.} $G_n = \frac{\partial{\bar{L}}}{\partial{p(\bm{f}_n)}} = w_n(L_n -\sum_m L_mw_m)$ is the gradient of the loss function. \textcolor{green}{!!The denominator of the derivative was incorrect. I wanted to show the gradient with respect to the xgboost prediction, $p$, not after the softmax transform, $w$ (which is only added because it is very convenient notation-wise).
+  * $\bar{L}_n = \sum_{m=1}^M w(\bm{f}_n)_m L_{nm}$ is the weighted average loss function, Step 6 of Algorithm \@ref(alg:algo-lab).
+  * \textcolor{red}{I am not sure at all how the following two are derived. Rob was not sure either. Pablo can you please help us understand here.} $G_{nm} = \frac{\partial{\bar{L}_n}}{\partial{p(\bm{f}_n)_m}} = w_{nm}(L_{nm} - \bar{L}_n)$ is the gradient of the loss function. \textcolor{green}{!!The denominator of the derivative was incorrect. I wanted to show the gradient with respect to the xgboost prediction, $p$, not after the softmax transform, $w$ (which is only added because it is very convenient notation-wise).
   \\The formula is written in a way that is computationally efficient, in "vector form" and to reuse many terms, maybe that is why it is not straightforward.
   \\ NOTATION WISE, Do you think it is OK or should we use
   $\frac{\partial{\bar{L}_n}}{\partial{p_n}}$}
-  * The hessian $H_n$ is approximated by our upper bound $\hat{H_n}$:
-  $$ H_n = \frac{\partial{G_n}}{\partial{p(\bm{f}_n)}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)  $$
+  * The hessian $H_{nm}$ is approximated by our upper bound $\hat{H}_{nm}$:
+  $$ H_{nm} = \frac{\partial{G_n}}{\partial{p(\bm{f}_n)_m}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)  $$
 
 The functions $G$ and $\hat{H}$ are passed to the xgboost algorithm to minimize our objective function $L$.
     
