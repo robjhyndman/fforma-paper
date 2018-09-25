@@ -622,12 +622,12 @@ Also, I think the OWA as written in the in the M4 guide *may* not be very clear,
 
 The forecasting error measure, \(E\) in Algorithm \ref{alg:algo-lab}, is
 adapted from the Overall Weighted Average error described in the M4
-competition guide, which adds together the Mean Absolute Scaled Error
-and the symmetric Mean Absolute Percentage Error. For each series and
-method, the Mean Absolute Scaled Error and the symmetric Mean Absolute
-Percentage Error are divided by the respective error of the Naive 2
-method \emph{over all series in the dataset} (i.e.~MASE by the average
-MASE of Naive 2), and then added.
+competitor's guide \textcite{M4compguide}, which adds together the Mean
+Absolute Scaled Error and the symmetric Mean Absolute Percentage Error.
+For each series and method, the Mean Absolute Scaled Error and the
+symmetric Mean Absolute Percentage Error are divided by the respective
+error of the Naive 2 method \emph{over all series in the dataset}
+(i.e.~MASE by the average MASE of Naive 2), and then added.
 
 \subsection{Metal-learning model
 implementation}\label{metal-learning-model-implementation}
@@ -676,7 +676,8 @@ The general paremeters of the meta-learning in Algorithm
   applying the softmax transform.
 \item
   \(L_{nm}\) is the contribution to the OWA error measure of method m
-  for the series n.
+  for the series n. OWA is defined in the M4 Competitor's Guide
+  \textcite{M4compguide}.
 \item
   \(\bar{L}_n = \sum_{m=1}^M w(\bm{f}_n)_m L_{nm}\) is the weighted
   average loss function, Step 6 of Algorithm \ref{alg:algo-lab}.
@@ -731,11 +732,11 @@ way over the M4 database. The complete procedure is as follows:
   bound and the point forecast for each forecast horizon.
 \item
   For each forecast horizon we find the coefficients that minimize the
-  MSIS of the interval, as defined in the M4 Competition guide, with the
-  FFORMA point forecast as the center and a linear combination of the
-  radiuses of \naive, theta, seasonal \naive~forecasts as the interval.
-  The minimization is done by gradient descent over the test period of
-  the series.
+  MSIS of the interval, as defined in the M4 Competitor's guide
+  \textcite{M4compguide}, with the FFORMA point forecast as the center
+  and a linear combination of the radiuses of \naive, theta, seasonal
+  \naive~forecasts as the interval. The minimization is done by gradient
+  descent over the test period of the series.
 \end{enumerate}
 
 This method produces a set of three coefficients for each prediction

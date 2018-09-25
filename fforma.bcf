@@ -1993,8 +1993,14 @@
     <bcf:citekey order="16">engle1982autoregressive</bcf:citekey>
     <bcf:citekey order="17">engle1982autoregressive</bcf:citekey>
     <bcf:citekey order="18">forecast</bcf:citekey>
-    <bcf:citekey order="19">chen2016xgboost</bcf:citekey>
-    <bcf:citekey order="20">rBayesianOptimization</bcf:citekey>
+    <bcf:citekey order="19">M4compguide</bcf:citekey>
+    <bcf:citekey order="20">M4compguide</bcf:citekey>
+    <bcf:citekey order="21">chen2016xgboost</bcf:citekey>
+    <bcf:citekey order="22">M4compguide</bcf:citekey>
+    <bcf:citekey order="23">M4compguide</bcf:citekey>
+    <bcf:citekey order="24">rBayesianOptimization</bcf:citekey>
+    <bcf:citekey order="25">M4compguide</bcf:citekey>
+    <bcf:citekey order="26">M4compguide</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nyt">
