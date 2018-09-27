@@ -1,4 +1,14 @@
-.Rproj.user
-.Rhistory
+fforma.pdf
+fforma.tex
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.run.xml
 .RData
+.Rhistory
+.Rproj.user
 .Ruserdata
