@@ -18,7 +18,7 @@ author:
   othernames: Thiyanga S
   address: Department of Econometrics and Business Statistics, Monash University, Australia
   email: thiyanga.talagala@monash.edu
-abstract: We propose an automated method for obtaining weighted forecast combinations using time series features. The proposed approach involves two phases. First, we use a collection of time series to train a meta-model to assign weights to various possible forecasting methods with the goal of minimizing the average forecasting error obtained from a weighted forecast combination. The inputs to the meta-model are features extracted from each series. In the second phase, we forecast new series using a weighted forecast combination where the weights are obtained from our previously trained meta-model. Our method outperforms a simple forecast combination, and outperforms all of the most popular individual methods in the time series forecasting literature. The approach achieved second position in the M4 Competition.
+abstract: We propose an automated method for obtaining weighted forecast combinations using time series features. The proposed approach involves two phases. First, we use a collection of time series to train a meta-model to assign weights to various possible forecasting methods with the goal of minimizing the average forecasting loss obtained from a weighted forecast combination. The inputs to the meta-model are features extracted from each series. In the second phase, we forecast new series using a weighted forecast combination where the weights are obtained from our previously trained meta-model. Our method outperforms a simple forecast combination, and outperforms all of the most popular individual methods in the time series forecasting literature. The approach achieved second position in the M4 Competition.
 keywords: Time series features, Forecast combination, XGBoost, M4 Competition, Meta-learning
 wpnumber: no/yr
 jelcodes: C10,C14,C22
@@ -50,7 +50,6 @@ library(ggplot2)
 ```
 <!-- OLD ABSTRACT: It is well known that ensemble approaches produce improvements over single methods in statistical learning. Nevertheless, when calculating predictions over a large dataset, computation time for the whole ensemble can be prohibitive, so individual model selection becomes the preferred approach. We present a method for combining forecasting models by posing it as a classification problem using features extracted from the time series. Unlike regular classification problems, we minimize the average forecast error of the selected method rather than the classification error. Not only does this address the aim of accurate forecasting, it also provides measures of relative method accuracy across the time series, and relative difficulty across time series. In contrast, a classic classification approach would give the same importance to all series and methods. The presented classifier is compared with state-of-the-art approaches to forecasting and time series classification. The results show an improvement of error over alternative approaches. These experiments allow us to show the relevance of both the feature set and the proposed optimization approach to several collections of time series. The scalability of the approach allows it to be applied to forecasting a large collection of time series. It can also be efficiently trained to tailor specific domains or datasets. -->
 
-
 # Introduction {#intro}
 
 There are essentially two general approaches for forecasting a time series: (i) generating forecasts from a single model; and (ii) combining forecasts from many models (forecast model averaging). There has been a vast literature on the latter motivated by the seminal work of @Bates1969-cu and followed by a plethora of empirical applications showing that combination forecasts are often superior to their individual counterparts [see, @Cle1989;@Timmermann06, for example]. Combining forecasts using a weighted average is considered a successful way of hedging against the risk of selecting a misspecified model. A major challenge is in selecting an appropriate set of weights, and many attempts to do this have been worse than simply using equal weights --- something that has become known as the ``forecast combination puzzle'' [see for example, @Smith2009]. We address the problem of selecting the weights by using a meta-learning algorithm based on time series features.
@@ -63,15 +62,14 @@ The rest of the paper is organized as follows. In \autoref{methodology} we descr
 
 ## Intuition and overview of FFORMA
 
-The objective of our meta-learning approach is to derive a set of weights to combine forecasts generated from a *pool of methods* (e.g., \naive, exponential smoothing, ARIMA, etc.). The FFORMA framework requires a set of time series we refer to as the *reference set*. Each time series in the reference set is divided into a training period and a test period. From the training period a set of *time series features* are calculated (e.g., length of time series, strength of trend, autocorrelations, etc.). These form the inputs to the meta-learning model. Each method in the pool is fitted to the training period, forecasts are generated over the test period, and *forecast errors* (the difference between actual and forecast values) are computed. From these, a summary forecast error measure from a weighted combination forecast can be computed for any given set of weights.
+The objective of our meta-learning approach is to derive a set of weights to combine forecasts generated from a *pool of methods* (e.g., \naive, exponential smoothing, ARIMA, etc.). The FFORMA framework requires a set of time series we refer to as the *reference set*. Each time series in the reference set is divided into a training period and a test period. From the training period a set of *time series features* are calculated (e.g., length of time series, strength of trend, autocorrelations, etc.). These form the inputs to the meta-learning model. Each method in the pool is fitted to the training period, forecasts are generated over the test period, and *forecast errors* (the difference between actual and forecast values) are computed. From these, a summary forecast loss measure from a weighted combination forecast can be computed for any given set of weights.
 
-The meta-learning model learns to produce weights for all methods in the pool, as a function of the features of the series to be forecasted, by minimizing this summary forecast error measure. Once the model is trained, weights can be produced for a new series for which forecasts are required. It is assumed that the new series comes from a *generating process* that is similar to some of those that form the reference set.
+The meta-learning model learns to produce weights for all methods in the pool, as a function of the features of the series to be forecasted, by minimizing this summary forecast loss measure. Once the model is trained, weights can be produced for a new series for which forecasts are required. It is assumed that the new series comes from a *generating process* that is similar to some of those that form the reference set.
 
-A common meta-learning approach is to select the best method in the pool of methods for each series; i.e., the method that produces the smallest forecast error. This approach transforms the problem into a traditional classification problem by setting the individual forecasting methods as the classes and the best method as the target class for each time series. However,
+A common meta-learning approach is to select the best method in the pool of methods for each series; i.e., the method that produces the smallest forecast loss. This approach transforms the problem into a traditional classification problem by setting the individual forecasting methods as the classes and the best method as the target class for each time series. However,
 there may be other methods that produce similar forecast errors to the best method, so the specific class chosen is less important than the forecast error resulting from each method. Further, some time series are more difficult to forecast than others, and hence have more impact on the total forecast error. This information is lost if the problem is treated as classification.
 
-Consequently, we do not train our meta-learning algorithm using a classification approach. Instead, we pose the problem as finding a function that assigns *probabilities* to each forecasting method, with the objective of minimizing the expected error that would have been produced if the methods were picked at random following these probabilities. These probabilities are the weights in our weighted forecast combination. This approach is more general than classification, and can be thought of as classification with *per class weights* (the forecast errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.
-
+Consequently, we do not train our meta-learning algorithm using a classification approach. Instead, we pose the problem as finding a function that assigns *weights* to each forecasting method, with the objective of minimizing the expected loss that would have been produced if the methods were picked at random using these weights as probabilities. These are the weights in our weighted forecast combination. This approach is more general than classification, and can be thought of as classification with *per class weights* (the forecast errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.
 
 <!-- The meta-learning process can therefore be summarized the following way: -->
 
@@ -81,7 +79,6 @@ Consequently, we do not train our meta-learning algorithm using a classification
 <!--   * $f$ is a function belonging to a hypothesis space $H$ (such as linear functions) that maps features to probabilities, such as $f(x)_j$ is the probabilitie assigned to the $j$-eth method in the pool. -->
 
 <!-- $$ argmin_{f \in H} \sum_i \sum_j f(x_{i})_je_{ij} $$ -->
-
 
 <!--  Given a new time series, a trained meta-learning algorithm produces probabilities for each of the forecasting methods considered in the pool. The final forecast can be computed from these probabilities in two-ways: -->
 
@@ -101,7 +98,6 @@ The operation of the FFORMA framework comprises two phases: (i) the offline phas
 
 The FFORMA framework works in two phases: an **offline** phase, when the meta-learned is trained and an **online** phase, when forecasts are produced.  describes the two phases. -->
 
-
 \begin{algorithm}[!ht]
   \caption{The FFORMA framework: Forecast combination based on meta-learning}
   \label{alg:algo-lab}
@@ -111,7 +107,7 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
       \Statex \hspace{1cm}$\{x_1, x_2, \dots,x_N\}$: $N$ observed time series forming the reference set.
       \Statex \hspace{1cm}$F$: a set of functions for calculating time series features.
       \Statex \hspace{1cm}$M$: a set of forecasting methods in the pool, e.g., \naive, ETS, ARIMA, etc.
-      \Statex \hspace{1cm}$K$: number of iterations in the xgboost algorithm.
+      \Statex \hspace{1cm}$K$: number of iterations in the `xgboost` algorithm.
     \Statex \textbf{Output:}
       \Statex \hspace{1cm}\text{FFORMA meta-learner: A function from the extracted features to a set of $M$}
       \Statex \hspace{1cm}\text{weights, one for each forecasting method.}\vspace{0.3cm}
@@ -141,7 +137,6 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
   \end{algorithmic}
 \end{algorithm}
 
-
 <!-- The algorithm produces weights for each forecasting method. These weights can also be interpreted as the probability of each method being best. These weights can be used either to select the "best" forecasting method for each series or to combine the forecasts using weighted linear combination. Note that the accuracy of the FFORMA meta-learner depends on three main factors: -->
 
 <!--   1. Forecasting methods used in the pool -->
@@ -150,159 +145,139 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
 
 <!--   Section 3 provides a more detailed description of application of the FFORMA framework over the course of M4 competition.  -->
 
-
 # Implementation and Application to M4 Competition {#M4application}
-
 
 ## Reference set
 
-The M4 dataset includes 100,000 real-world time series of yearly, quarterly, monthly, weekly, daily and hourly data. All 100,000 series form the reference set. Each series is split into training period and a test period. The length of the test period for each time series was set to be equal to the forecast horizon set by the competition. When the resulting training period was too short (fewer than two observations \textcolor{red}{I have left this as observations to avoid confusion with train and test period} \textcolor{green}{ok, also it is not a very important detail, we can remove the whole sentence.}), the size of the test period was reduced. The series that were simply a constant over the training period were eliminated from any further analysis.
+The M4 dataset includes 100,000 time series of yearly, quarterly, monthly, weekly, daily and hourly data. All 100,000 series form the reference set. Each series is split into a training period and a test period. The length of the test period for each time series was set to be equal to the forecast horizon set by the competition. Series with training periods comprising fewer than two observations, or series that were constant over the training period, were then eliminated from the reference set.
+
+\begin{table}[!p]
+\centering\small\tabcolsep=0.1cm
+\begin{spacing}{1.15}
+\caption{Features used in FFORMA framework.}
+\label{feature}
+\begin{tabular}{@{}llp{8.7cm}cc@{}}
+\toprule
+\multicolumn{2}{l}{Feature} & Description & Non-seasonal & Seasonal\\
+\midrule
+1  & T                & length of time series                                                                                                                                    & \yes  & \yes \\
+2  & trend            & strength of trend                                                                                                                                        & \yes  & \yes\\
+3  & seasonality      & strength of seasonality                                                                                                                                  & -     & \yes \\
+4  & linearity        & linearity                                                                                                                                                & \yes  & \yes \\
+5  & curvature        & curvature                                                                                                                                                & \yes  & \yes \\
+6  & spikiness        & spikiness                                                                                                                                                & \yes  & \yes \\
+7  & e\_acf1          & first ACF value of remainder series                                                                                                                      & \yes  & \yes \\
+8  & e\_acf10         & sum of squares of first 10 ACF values of remainder series                                                                                                & \yes  & \yes \\
+9  & stability        & stability                                                                                                                                                & \yes  & \yes \\
+10 & lumpiness        & lumpiness                                                                                                                                                & \yes  & \yes \\
+11 & entropy          & spectral entropy                                                                                                                                         & \yes  & \yes \\
+12 & hurst            & Hurst exponent                                                                                                                                           & \yes  & \yes \\
+13 & nonlinearity     & nonlinearity                                                                                                                                             & \yes\ & \yes \\
+13 & alpha            & ETS(A,A,N) $\hat\alpha$                                                                                                                                  & \yes  & \yes \\
+14 & beta             & ETS(A,A,N) $\hat\beta$                                                                                                                                   & \yes  & \yes\\
+15 & hwalpha          & ETS(A,A,A) $\hat\alpha$                                                                                                                                  & -     & \yes \\
+16 & hwbeta           & ETS(A,A,A) $\hat\beta$                                                                                                                                   & -     & \yes \\
+17 & hwgamma          & ETS(A,A,A) $\hat\gamma$                                                                                                                                  & -     & \yes \\
+18 & ur\_pp           & test statistic based on Phillips-Perron test                                                                                                             & \yes  & \yes \\
+19 & ur\_kpss         & test statistic based on KPSS test                                                                                                                        & \yes  & \yes \\
+20 & y\_acf1          & first ACF value of the original series                                                                                                                   & \yes  & \yes \\
+21 & diff1y\_acf1     & first ACF value of the differenced series                                                                                                                & \yes  & \yes \\
+22 & diff2y\_acf1     & first ACF value of the twice-differenced series                                                                                                          & \yes  & \yes \\
+23 & y\_acf10         & sum of squares of first 10 ACF values of original series                                                                                                 & \yes  & \yes \\
+24 & diff1y\_acf10    & sum of squares of first 10 ACF values of differenced series                                                                                              & \yes  & \yes \\
+25 & diff2y\_acf10    & sum of squares of first 10 ACF values of twice-differenced series                                                                                        & \yes  & \yes \\
+26 & seas\_acf1       & autocorrelation coefficient at first seasonal lag                                                                                                        & -     & \yes \\
+27 & sediff\_acf1     & first ACF value of seasonally differenced series                                                                                                         & -     & \yes\\
+28 & y\_pacf5         & sum of squares of first 5 PACF values of original series                                                                                                 & \yes  & \yes \\
+29 & diff1y\_pacf5    & sum of squares of first 5 PACF values of differenced series                                                                                              & \yes  & \yes \\
+30 & diff2y\_pacf5    & sum of squares of first 5 PACF values of twice-differenced series                                                                                        & \yes  & \yes \\
+31 & seas\_pacf       & partial autocorrelation coefficient at first seasonal lag                                                                                                & \yes  & \yes \\
+32 & crossing\_point  & number of times the time series crosses the median                                                                                                       & \yes  & \yes \\
+33 & flat\_spots      & number of flat spots, calculated by discretizing the series into 10 equal sized intervals and counting the maximum run length within any single interval & \yes  & \yes \\
+34 & nperiods         & number of seasonal periods in the series                                                                                                                 & -     & \yes \\
+35 & seasonal\_period & length of seasonal period                                                                                                                                & -     & \yes \\
+36 & peak             & strength of peak                                                                                                                                         & \yes  & \yes \\
+37 & trough           & strength of trough                                                                                                                                       & \yes  & \yes \\
+38 & ARCH.LM          & ARCH LM statistic                                                                                                                                        & \yes  & \yes \\
+39 & arch\_acf        & sum of squares of the first 12 autocorrelations of $z^2$                                                                                                 & \yes  & \yes \\
+40 & garch\_acf       & sum of squares of the first 12 autocorrelations of $r^2$                                                                                                 & \yes  & \yes \\
+41 & arch\_r2         & $R^2$ value of an AR model applied to $z^2$                                                                                                              & \yes  & \yes \\
+42 & garch\_r2        & $R^2$ value of an AR model applied to \textcolor{blue}{$r^2$}                                                                                            & \yes  & \yes \\
+\bottomrule
+\end{tabular}
+\end{spacing}
+\end{table}
 
 ## Time series features
 
-\autoref{feature} provides a brief description of the features used in this experiment, $F$ in Algorithm \@ref(alg:algo-lab). The functions to calculate these are implemented in the `tsfeatures` R package by @tsfeatures. Most of the features (or variations of these) have been previously used in a forecasting context by @hyndman2015large and @fforms (please refer to these papers for detailed descriptions). The ARCH.LM statistic is calculated based on the Lagrange Multiplier test of @engle1982autoregressive for autoregressive conditional heteroscedasticity (ARCH). For the heterogeneity features 39-42, the time series is first pre-whitened using an AR model resulting to a new series $z$. A GARCH(1, 1) model is then fitted to the pre-whitened series to obtain the residual series, $r$. Subsequently, the features are computed.
+\autoref{feature} provides a brief description of the features used in this experiment, $F$ in Algorithm \@ref(alg:algo-lab). The functions to calculate these are implemented in the `tsfeatures` R package by @tsfeatures. Most of the features (or variations of these) have been previously used in a forecasting context by @hyndman2015large and @fforms, and are described in more detail there. The ARCH.LM statistic was calculated based on the Lagrange Multiplier test of @engle1982autoregressive for autoregressive conditional heteroscedasticity (ARCH). The heterogeneity features 39--42 are based on two computed time series: the original time series is pre-whitened using an AR model resulting in $z$; a GARCH(1, 1) model is then fitted to $z$ to obtain the residual series, $r$.
 
-Features corresponding to seasonal time series only, are set to zero for the case of non-seasonal time series. Note that for the sake of generality, we have not used any of the domain-specific features such as macro, micro, finance, etc., even though this information was available in the M4 data set.
+Features corresponding only to seasonal time series are set to zero for non-seasonal time series. For the sake of generality, we have not used any of the domain-specific features such as macro, micro, finance, etc., even though this information was available in the M4 data set.
 
 <!--No exogenous features were used, even though they were available in the M4 dataset, such as which domain the series belongs to (e.g. macroeconomics, finance, tourism...).-->
 
-\begin{table}[!htp]
-\centering\footnotesize\tabcolsep=0.12cm
-\caption{Features used in FFORMA framework.}
-\label{feature}
-\begin{tabular}{llp{8,8cm}cc}
-\toprule
-\multicolumn{2}{c}{Feature} & Description & Non-seasonal & Seasonal\\
-\midrule
-1  & T              & length of time series                                                                   & \yes  & \yes \\
-2  & trend          & strength of trend                                                                       & \yes  & \yes\\
-3  & seasonality    & strength of seasonality                                                                 & -     & \yes \\
-4  & linearity      & linearity                                                                               & \yes  & \yes \\
-5  & curvature      & curvature                                                                               & \yes  & \yes \\
-6  & spikiness      & spikiness                                                                               & \yes  & \yes \\
-7  & e\_acf1        & first ACF value of remainder series                                                     & \yes  & \yes \\
-8  & e\_acf10       & sum of squares of first 10 ACF values of remainder series                                                    & \yes  & \yes \\
-9  & stability      & stability                                                                               & \yes  & \yes \\
-10  & lumpiness      & lumpiness                                                                               & \yes  & \yes \\
-11 & entropy        & spectral entropy                                                                        & \yes  & \yes \\
-12 & hurst          & Hurst exponent                                                                          & \yes  & \yes \\
-13 & nonlinearity   & nonlinearity                                                                            & \yes\ & \yes \\
-13 & alpha          & ETS(A,A,N) $\hat\alpha$                                                                 & \yes  & \yes \\
-14 & beta           & ETS(A,A,N) $\hat\beta$                                                                  & \yes  & \yes\\
-15 & hwalpha        & ETS(A,A,A) $\hat\alpha$                                                                 & -     & \yes \\
-16 & hwbeta         & ETS(A,A,A) $\hat\beta$                                                                  & -     & \yes \\
-17 & hwgamma        & ETS(A,A,A) $\hat\gamma$                                                                 & -     & \yes \\
-18 & ur\_pp         & test statistic based on Phillips-Perron test                                            & \yes  & \yes \\
-19 & ur\_kpss       & test statistic based on KPSS test                                                       & \yes  & \yes \\
-20 & y\_acf1        & first ACF value of the original series                                                  & \yes  & \yes \\
-21 & diff1y\_acf1   & first ACF value of the differenced series                                               & \yes  & \yes \\
-22 & diff2y\_acf1   & first ACF value of the twice-differenced series                                         & \yes  & \yes \\
-23 & y\_acf10        & sum of squares of first 10 ACF values of original series                                 & \yes  & \yes \\
-24 & diff1y\_acf10   & sum of squares of first 10 ACF values of differenced series                              & \yes  & \yes \\
-25 & diff2y\_acf10   & sum of squares of first 10 ACF values of twice-differenced series                        & \yes  & \yes \\
-26 & seas\_acf1     & autocorrelation coefficient at first seasonal lag                                       & -     & \yes \\
-27 & sediff\_acf1   & first ACF value of seasonally-differenced series                                        & -     & \yes\\
-28 & y\_pacf5       & sum of squares of first 5 PACF values of original series                                & \yes  & \yes \\
-29 & diff1y\_pacf5  & sum of squares of first 5 PACF values of differenced series                             & \yes  & \yes \\
-30 & diff2y\_pacf5  & sum of squares of first 5 PACF values of twice-differenced series                       & \yes  & \yes \\
-31 & seas\_pacf  & partial autocorrelation coefficient at first seasonal lag                       & \yes  & \yes \\
-32 & crossing\_point  & number of times the time series crosses the median                     & \yes  & \yes \\
-33 & flat\_spots  & number of flat spots, calculated by discretizing the series into 10 equal sized intervals and counting the maximum run length within any single interval                       & \yes  & \yes \\
-34 & nperiods  & number of seasonal periods in the series & -  & \yes \\
-35 & seasonal\_period  & length of seasonal period                       & -  & \yes \\
-36 & peak  & strength of peak                      & \yes  & \yes \\
-37 & trough  & strength of trough                      & \yes  & \yes \\
-38 & ARCH.LM  & ARCH LM statistic                      & \yes  & \yes \\
-39 & arch\_acf  &    sum of squares of the first 12 autocorrelations of $z^2$               & \yes  & \yes \\
-40 & garch\_acf  &  sum of squares of the first 12 autocorrelations of $r^2$                 & \yes  & \yes \\
-41 & arch\_r2  &     $R^2$ value of an AR model applied to $z^2$              & \yes  & \yes \\
-42 & garch\_r2  &   $R^2$ value of an AR model applied to \textcolor{blue}{$r^2$}               & \yes  & \yes \\
-\bottomrule
- \end{tabular}
-\end{table}
-
-\clearpage
-
 ## Pool of forecasting methods
 
-We consider nine methods implemented in the `forecast` package in R [@forecast] for the pool of methods, $P$ in Algorithm \@ref(alg:algo-lab). They are (the specific R calls for fitting the models are given):
+We considered eight methods implemented in the `forecast` package in R [@forecast] for the pool of methods, $P$ in Algorithm \@ref(alg:algo-lab):
 
-i. \naive\ (`naive`);
-i. random walk with drift (`rwf` with drift=TRUE);
-i. seasonal \naive\ (`snaive`).
-i. theta method (`thetaf`);
-i. automated ARIMA algorithm (`auto.arima`);
-i. automated exponential smoothing algorithm (`ets`);
-i. TBATS model (`tbats`);
-i. STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`);
+1. \naive\ (`naive`);
+1. random walk with drift (`rwf` with drift=TRUE);
+1. seasonal \naive\ (`snaive`).
+1. theta method (`thetaf`);
+1. automated ARIMA algorithm (`auto.arima`);
+1. automated exponential smoothing algorithm (`ets`);
+1. TBATS model (`tbats`);
+1. STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`);
 
-In all cases, the default settings are used. Further, in the case of an error when fitting the series (e.g. a series is constant), the `snaive` forecast method is used instead.
+The R functions are given in parentheses. In all cases, the default settings are used. If any function returned an error when fitting the series (e.g. a series is constant), the `snaive` forecast method was used instead.
 
-<!--It is worthy to emphasize that we used the default parameters in most methods without any hand tunning. Only in `auto.arima` we specified a more thorough search for hyperparameters than its default version.-->
+<!--It is worthy to emphasize that we used the default parameters in most methods without any hand tunning. Only in `auto.arima` we specified a more thorough search for hyper-parameters than its default version.-->
 
-## Forecast error measure
+## Forecast loss measure
 
-\textcolor{red}{We don't need this at all as we stipulate the $L$  below. Let's remove this.}
-
-\textcolor{green}{We can remove the whole section, there is only one small detail:
-The OWA is defined in the guide as a measure for the whole dataset, what we use in FFORMA is the *contribution* to the OWA of each series.
-Added the clarification in $L$ below. Do you think is enough?
-Also, I think the OWA as written in the in the M4 guide *may* not be very clear, personally, I ended up going to the source code they provided.
-}
-
-The forecasting error measure, $E$ in Algorithm \@ref(alg:algo-lab), is adapted from the Overall Weighted Average error described in the M4 competitor's guide @M4compguide, which adds together the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error. For each series and method, the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error are divided by the respective error of the Naive 2 method *over all series in the dataset* (i.e. MASE by the average MASE of Naive 2), and then added.
-
+The forecasting loss, $L$ in Algorithm \@ref(alg:algo-lab), was adapted from the Overall Weighted Average error described in the M4 competitor's guide @M4compguide, which adds together the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error. For each series and method, the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error were divided by the respective error of the Naive 2 method *over all series in the dataset* (i.e., MASE by the average MASE of Naive 2), and then added.
 
 ## Metal-learning model implementation
 
-We use the gradient tree boosting model of `xgboost` as the underlying implementation of the learning model.  This is a state of the art computationally efficient model that has shown good performance in structure based problems [@chen2016xgboost]. The great advantage here is that we are able to customise the model to fit our objective function.
+We used the gradient tree boosting model of `xgboost` as the underlying implementation of the learning model [@chen2016xgboost]. This is a state-of-the-art model that is computationally efficient and has shown good performance in structure based problems. The great advantage of its application here is that we are able to customise the model with our specific objective function.
 
-### The xgboost objective function
+The basic `xgboost` algorithm produces numeric values from the features, one for each forecasting method in our pool. We applied the softmax transform to these values prior to computing the objective function. This was implemented as a *custom objective function* in the `xgboost` framework.
 
-The basic xgboost algorithm produces numeric values from the features, one for each forecasting method in our pool. We apply the softmax transform to these values prior to computing the the objective function which includes the forecasting errors shown in Algorithm \@ref(alg:algo-lab) Step 6. This implemented as a *custom objective function* in the xgboost framework.
+`xgboost` requires a gradient and hessian of the objective function to fit the model. The *correct* hessian is prone to numerical problems that need to be addressed for the boosting to converge. This is a relatively common problem and one simple fix is to use an upper bound of the hessian by clamping its small values to a larger one. We computed a different upper bound of the hessian by removing some terms from the correct hessian. Although both alternatives converged, the latter worked faster, requiring less boosting steps to converge. This not only increased the computational efficiency, it also generalized better due to a less complex set of trees produced in the final solution.
 
-xgboost requires a gradient and hessian of the objective function to fit the model. The *correct* hessian is prone to numerical problems that need to be addressed for the boosting to converge. This is a relative common problem and one simple fix is to use an upper bound of the hessian by clamping its small values to a larger one. We computed a different upper bound of the hessian by removing some terms from the correct hessian. Although both alternatives converge, the later works faster, requiring less boosting steps to converge. This not only increases the computational efficiency, it also generalizes better due to a less complex set of trees produced in the final solution. \textcolor{red}{I am not sure about the above. I leave to Rob to evaluate.}
+The general parameters of the meta-learning in Algorithm \@ref(alg:algo-lab) were set as follows.
 
-The  general paremeters of the meta-learning in Algorithm \@ref(alg:algo-lab) are set to:
+  * $p(\bm{f}_n)_m$ is the output of the `xgboost` algorithm corresponding to forecasting method $m$, based on the features extracted from series $x_n$.
+  * $w(\bm{f}_n)_{m} = \frac{\exp(p(\bm{f}_n)_m)}{ \sum_m \exp(p(\bm{f}_j)_m)}$ is the transformation to weights of the `xgboost` output by applying the softmax transform.
+  * $L_{nm}$ is the contribution to the OWA error measure of method $m$ for the series $n$. OWA is defined in the M4 Competitor's Guide [@M4compguide].
+  * $\bar{L}_n = \sum_{m=1}^M w(\bm{f}_n)_m L_{nm}$ is the weighted average loss function.
+  * $G_{nm} = \frac{\partial{\bar{L}_n}}{\partial{p(\bm{f}_n)_m}} = w_{nm}(L_{nm} - \bar{L}_n)$ is the gradient of the loss function.
+  * The hessian $H_{nm}$ was approximated by our upper bound $\hat{H}_{nm}$:
+  $$H_{nm} = \frac{\partial{G_n}}{\partial{p(\bm{f}_n)_m}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)  $$
 
+The functions $G$ and $\hat{H}$ were passed to `xgboost` to minimize the objective function $L$.
 
-  * $p(\bm{f}_n)_m$ is the output of the xgboost algorithm, one value for each forecasting method m, for the features extracted from series $x_n$.
-  * $w(\bm{f}_n)_{m} = \frac{exp(p(\bm{f}_n)_m)}{ \sum_m exp(p(\bm{f}_j)_m)}$ is the transformation to probabilities of the xgboost output by applying the softmax transform.
-  * $L_{nm}$ is the contribution to the OWA error measure of method m for the series n. OWA is defined in the M4 Competitor's Guide @M4compguide.
-  * $\bar{L}_n = \sum_{m=1}^M w(\bm{f}_n)_m L_{nm}$ is the weighted average loss function, Step 6 of Algorithm \@ref(alg:algo-lab).
-  * \textcolor{red}{I am not sure at all how the following two are derived. Rob was not sure either. Pablo can you please help us understand here.} $G_{nm} = \frac{\partial{\bar{L}_n}}{\partial{p(\bm{f}_n)_m}} = w_{nm}(L_{nm} - \bar{L}_n)$ is the gradient of the loss function. \textcolor{green}{!!The denominator of the derivative was incorrect. I wanted to show the gradient with respect to the xgboost prediction, $p$, not after the softmax transform, $w$ (which is only added because it is very convenient notation-wise).
-  \\The formula is written in a way that is computationally efficient, in "vector form" and to reuse many terms, maybe that is why it is not straightforward.
-  \\ NOTATION WISE, Do you think it is OK or should we use
-  $\frac{\partial{\bar{L}_n}}{\partial{p_n}}$}
-  * The hessian $H_{nm}$ is approximated by our upper bound $\hat{H}_{nm}$:
-  $$ H_{nm} = \frac{\partial{G_n}}{\partial{p(\bm{f}_n)_m}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)  $$
-
-The functions $G$ and $\hat{H}$ are passed to the xgboost algorithm to minimize our objective function $L$.
-
-### Hyperparameters
-
- The results of xgboost  are particularly dependent on its hyper-parameters such as learning rate, number of boosting steps, maximum complexity allowed for the trees or subsampling sizes. We limit the hyper-parameter search space based on some initial results and rules of thumb and explore it using Bayesian optimization [implemented in the `rBayesianOptimization` R package @rBayesianOptimization] measuring performance on a 10% holdout version of the reference set. We picked the simplest hyper-parameter set from the top solutions of the exploration.
+The results of `xgboost` are particularly dependent on its hyper-parameters such as learning rate, number of boosting steps, maximum complexity allowed for the trees or sub-sampling sizes. We limited the hyper-parameter search space based on some initial results and rules-of-thumb and explored it using Bayesian optimization [implemented in the R package `rBayesianOptimization`, @rBayesianOptimization] measuring performance on a 10% holdout version of the reference set. We picked the simplest hyper-parameter set from the top solutions of the exploration.
 
 ## Prediction Intervals
 
-For each series $x_{new}$ we use as the center of the interval the point forecast produced by our meta-learner. Then the 95% bounds of the interval are generated by a linear combination of the bounds of three forecasting methods: \naive, theta and seasonal \naive\ . The coefficients for the linear combination are calculated in a data driven way over the M4 database. The complete  procedure is as follows:
+For each series $x_{new}$, we used as the centre of the interval the point forecast produced by our meta-learner. Then the 95% bounds of the interval were generated by a linear combination of the bounds of three forecasting methods: \naive, theta and seasonal \naive. The coefficients for the linear combination were calculated in a data-driven way over the M4 database. The complete  procedure was as follows:
 
-1. We divide the M4 dataset into two parts: A and B. We train the FFORMA learner using the training periods of the series in part A and produce point forecasts over the \textcolor{green}{training periods of the} series of part B, and vice versa.
+1. We divided the M4 dataset into two parts: A and B. We trained the FFORMA learner using the training periods of the series in part A and produced point forecasts over the training periods of the series of part B, and vice versa.
 
-2. We compute the 95% *predicion radius* for the \naive, theta, and seasonal \naive\ methods. This is the difference between the 95% upper bound and the point forecast for each forecast horizon.
+2. We computed the 95% *prediction radius* for the \naive, theta, and seasonal \naive\ methods. This is the difference between the 95% upper bound and the point forecast for each forecast horizon.
 
-3. For each forecast horizon we find the coefficients that minimize the MSIS of the interval, as defined in the M4 Competitor's guide @M4compguide, with the FFORMA point forecast as the center and a linear combination of the radiuses of \naive, theta, seasonal \naive\ forecasts as the interval. The minimization is done by gradient descent over the test period of the series.
+3. For each forecast horizon we found the coefficients that minimized the MSIS of the interval, as defined in the M4 Competitor's guide [@M4compguide], with the FFORMA point forecast as the centre and a linear combination of the radii of \naive, theta, seasonal \naive\ forecasts as the interval. The minimization was done by gradient descent over the test period of the series.
 
-This method produces a set of three coefficients for each prediction horizon in the M4 dataset and these coefficients will be the same independently of the series we want to forecast. Unlike the point forecast, these coefficients are not restricted to be probabilities.
+This method produced a set of three coefficients for each prediction horizon in the M4 dataset and these coefficients were the same independently of the series we want to forecast. Unlike the point forecasts, these coefficients were not restricted to be probabilities.
 
-
-# Results{#results}
+# Results {#results}
 
 In order to evaluate the impact of our contribution we compared the average forecast error produced by FFORMA with a *model selection* approach.
 
-In model selection meta-learning, a classifier is trained to predict the "best method" for each series based on the features instead the FFORMA scheme of producing probabilities to minimize overall OWA. The final forecasts are the ones produced by method in the pool predicted by the classifier to be the best, not by averaging.
+In model selection meta-learning, a classifier is trained to predict the "best method" for each series based on the features instead the FFORMA scheme of producing weights to minimize overall OWA. The final forecasts are the ones produced by method in the pool predicted by the classifier to be the best, not by averaging.
 
-All other implementation details are kept the same as in FFORMA, specifically it uses the same set of features, the same pool of forecasting methods, the same underlying implementation (xgboost) and the same hyperparameter search.  This enables to measure the impact of the FFORMA original loss function, with a "model selection approach", all other things being equal.
+All other implementation details are kept the same as in FFORMA, specifically it uses the same set of features, the same pool of forecasting methods, the same underlying implementation (`xgboost`) and the same hyper-parameter search. This enables to measure the impact of the FFORMA original loss function, with a "model selection approach", all other things being equal.
 
 We applied both FFORMA and the *model selection approach* to the M4 dataset and compared their overall point forecast errors. The error of the FFORMA approach is 10\% smaller than model selection, measured as $\frac{model\ selection\ OWA}{FFORMA \ OWA}$.
 \textcolor{green}{SECTION HAS BEEN REWRITTEN}
@@ -316,7 +291,7 @@ We applied both FFORMA and the *model selection approach* to the M4 dataset and 
 
 # Discussion and Conclusions{#conclusion}
 
-We have presented an algorithm for forecasting using weighted averaging of a set of models. The objective function of the learning model assigns probabilities to forecasting methods in order to minimize the forecasting error that would be produced if we picked the methods at random using these probabilities. This contrasts with how the final forecasts are produced, which is a weighted average, not a selection. These weights can however be used as model selection algorithm, if one picks the methods receiving the largest weight. This can be useful for interpretability or computational reasons, at the cost of forecasting performance.
+We have presented an algorithm for forecasting using weighted averaging of a set of models. The objective function of the learning model assigns weights to forecasting methods in order to minimize the forecasting error that would be produced if we picked the methods at random using these weights as probabilities. This contrasts with how the final forecasts are produced, which is a weighted average, not a selection. These weights can however be used as model selection algorithm, if one picks the methods receiving the largest weight. This can be useful for interpretability or computational reasons, at the cost of forecasting performance.
 
 One advantage of the approach is that its form is not independent of the forecasting error measure. Forecasting errors enter the model as additional precalculated constants. This allows FFORMA to adapt to arbitrary error measures when models that directly minimize them would be restricted, e.g. our approach can be applied to non-differentiable errors.
 
