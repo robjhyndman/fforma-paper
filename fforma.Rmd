@@ -271,17 +271,15 @@ For each series $x_{new}$, we used as the centre of the interval the point forec
 
 This method produced a set of three coefficients for each prediction horizon in the M4 dataset and these coefficients were the same independently of the series we want to forecast. Unlike the point forecasts, these coefficients were not restricted to be probabilities.
 
-# Results {#results}
+# Discussion and Conclusions{#conclusion}
 
-In order to evaluate the impact of our contribution we compared the average forecast error produced by FFORMA with a *model selection* approach.
+We have presented an algorithm for forecasting using weighted averaging of a set of models. The objective function of the learning model assigns weights to forecasting methods in order to minimize the forecasting error that would be produced if we picked the methods at random using these weights as probabilities. This contrasts with how the final forecasts are produced, which is a weighted average, not a selection. These weights can however be used as part of a model selection algorithm, if one picks the method receiving the largest weight. This can be useful for interpretability or computational reasons, at the cost of forecasting performance.
 
-In model selection meta-learning, a classifier is trained to predict the "best method" for each series based on the features instead the FFORMA scheme of producing weights to minimize overall OWA. The final forecasts are the ones produced by method in the pool predicted by the classifier to be the best, not by averaging.
+In order to evaluate the impact of our contribution, we compared the average forecast error produced by FFORMA with a model selection approach. In model selection meta-learning, a classifier is trained to predict the "best" method for each series based on the features instead the FFORMA scheme of producing weights to minimize overall OWA. The final forecasts are the ones produced by the best method (as predicted by the classifier), not by averaging.
 
-All other implementation details are kept the same as in FFORMA, specifically it uses the same set of features, the same pool of forecasting methods, the same underlying implementation (`xgboost`) and the same hyper-parameter search. This enables to measure the impact of the FFORMA original loss function, with a "model selection approach", all other things being equal.
+All other implementation details are kept the same as in FFORMA; specifically it uses the same set of features, the same pool of forecasting methods, the same underlying implementation (`xgboost`) and the same hyper-parameter search. This enables us to measure the impact of the unique FFORMA  loss function coupled with a model selection approach, all other things being equal.
 
-We applied both FFORMA and the *model selection approach* to the M4 dataset and compared their overall point forecast errors. The error of the FFORMA approach is 10\% smaller than model selection, measured as $\frac{model\ selection\ OWA}{FFORMA \ OWA}$.
-\textcolor{green}{SECTION HAS BEEN REWRITTEN}
-\textcolor{red}{Pablo can you elaborate a little here. A couple more sentences shoud be enough. It is not exactly clear to me what this does. What you have on the comments below are very interesting and I think really worth writing up in order to understand/evaluate FFORMA. I think it would really be worth putting all this work in a seprate paper. I cannot see why the IJF would not be interested in it.}
+We applied both FFORMA and the model selection approach to the M4 dataset and compared their overall point forecast errors. The average OWA error of the FFORMA approach was 10\% smaller than that for model selection. This improvement is entirely due to model averaging rather than model selection.
 
 <!--
 #classif 0.8566705
@@ -289,11 +287,9 @@ We applied both FFORMA and the *model selection approach* to the M4 dataset and 
 
  Maybe we can show here results about the metalearning, how weights evolve with series length. What is the difference between weightedaveraging and selection in our model? What happens if we remove individual forecasting methods? How robust are we against this? wHich features are more important? -->
 
-# Discussion and Conclusions{#conclusion}
 
-We have presented an algorithm for forecasting using weighted averaging of a set of models. The objective function of the learning model assigns weights to forecasting methods in order to minimize the forecasting error that would be produced if we picked the methods at random using these weights as probabilities. This contrasts with how the final forecasts are produced, which is a weighted average, not a selection. These weights can however be used as model selection algorithm, if one picks the methods receiving the largest weight. This can be useful for interpretability or computational reasons, at the cost of forecasting performance.
 
-One advantage of the approach is that its form is not independent of the forecasting error measure. Forecasting errors enter the model as additional precalculated constants. This allows FFORMA to adapt to arbitrary error measures when models that directly minimize them would be restricted, e.g. our approach can be applied to non-differentiable errors.
+One advantage of our approach is that its form is not independent of the forecasting loss  measure. Forecasting errors enter the model as additional pre-calculated values. This allows FFORMA to adapt to arbitrary loss functions when models that directly minimize them would be restricted, e.g. our approach can be applied to non-differentiable errors.
 
 We explored minimizing the weighted average of the forecasts, but the results did not improve over the simple version.
 
