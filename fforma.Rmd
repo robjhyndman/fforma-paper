@@ -56,7 +56,7 @@ There are essentially two general approaches for forecasting a time series: (i) 
 
 There have been several previous attempts to use time series features combined with meta-learning for forecasting [see for example @prudencio2004using; @LEMKE20102006; @KucEtAl2016; and @Kang2017]. Recently, @fforms proposed the FFORMS (Feature-based FORecast Model Selection) framework that uses time series features combined with meta-learning for forecast-model selection. That is, features are used to select a single forecasting model. In this paper, we build on this framework by using meta-learning to select the weights for a weighted forecast combination. All candidate forecasting methods are applied, and the weights to be used in combining them are chosen based on the features of each time series. We call this framework FFORMA (Feature-based FORecast Model Averaging). FFORMA resulted in the second most accurate point forecasts and prediction intervals amongst all competitors in the M4 competition.
 
-The rest of the paper is organized as follows. In \autoref{methodology} we describe the FFORMA framework in a general sense. \autoref{M4application} gives the details of our implementation of FFORMA in the M4 Competition for generating both point and interval forecasts. This includes the required preprocessing steps, the set of features and forecast methods, as well as the specific implementation of the meta-learning model. We show empirical evidence on the performance of the approach in \autoref{results} by quantifying the difference between our proposed learning model and a traditional classifier approach. \autoref{conclusion} provides some final remarks and conclusions.
+The rest of the paper is organized as follows. In \autoref{methodology} we describe the FFORMA framework in a general sense. \autoref{M4application} gives the details of our implementation of FFORMA in the M4 Competition for generating both point and interval forecasts. This includes the required preprocessing steps, the set of features and forecast methods, as well as the specific implementation of the meta-learning model. We show empirical evidence on the performance of the approach in \autoref{conclusion} by quantifying the difference between our proposed learning model and a traditional classifier approach. \autoref{conclusion} also provides some final remarks and conclusions.
 
 # Methodology {#methodology}
 
@@ -107,7 +107,6 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
       \Statex \hspace{1cm}$\{x_1, x_2, \dots,x_N\}$: $N$ observed time series forming the reference set.
       \Statex \hspace{1cm}$F$: a set of functions for calculating time series features.
       \Statex \hspace{1cm}$M$: a set of forecasting methods in the pool, e.g., \naive, ETS, ARIMA, etc.
-      \Statex \hspace{1cm}$K$: number of iterations in the `xgboost` algorithm.
     \Statex \textbf{Output:}
       \Statex \hspace{1cm}\text{FFORMA meta-learner: A function from the extracted features to a set of $M$}
       \Statex \hspace{1cm}\text{weights, one for each forecasting method.}\vspace{0.3cm}
@@ -235,9 +234,9 @@ The R functions are given in parentheses. In all cases, the default settings are
 
 ## Forecast loss measure
 
-The forecasting loss, $L$ in Algorithm \@ref(alg:algo-lab), was adapted from the Overall Weighted Average error described in the M4 competitor's guide @M4compguide, which adds together the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error. For each series and method, the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error were divided by the respective error of the Naive 2 method *over all series in the dataset* (i.e., MASE by the average MASE of Naive 2), and then added.
+The forecasting loss, $L$ in Algorithm \@ref(alg:algo-lab), was adapted from the Overall Weighted Average (OWA) error described in the M4 competitor's guide @M4compguide, which adds together the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error. For each series and method, the Mean Absolute Scaled Error and the symmetric Mean Absolute Percentage Error were divided by the respective error of the Naive 2 method *over all series in the dataset* (i.e., MASE by the average MASE of Naive 2), and then added.
 
-## Metal-learning model implementation
+## Meta-learning model implementation
 
 We used the gradient tree boosting model of `xgboost` as the underlying implementation of the learning model [@chen2016xgboost]. This is a state-of-the-art model that is computationally efficient and has shown good performance in structure based problems. The great advantage of its application here is that we are able to customise the model with our specific objective function.
 
@@ -248,14 +247,14 @@ The basic `xgboost` algorithm produces numeric values from the features, one for
 The general parameters of the meta-learning in Algorithm \@ref(alg:algo-lab) were set as follows.
 
   * $p(\bm{f}_n)_m$ is the output of the `xgboost` algorithm corresponding to forecasting method $m$, based on the features extracted from series $x_n$.
-  * $w(\bm{f}_n)_{m} = \frac{\exp(p(\bm{f}_n)_m)}{ \sum_m \exp(p(\bm{f}_j)_m)}$ is the transformation to weights of the `xgboost` output by applying the softmax transform.
-  * $L_{nm}$ is the contribution to the OWA error measure of method $m$ for the series $n$. OWA is defined in the M4 Competitor's Guide [@M4compguide].
+  * $w(\bm{f}_n)_{m} = \frac{\exp(p(\bm{f}_n)_m)}{ \sum_m \exp(p(\bm{f}_n)_m)}$ is the transformation to weights of the `xgboost` output by applying the softmax transform.
+  * $L_{nm}$ is the contribution to the OWA error measure of method $m$ for the series $n$.
   * $\bar{L}_n = \sum_{m=1}^M w(\bm{f}_n)_m L_{nm}$ is the weighted average loss function.
   * $G_{nm} = \frac{\partial{\bar{L}_n}}{\partial{p(\bm{f}_n)_m}} = w_{nm}(L_{nm} - \bar{L}_n)$ is the gradient of the loss function.
   * The hessian $H_{nm}$ was approximated by our upper bound $\hat{H}_{nm}$:
   $$H_{nm} = \frac{\partial{G_n}}{\partial{p(\bm{f}_n)_m}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)  $$
 
-The functions $G$ and $\hat{H}$ were passed to `xgboost` to minimize the objective function $L$.
+The functions $G$ and $\hat{H}$ were passed to `xgboost` to minimize the objective function $\bar{L}$.
 
 The results of `xgboost` are particularly dependent on its hyper-parameters such as learning rate, number of boosting steps, maximum complexity allowed for the trees or sub-sampling sizes. We limited the hyper-parameter search space based on some initial results and rules-of-thumb and explored it using Bayesian optimization [implemented in the R package `rBayesianOptimization`, @rBayesianOptimization] measuring performance on a 10% holdout version of the reference set. We picked the simplest hyper-parameter set from the top solutions of the exploration.
 
@@ -263,7 +262,7 @@ The results of `xgboost` are particularly dependent on its hyper-parameters such
 
 For each series $x_{new}$, we used as the centre of the interval the point forecast produced by our meta-learner. Then the 95% bounds of the interval were generated by a linear combination of the bounds of three forecasting methods: \naive, theta and seasonal \naive. The coefficients for the linear combination were calculated in a data-driven way over the M4 database. The complete  procedure was as follows:
 
-1. We divided the M4 dataset into two parts: A and B. We trained the FFORMA learner using the training periods of the series in part A and produced point forecasts over the training periods of the series of part B, and vice versa.
+1. We divided the M4 dataset into two parts: A and B. We trained the FFORMA learner using the training periods of the series in part A and produced point forecasts over the test periods of the series of part B, and vice versa.
 
 2. We computed the 95% *prediction radius* for the \naive, theta, and seasonal \naive\ methods. This is the difference between the 95% upper bound and the point forecast for each forecast horizon.
 
@@ -277,7 +276,7 @@ We have presented an algorithm for forecasting using weighted averaging of a set
 
 These weights can however be used as part of a model selection algorithm, if one picks the method receiving the largest weight. This can be useful for interpretability or computational reasons, at the cost of forecasting performance.
 
-In order to evaluate the impact of our contribution, we compared the average forecast error produced by FFORMA with a model selection approach. All implementation details were kept the same as in FFORMA; specifically we used the same set of features, the same pool of forecasting methods, the same underlying implementation (`xgboost`) and the same hyper-parameter search. This enabled us to measure the impact of the unique FFORMA loss function coupled with a model selection approach, all other things being equal. We applied both FFORMA and the model selection approach to the M4 dataset and compared their overall point forecast errors. The average OWA error of the FFORMA approach was 10\% smaller than that for model selection. This improvement is entirely due to model averaging rather than model selection.
+In order to evaluate the impact of our contribution, we compared the average forecast error produced by FFORMA with a model selection approach. All implementation details were kept the same as in FFORMA; specifically we used the same set of features, the same pool of forecasting methods, the same underlying implementation (`xgboost`), but with a standard cross-entropy loss, and the same hyper-parameter search. This enabled us to measure the impact of the FFORMA loss function against a model selection approach, all other things being equal. We applied both FFORMA and the model selection approach to the M4 dataset and compared their overall point forecast errors. The average OWA error of the FFORMA approach was 10\% smaller than that for model selection. This improvement is entirely due to the proposed model averaging rather than model selection.
 
 <!--
 #classif 0.8566705
@@ -287,7 +286,7 @@ In order to evaluate the impact of our contribution, we compared the average for
 
 
 
-One advantage of our approach is that its form is not independent of the forecasting loss  measure. Forecasting errors enter the model as additional pre-calculated values. This allows FFORMA to adapt to arbitrary loss functions when models that directly minimize them would be restricted, e.g. our approach can be applied to non-differentiable errors.
+One advantage of our approach is that its form is independent of the forecasting loss  measure. Forecasting errors enter the model as additional pre-calculated values. This allows FFORMA to adapt to arbitrary loss functions when models that directly minimize them would be restricted, e.g. our approach can be applied to non-differentiable errors.
 
 <!-- We explored minimizing the weighted average of the forecasts, but the results did not improve over the simple version.
  -->
