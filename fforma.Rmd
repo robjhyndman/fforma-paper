@@ -63,13 +63,14 @@ The rest of the paper is organized as follows. In \autoref{methodology} we descr
 
 ## Intuition and overview of FFORMA
 
-The objective of our meta-learning approach is to derive a set of weights to combine forecasts generated from a *pool of methods* (e.g., \naive, exponential smoothing, ARIMA, etc.). The FFORMA framework requires a set of time series we refer to as the *reference set*. From these the algorithm learns in order to produce forecast combination weights for any given time series. Each time series in the reference set is divided into a training period and a test period. From the training period a set of *time series features* are calculated (e.g., length of time series, strength of trend, etc.). These form the inputs for training the meta-learning model. Moreover, each method in the pool is fitted to the training period and forecasts are generated over the test period. From these, *forecast errors* are computed for each method which form the supervised part for the training of the meta-learning model. These are subsequently summarised using a forecast error measure.
+The objective of our meta-learning approach is to derive a set of weights to combine forecasts generated from a *pool of methods* (e.g., \naive, exponential smoothing, ARIMA, etc.). The FFORMA framework requires a set of time series we refer to as the *reference set*. Each time series in the reference set is divided into a training period and a test period. From the training period a set of *time series features* are calculated (e.g., length of time series, strength of trend, autocorrelations, etc.). These form the inputs to the meta-learning model. Each method in the pool is fitted to the training period, forecasts are generated over the test period, and *forecast errors* (the difference between actual and forecast values) are computed. From these, a summary forecast error measure from a weighted combination forecast can be computed for any given set of weights.
 
-<!--The forecasting errors of each method in the pool are calculated for each time series in the reference set, using the true future values of the series if available or by dividing the each series into a training period and test period by applying temporal holdout.-->
+The meta-learning model learns to produce weights for all methods in the pool, as a function of the features of the series to be forecasted, by minimizing this summary forecast error measure. Once the model is trained, weights can be produced for a new series for which forecasts are required. It is assumed that the new series comes from a *generating process* that is similar to some of those that form the reference set.
 
-The meta-learning model learns to produce weights for each method in the pool as a function of the features of the series to be forecasted. Once the model is trained, the inductive step consists of assuming that a new series for which forecasts are required comes from a *generating process* similar to the one that generated the reference set.
+A common meta-learning approach is to select the best method in the pool of methods for each series; i.e., the method that produces the smallest forecast error. This approach transforms the problem into a traditional classification problem by setting the individual forecasting methods as the classes and the best method as the target class for each time series. However,
+there may be other methods that produce similar forecast errors to the best method, so the specific class chosen is less important than the forecast error resulting from each method. Further, some time series are more difficult to forecast than others, and hence have more impact on the total forecast error. This information is lost if the problem is treated as classification.
 
-A common meta-learning approach is to learn to select the best method in the pool of methods for each series, i.e., the one that produces the smallest forecast error. This approach transforms the problem into a traditional classification problem by setting the individual forecasting methods as the classes and the best method as the target class for each time series. However, this simplification removes relevant information which may be useful in the meta-learning process, such as, which methods produce similar errors to the most accurate one, or which series are the most difficult to forecast and hence have more impact in the total forecast error. In this paper we do not apply this simplification but instead take into account the exact error that each method produces. This information is introduced into the model by posing the problem as finding a function that assigns *probabilities* to each forecasting method, with the objective of minimizing the expected error that would have been produced if the methods were picked at random following these probabilities. This approach is more general than classification, and can be thought of as classification  with *per class weights* (the forecast errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.
+Consequently, we do not train our meta-learning algorithm using a classification approach. Instead, we pose the problem as finding a function that assigns *probabilities* to each forecasting method, with the objective of minimizing the expected error that would have been produced if the methods were picked at random following these probabilities. These probabilities are the weights in our weighted forecast combination. This approach is more general than classification, and can be thought of as classification with *per class weights* (the forecast errors) that vary per instance, combined with *per instance weights* that assign more importance to some series.
 
 
 <!-- The meta-learning process can therefore be summarized the following way: -->
@@ -90,7 +91,7 @@ A common meta-learning approach is to learn to select the best method in the poo
 
 ## Algorithmic description
 
-The operation of the FFORMA framework comprises two phases: (i) the offline phase, in which we train a meta-learner and (ii) the online phase, in which we use the pre-trained meta-learner to identify forecast combination weights. Algorithm \@ref(alg:algo-lab) presents in detail the Pseudo code of the proposed framework.
+The operation of the FFORMA framework comprises two phases: (i) the offline phase, in which we train a meta-learner; and (ii) the online phase, in which we use the pre-trained meta-learner to identify forecast combination weights for a new series. Algorithm \@ref(alg:algo-lab) presents the pseudo-code of the proposed framework.
 
 <!--
   1. The set of forecasting methods, the pool of methods.
@@ -102,42 +103,42 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
 
 
 \begin{algorithm}[!ht]
-  \caption{The FFORMA framework - Forecast combination based on meta-learning. }
+  \caption{The FFORMA framework: Forecast combination based on meta-learning}
   \label{alg:algo-lab}
   \begin{algorithmic}[1]
-    \Statex \textbf{Offline phase - train the learning model}
-    \Statex \text{Inputs:}
-    \Statex \hspace{1cm}$\{x_1, x_2, \dots,x_N\}:$ $N$ observed time series forming the reference set.
-         \Statex \hspace{1cm}$F:$ a set of functions for calculating time series features.
-         \Statex \hspace{1cm}$M:$ a set of forecasting methods in the pool, e.g., \naive, ETS, ARIMA, etc.
-           \Statex \hspace{1cm}$K:$ number of iterations in the xgboost algorithm.
-     \Statex \text{Output:}
+    \Statex \textsc{Offline phase: train the learning model}
+    \Statex \textbf{Inputs:}
+      \Statex \hspace{1cm}$\{x_1, x_2, \dots,x_N\}$: $N$ observed time series forming the reference set.
+      \Statex \hspace{1cm}$F$: a set of functions for calculating time series features.
+      \Statex \hspace{1cm}$M$: a set of forecasting methods in the pool, e.g., \naive, ETS, ARIMA, etc.
+      \Statex \hspace{1cm}$K$: number of iterations in the xgboost algorithm.
+    \Statex \textbf{Output:}
       \Statex \hspace{1cm}\text{FFORMA meta-learner: A function from the extracted features to a set of $M$}
-      \Statex \text{\hspace{1cm} probabilities, one for each forecasting method.}\vspace{0.3cm}
-    \Statex \textit{Prepare the meta-data} \vspace{0.1cm}
-    \Statex For $n=1$ to $N$:
-            \State Split $x_n$ into a training period and test period.
-            \State Calculate the set of features $\bm{f}_n\in F$ over the training period.
-            \State Fit each forecasting method $m\in M$ over the training period and generate forecasts over the test period.
-            \State Calculate forecast losses $L_{nm}$ over the test period.
-    \State Meta-data: input features $\bm{f}_n$ (Step 2), output loss $L_{nm}$ (Step 4).
-     \Statex
-    \Statex \textit{Train the meta-learner, $w$}  \vspace{0.1cm}
+      \Statex \hspace{1cm}\text{weights, one for each forecasting method.}\vspace{0.3cm}
+    \Statex \textit{Prepare the meta-data}\vspace{0.1cm}
+    \For{$n=1$ to $N$:}
+      \State Split $x_n$ into a training period and test period.
+      \State Calculate the set of features $\bm{f}_n\in F$ over the training period.
+      \State Fit each forecasting method $m\in M$ over the training period
+      \Statex\hspace*{.5cm} and generate forecasts over the test period.
+      \State Calculate forecast losses $L_{nm}$ over the test period.
+    \EndFor\vspace{0.3cm}
+    \Statex \textit{Train the meta-learner, $w$}\vspace{0.1cm}
             \State Train a learning model based on the meta-data and errors, by minimizing:
-            $$ argmin_w \sum_{n=1}^N \sum_{m=1}^M w(\bm{f}_n)_{m} L_{nm}$$ were $L$ is the loss function.
+            $$\mathop{\text{argmin}}\limits_w \sum_{n=1}^N \sum_{m=1}^M w(\bm{f}_n)_{m} L_{nm}.$$
     \Statex
-     \Statex \textbf{Online phase - forecast a new time series}
-    \Statex \text{Input:}
-    \Statex \hspace{1cm}\text{FFORMA classifier from Step 6}.
-     \Statex \text{Output:}
+     \Statex \textsc{Online phase: forecast a new time series}
+    \Statex \textbf{Input:}
+    \Statex \hspace{1cm}\text{FFORMA meta-learner from offline phase}.
+     \Statex \textbf{Output:}
       \Statex \hspace{1cm}\text{Forecast the new time series $x_{new}$}.
-      \Statex For $x_{new}$:
-  \State Calculate features $\bm{f}_{new}$ by applying $F$.
-  \State Use the meta-learner to produce $\bm{w}(\bm{f}_{new})$ an $M$-vector of probabilities.
-  \State Compute the individual forecasts of the $M$ forecasting methods in the pool.
-  \State Combine individual forecasts using $\bm{w}$ to generate final forecasts.
-   \end{algorithmic}
-
+      \For{each $x_{new}$:}
+        \State Calculate features $\bm{f}_{new}$ by applying $F$.
+        \State Use the meta-learner to produce $\bm{w}(\bm{f}_{new})$ an $M$-vector of weights.
+        \State Compute the individual forecasts of the $M$ forecasting methods in the pool.
+        \State Combine individual forecasts using $\bm{w}$ to generate final forecasts.
+      \EndFor
+  \end{algorithmic}
 \end{algorithm}
 
 
@@ -149,9 +150,8 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
 
 <!--   Section 3 provides a more detailed description of application of the FFORMA framework over the course of M4 competition.  -->
 
-\clearpage
 
-#Implementation and Application to M4 Competition {#M4application}
+# Implementation and Application to M4 Competition {#M4application}
 
 
 ## Reference set
