@@ -18,8 +18,8 @@ author:
   othernames: Thiyanga S
   address: Department of Econometrics and Business Statistics, Monash University, Australia
   email: thiyanga.talagala@monash.edu
-abstract: We propose an automated method for obtaining weighted forecast combinations using time series features. The proposed approach involves two phases. First, we use a collection of time series to train a meta-model to assign weights to various possible forecasting methods with the goal of minimizing the average forecasting loss obtained from a weighted forecast combination. The inputs to the meta-model are features extracted from each series. In the second phase, we forecast new series using a weighted forecast combination where the weights are obtained from our previously trained meta-model. Our method outperforms a simple forecast combination, and outperforms all of the most popular individual methods in the time series forecasting literature. The approach achieved second position in the M4 Competition.
-keywords: Time series features, Forecast combination, XGBoost, M4 Competition, Meta-learning
+abstract: We propose an automated method for obtaining weighted forecast combinations using time series features. The proposed approach involves two phases. First, we use a collection of time series to train a meta-model to assign weights to various possible forecasting methods with the goal of minimizing the average forecasting loss obtained from a weighted forecast combination. The inputs to the meta-model are features extracted from each series. In the second phase, we forecast new series using a weighted forecast combination where the weights are obtained from our previously trained meta-model. Our method outperforms a simple forecast combination, and outperforms all of the most popular individual methods in the time series forecasting literature. The approach achieved second position in the M4 competition.
+keywords: Time series features, Forecast combination, XGBoost, M4 competition, Meta-learning
 wpnumber: no/yr
 jelcodes: C10,C14,C22
 blind: true
@@ -49,7 +49,7 @@ There are essentially two general approaches for forecasting a time series: (i) 
 
 There have been several previous attempts to use time series features combined with meta-learning for forecasting [see for example @prudencio2004using; @LEMKE20102006; @KucEtAl2016; and @Kang2017]. Recently, @fforms proposed the FFORMS (Feature-based FORecast Model Selection) framework that uses time series features combined with meta-learning for forecast-model selection. That is, features are used to select a single forecasting model. In this paper, we build on this framework by using meta-learning to select the weights for a weighted forecast combination. All candidate forecasting methods are applied, and the weights to be used in combining them are chosen based on the features of each time series. We call this framework FFORMA (Feature-based FORecast Model Averaging). FFORMA resulted in the second most accurate point forecasts and prediction intervals amongst all competitors in the M4 competition.
 
-The rest of the paper is organized as follows. In \autoref{methodology} we describe the FFORMA framework in a general sense. \autoref{M4application} gives the details of our implementation of FFORMA in the M4 Competition for generating both point and interval forecasts. This includes the required preprocessing steps, the set of features and forecast methods, as well as the specific implementation of the meta-learning model. We show empirical evidence on the performance of the approach in \autoref{conclusion} by quantifying the difference between our proposed learning model and a traditional classifier approach. \autoref{conclusion} also provides some final remarks and conclusions.
+The rest of the paper is organized as follows. In \autoref{methodology} we describe the FFORMA framework in a general sense. \autoref{M4application} gives the details of our implementation of FFORMA in the M4 competition for generating both point and interval forecasts. This includes the required preprocessing steps, the set of features and forecast methods, as well as the specific implementation of the meta-learning model. We show empirical evidence on the performance of the approach in \autoref{conclusion} by quantifying the difference between our proposed learning model and a traditional classifier approach. \autoref{conclusion} also provides some final remarks and conclusions.
 
 # Methodology {#methodology}
 
@@ -107,8 +107,8 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
     \For{$n=1$ to $N$:}
       \State Split $x_n$ into a training period and test period.
       \State Calculate the set of features $\bm{f}_n\in F$ over the training period.
-      \State Fit each forecasting method $m\in M$ over the training period
-      \Statex\hspace*{.5cm} and generate forecasts over the test period.
+      \State Fit each forecasting method $m\in M$ over the training period and generate
+      \Statex\hspace*{.5cm} forecasts over the test period.
       \State Calculate forecast losses $L_{nm}$ over the test period.
     \EndFor\vspace{0.3cm}
     \Statex \textit{Train the meta-learner, $w$}\vspace{0.1cm}
@@ -143,7 +143,7 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
 
 ## Reference set
 
-The M4 dataset includes 100,000 time series of yearly, quarterly, monthly, weekly, daily and hourly data. All 100,000 series form the reference set. Each series is split into a training period and a test period. The length of the test period for each time series was set to be equal to the forecast horizon set by the competition. Series with training periods comprising fewer than two observations, or series that were constant over the training period, were then eliminated from the reference set.
+The M4 dataset includes 100,000 time series of yearly, quarterly, monthly, weekly, daily and hourly data. All 100,000 series form the reference set. Each series is split into a training period and a test period. The length of the test period for each time series was set to be equal to the forecast horizon set by the competition. Series with training periods comprising fewer than two observations, or series that were constant over the training period, were eliminated from the reference set.
 
 \begin{table}[!p]
 \centering\small\tabcolsep=0.1cm
@@ -281,7 +281,7 @@ In order to evaluate the impact of our contribution, we compared the average for
 
  Maybe we can show here results about the metalearning, how weights evolve with series length. What is the difference between weightedaveraging and selection in our model? What happens if we remove individual forecasting methods? How robust are we against this? wHich features are more important? -->
 
-One advantage of our approach is that its form is independent of the forecasting loss measure. Forecasting errors enter the model as additional pre-calculated values. This allows FFORMA to adapt to arbitrary loss functions when models that directly minimize them would be restricted. For example, our approach can be applied to non-differentiable errors.
+One advantage of our approach is that its form is independent of the forecasting loss measure. Forecast errors enter the model as additional pre-calculated values. This allows FFORMA to adapt to arbitrary loss functions when models that directly minimize them would be restricted. For example, our approach can be applied to non-differentiable errors.
 
 <!-- We explored minimizing the weighted average of the forecasts, but the results did not improve over the simple version.
  -->
@@ -292,7 +292,7 @@ The source code for FFORMA is available at [github.com/robjhyndman/M4metalearnin
 
 <!-- ##Reasons behind the performance -->
 
-<!--   1. As opposed to individual methods in our pool, it is being trained to the specific error in the M4 Competition. The methods in our pool do not minimize the OWA error, but the squared loss, while we generated probabilities based on the OWA error. -->
+<!--   1. As opposed to individual methods in our pool, it is being trained to the specific error in the M4 competition. The methods in our pool do not minimize the OWA error, but the squared loss, while we generated probabilities based on the OWA error. -->
 <!--   0. As opposed to individual selection methods, it exploits domain bias. -->
 <!--    One method could be discarded in a series when the error is low, because on average it performs bad in the rest of the dataset, while individual methods would pick it up. " -->
 <!--    3. Exploiting dependencies between time series. In the M4 competition, some time series are similar, which can be hypothesized as macroeconomic indicators of neighbouring countries, etc. This effect is explited in the metalearning model and the series would produce similar features, and the errors that the model minimizes are more accurate. -->
