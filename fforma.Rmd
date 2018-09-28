@@ -196,7 +196,7 @@ The M4 dataset includes 100,000 time series of yearly, quarterly, monthly, weekl
 39 & arch\_acf        & sum of squares of the first 12 autocorrelations of $z^2$                                                                                                 & \yes  & \yes \\
 40 & garch\_acf       & sum of squares of the first 12 autocorrelations of $r^2$                                                                                                 & \yes  & \yes \\
 41 & arch\_r2         & $R^2$ value of an AR model applied to $z^2$                                                                                                              & \yes  & \yes \\
-42 & garch\_r2        & $R^2$ value of an AR model applied to \textcolor{blue}{$r^2$}                                                                                            & \yes  & \yes \\
+42 & garch\_r2        & $R^2$ value of an AR model applied to $r^2$                                                                                            & \yes  & \yes \\
 \bottomrule
 \end{tabular}
 \end{spacing}
