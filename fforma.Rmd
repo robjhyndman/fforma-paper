@@ -81,7 +81,7 @@ Consequently, we do not train our meta-learning algorithm using a classification
 
 ## Algorithmic description
 
-The operation of the FFORMA framework comprises two phases: (i) the offline phase, in which we train a meta-learner; and (ii) the online phase, in which we use the pre-trained meta-learner to identify forecast combination weights for a new series. Algorithm \@ref(alg:algo-lab) presents the pseudo-code of the proposed framework.
+The operation of the FFORMA framework comprises two phases: (1) the offline phase, in which we train a meta-learner; and (2) the online phase, in which we use the pre-trained meta-learner to identify forecast combination weights for a new series. Algorithm \@ref(alg:algo-lab) presents the pseudo-code of the proposed framework.
 
 <!--
   1. The set of forecasting methods, the pool of methods.
@@ -113,7 +113,9 @@ The FFORMA framework works in two phases: an **offline** phase, when the meta-le
     \EndFor\vspace{0.3cm}
     \Statex \textit{Train the meta-learner, $w$}\vspace{0.1cm}
             \State Train a learning model based on the meta-data and errors, by minimizing:
-            $$\mathop{\text{argmin}}\limits_w \sum_{n=1}^N \sum_{m=1}^M w(\bm{f}_n)_{m} L_{nm}.$$
+        \[
+          \mathop{\text{argmin}}\limits_w \sum_{n=1}^N \sum_{m=1}^M w(\bm{f}_n)_{m} L_{nm}.
+        \]
     \Statex
      \Statex \textsc{Online phase: forecast a new time series}
     \Statex \textbf{Input:}
@@ -202,7 +204,7 @@ The M4 dataset includes 100,000 time series of yearly, quarterly, monthly, weekl
 
 ## Time series features
 
-\autoref{feature} provides a brief description of the features used in this experiment, $F$ in Algorithm \@ref(alg:algo-lab). The functions to calculate these are implemented in the `tsfeatures` R package by @tsfeatures. Most of the features (or variations of these) have been previously used in a forecasting context by @hyndman2015large and @fforms, and are described in more detail there. The ARCH.LM statistic was calculated based on the Lagrange Multiplier test of @engle1982autoregressive for autoregressive conditional heteroscedasticity (ARCH). The heterogeneity features 39--42 are based on two computed time series: the original time series is pre-whitened using an AR model resulting in $z$; a GARCH(1, 1) model is then fitted to $z$ to obtain the residual series, $r$.
+\autoref{feature} provides a brief description of the features used in this experiment, $F$ in Algorithm \@ref(alg:algo-lab). The functions to calculate these are implemented in the `tsfeatures` R package by @tsfeatures. Most of the features (or variations of these) have been previously used in a forecasting context by @hyndman2015large and @fforms, and are described in more detail there. The ARCH.LM statistic was calculated based on the Lagrange Multiplier test of @engle1982autoregressive for autoregressive conditional heteroscedasticity (ARCH). The heterogeneity features 39--42 are based on two computed time series: the original time series is pre-whitened using an AR model resulting in $z$; a GARCH(1,1) model is then fitted to $z$ to obtain the residual series, $r$.
 
 Features corresponding only to seasonal time series are set to zero for non-seasonal time series. For the sake of generality, we have not used any of the domain-specific features such as macro, micro, finance, etc., even though this information was available in the M4 data set.
 
@@ -219,7 +221,7 @@ We considered eight methods implemented in the `forecast` package in R [@forecas
 1. automated ARIMA algorithm (`auto.arima`);
 1. automated exponential smoothing algorithm (`ets`);
 1. TBATS model (`tbats`);
-1. STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`);
+1. STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`).
 
 The R functions are given in parentheses. In all cases, the default settings are used. If any function returned an error when fitting the series (e.g. a series is constant), the `snaive` forecast method was used instead.
 
@@ -245,7 +247,9 @@ The general parameters of the meta-learning in Algorithm \@ref(alg:algo-lab) wer
   * $\bar{L}_n = \sum_{m=1}^M w(\bm{f}_n)_m L_{nm}$ is the weighted average loss function.
   * $G_{nm} = \frac{\partial{\bar{L}_n}}{\partial{p(\bm{f}_n)_m}} = w_{nm}(L_{nm} - \bar{L}_n)$ is the gradient of the loss function.
   * The hessian $H_{nm}$ was approximated by our upper bound $\hat{H}_{nm}$:
-  $$H_{nm} = \frac{\partial{G_n}}{\partial{p(\bm{f}_n)_m}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)  $$
+    \[
+      H_{nm} = \frac{\partial{G_n}}{\partial{p(\bm{f}_n)_m}} \approx \hat{H}_n = w_n(L_n(1-w_n) - G_n)
+    \]
 
 The functions $G$ and $\hat{H}$ were passed to `xgboost` to minimize the objective function $\bar{L}$.
 
@@ -253,7 +257,7 @@ The results of `xgboost` are particularly dependent on its hyper-parameters such
 
 ## Prediction intervals
 
-For each series $x_{new}$, we used as the centre of the interval the point forecast produced by our meta-learner. Then the 95% bounds of the interval were generated by a linear combination of the bounds of three forecasting methods: \naive, theta and seasonal \naive. The coefficients for the linear combination were calculated in a data-driven way over the M4 database. The complete  procedure was as follows:
+For each series $x_{new}$, we used as the centre of the interval the point forecast produced by our meta-learner. Then the 95% bounds of the interval were generated by a linear combination of the bounds of three forecasting methods: \naive, theta and seasonal \naive. The coefficients for the linear combination were calculated in a data-driven way over the M4 database. The complete procedure was as follows:
 
 1. We divided the M4 dataset into two parts: A and B. We trained the FFORMA learner using the training periods of the series in part A and produced point forecasts over the test periods of the series of part B, and vice versa.
 
@@ -269,7 +273,7 @@ We have presented an algorithm for forecasting using weighted averaging of a set
 
 These weights can however be used as part of a model selection algorithm, if one picks the method receiving the largest weight. This can be useful for interpretability or computational reasons, at the cost of forecasting performance.
 
-In order to evaluate the impact of our contribution, we compared the average forecast error produced by FFORMA with a model selection approach. All implementation details were kept the same as in FFORMA; specifically we used the same set of features, the same pool of forecasting methods, the same underlying implementation (`xgboost`), but with a standard cross-entropy loss, and the same hyper-parameter search. This enabled us to measure the impact of the FFORMA loss function against a model selection approach, all other things being equal. We applied both FFORMA and the model selection approach to the M4 dataset and compared their overall point forecast errors. The average OWA error of the FFORMA approach was 10\% smaller than that for model selection. This improvement is entirely due to the proposed model averaging rather than model selection.
+In order to evaluate the impact of our contribution, we compared the average forecast error produced by FFORMA with a model selection approach. All implementation details were kept the same as in FFORMA; specifically we used the same set of features, the same pool of forecasting methods, the same underlying implementation (`xgboost`) but with a standard cross-entropy loss, and the same hyper-parameter search. This enabled us to measure the impact of the FFORMA loss function against a model selection approach, all other things being equal. We applied both FFORMA and the model selection approach to the M4 dataset and compared their overall point forecast errors. The average OWA error of the FFORMA approach was 10\% smaller than that for model selection. This improvement is entirely due to the proposed model averaging rather than model selection.
 
 <!--
 #classif 0.8566705
@@ -277,14 +281,12 @@ In order to evaluate the impact of our contribution, we compared the average for
 
  Maybe we can show here results about the metalearning, how weights evolve with series length. What is the difference between weightedaveraging and selection in our model? What happens if we remove individual forecasting methods? How robust are we against this? wHich features are more important? -->
 
-
-
-One advantage of our approach is that its form is independent of the forecasting loss  measure. Forecasting errors enter the model as additional pre-calculated values. This allows FFORMA to adapt to arbitrary loss functions when models that directly minimize them would be restricted, e.g. our approach can be applied to non-differentiable errors.
+One advantage of our approach is that its form is independent of the forecasting loss measure. Forecasting errors enter the model as additional pre-calculated values. This allows FFORMA to adapt to arbitrary loss functions when models that directly minimize them would be restricted. For example, our approach can be applied to non-differentiable errors.
 
 <!-- We explored minimizing the weighted average of the forecasts, but the results did not improve over the simple version.
  -->
 
-The source code for FFORMA is available at \url{https://github.com/robjhyndman/M4metalearning}.
+The source code for FFORMA is available at [github.com/robjhyndman/M4metalearning](https://github.com/robjhyndman/M4metalearning).
 
 <!-- \textcolor{blue}{Fotios email: We would like, though, to see a short section that discusses the reasons behind the good performance of your method. } -->
 
