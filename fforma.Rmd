@@ -20,10 +20,10 @@ author:
   email: thiyanga.talagala@monash.edu
 abstract: We propose an automated method for obtaining weighted forecast combinations using time series features. The proposed approach involves two phases. First, we use a collection of time series to train a meta-model to assign weights to various possible forecasting methods with the goal of minimizing the average forecasting loss obtained from a weighted forecast combination. The inputs to the meta-model are features extracted from each series. In the second phase, we forecast new series using a weighted forecast combination where the weights are obtained from our previously trained meta-model. Our method outperforms a simple forecast combination, and outperforms all of the most popular individual methods in the time series forecasting literature. The approach achieved second position in the M4 competition.
 keywords: Time series features, Forecast combination, XGBoost, M4 competition, Meta-learning
-wpnumber: no/yr
+wpnumber: 19/18
 jelcodes: C10,C14,C22
-blind: true
-cover: false
+blind: false
+cover: true
 toc: false
 bibliography: references.bib
 biblio-style: authoryear-comp
