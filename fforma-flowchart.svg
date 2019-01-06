@@ -335,6 +335,21 @@
          style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
          transform="scale(0.8,0.8)" />
     </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-3"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-2"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -343,9 +358,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="329.3804"
-     inkscape:cy="-1069.7788"
+     inkscape:zoom="0.7"
+     inkscape:cx="412.55655"
+     inkscape:cy="-190.51757"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -366,7 +381,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -481,8 +496,8 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="302.12183"
-       y="456.40283"
+       x="308.18274"
+       y="438.22009"
        id="text4204-1"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -490,9 +505,19 @@
        inkscape:export-ydpi="200"><tspan
          sodipodi:role="line"
          id="tspan4206-2"
-         x="302.12183"
-         y="456.40283"
-         style="font-size:15px">Reference Set</tspan></text>
+         x="308.18274"
+         y="438.22009"
+         style="font-size:15px">z = Time Series</tspan><tspan
+         sodipodi:role="line"
+         x="308.18274"
+         y="456.97009"
+         style="font-size:15px"
+         id="tspan4450">we want to</tspan><tspan
+         sodipodi:role="line"
+         x="308.18274"
+         y="475.72009"
+         style="font-size:15px"
+         id="tspan4452"> forecast</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -582,7 +607,7 @@
        width="130"
        height="60"
        x="59.493324"
-       y="896.70367"
+       y="1030.9894"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
        inkscape:export-xdpi="200"
        inkscape:export-ydpi="200" />
@@ -590,7 +615,7 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="70.693275"
-       y="913.54572"
+       y="1047.8314"
        id="text4204-1-0-5"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -599,16 +624,16 @@
          sodipodi:role="line"
          id="tspan4206-2-5-50"
          x="70.693275"
-         y="913.54572"
+         y="1047.8314"
          style="font-size:15px">Take a series</tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="932.29572"
+         y="1066.5814"
          style="font-size:15px"
          id="tspan4396">x from the </tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="951.04572"
+         y="1085.3314"
          style="font-size:15px"
          id="tspan4320-26">Reference Set</tspan></text>
     <rect
@@ -617,7 +642,7 @@
        width="130"
        height="60"
        x="59.493324"
-       y="996.70367"
+       y="1130.9894"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
        inkscape:export-xdpi="200"
        inkscape:export-ydpi="200" />
@@ -625,7 +650,7 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="70.693275"
-       y="1013.5457"
+       y="1147.8314"
        id="text4204-1-0-5-5"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -633,17 +658,17 @@
        inkscape:export-ydpi="200"><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1013.5457"
+         y="1147.8314"
          style="font-size:15px"
          id="tspan4320-26-0">Split x into </tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1032.2957"
+         y="1166.5814"
          style="font-size:15px"
          id="tspan4436">training and</tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1051.0458"
+         y="1185.3315"
          style="font-size:15px"
          id="tspan4438">test periods</tspan></text>
     <rect
@@ -652,7 +677,7 @@
        width="129.37868"
        height="82.235825"
        x="61.232552"
-       y="1088.443"
+       y="1222.7288"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
        inkscape:export-xdpi="200"
        inkscape:export-ydpi="200" />
@@ -660,7 +685,7 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="72.121849"
-       y="1104.9744"
+       y="1239.2601"
        id="text4204-1-0-5-5-7"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -668,22 +693,22 @@
        inkscape:export-ydpi="200"><tspan
          sodipodi:role="line"
          x="72.121849"
-         y="1104.9744"
+         y="1239.2601"
          style="font-size:15px"
          id="tspan4438-2">Calculate</tspan><tspan
          sodipodi:role="line"
          x="72.121849"
-         y="1123.7244"
+         y="1258.0101"
          style="font-size:15px"
          id="tspan4487">features f from</tspan><tspan
          sodipodi:role="line"
          x="72.121849"
-         y="1142.4744"
+         y="1276.7601"
          style="font-size:15px"
          id="tspan4491">the training</tspan><tspan
          sodipodi:role="line"
          x="72.121849"
-         y="1161.2244"
+         y="1295.5101"
          style="font-size:15px"
          id="tspan4493"> period using F</tspan></text>
     <rect
@@ -692,7 +717,7 @@
        width="128.15442"
        height="136.72586"
        x="60.416107"
-       y="1216.1979"
+       y="1350.4836"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
        inkscape:export-xdpi="200"
        inkscape:export-ydpi="200" />
@@ -700,7 +725,7 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="70.693275"
-       y="1232.1172"
+       y="1366.403"
        id="text4204-1-0-5-5-7-2"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -708,37 +733,37 @@
        inkscape:export-ydpi="200"><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1232.1172"
+         y="1366.403"
          style="font-size:15px"
          id="tspan4493-4">Forecasts the</tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1250.8672"
+         y="1385.153"
          style="font-size:15px"
          id="tspan4540">training period</tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1269.6172"
+         y="1403.903"
          style="font-size:15px"
          id="tspan4534">of x using the </tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1288.3672"
+         y="1422.653"
          style="font-size:15px"
          id="tspan4536">methods in M</tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1307.1172"
+         y="1441.403"
          style="font-size:15px"
          id="tspan4542">and measure </tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1325.8672"
+         y="1460.153"
          style="font-size:15px"
          id="tspan4544">their error over</tspan><tspan
          sodipodi:role="line"
          x="70.693275"
-         y="1344.6172"
+         y="1478.903"
          style="font-size:15px"
          id="tspan4546">the test period</tspan></text>
     <rect
@@ -746,8 +771,8 @@
        id="rect4212-3-3"
        width="113.6263"
        height="114.7439"
-       x="1160.6454"
-       y="-1399.6282"
+       x="1278.9928"
+       y="-1515.7905"
        transform="matrix(-0.81214323,0.58345811,-0.82741948,-0.56158437,0,0)"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
        inkscape:export-xdpi="200"
@@ -756,7 +781,7 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="121.83993"
-       y="1449.5144"
+       y="1583.8002"
        id="text4204-4-9"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -764,17 +789,17 @@
        inkscape:export-ydpi="200"><tspan
          sodipodi:role="line"
          x="121.83993"
-         y="1449.5144"
+         y="1583.8002"
          id="tspan4249-0"
          style="text-align:center;text-anchor:middle">All series in</tspan><tspan
          sodipodi:role="line"
          x="121.83993"
-         y="1468.2644"
+         y="1602.5502"
          style="text-align:center;text-anchor:middle"
          id="tspan4626">the Reference Set</tspan><tspan
          sodipodi:role="line"
          x="121.83993"
-         y="1487.0144"
+         y="1621.3002"
          style="text-align:center;text-anchor:middle"
          id="tspan4628">are processed?</tspan></text>
     <rect
@@ -783,7 +808,7 @@
        width="129.37868"
        height="82.235825"
        x="63.167801"
-       y="1578.3871"
+       y="1712.6729"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
        inkscape:export-xdpi="200"
        inkscape:export-ydpi="200" />
@@ -791,7 +816,7 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="123.2685"
-       y="1598.0858"
+       y="1732.3716"
        id="text4204-4-9-0"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -799,22 +824,22 @@
        inkscape:export-ydpi="200"><tspan
          sodipodi:role="line"
          x="123.2685"
-         y="1598.0858"
+         y="1732.3716"
          style="text-align:center;text-anchor:middle"
          id="tspan4628-1">Train</tspan><tspan
          sodipodi:role="line"
          x="123.2685"
-         y="1616.8358"
+         y="1751.1216"
          style="text-align:center;text-anchor:middle"
          id="tspan4676">meta-learner</tspan><tspan
          sodipodi:role="line"
          x="123.2685"
-         y="1635.5858"
+         y="1769.8716"
          style="text-align:center;text-anchor:middle"
          id="tspan4678">using features</tspan><tspan
          sodipodi:role="line"
          x="123.2685"
-         y="1654.3358"
+         y="1788.6216"
          style="text-align:center;text-anchor:middle"
          id="tspan4680"> and errors</tspan></text>
     <rect
@@ -822,8 +847,8 @@
        id="rect4138-3-8-6"
        width="130"
        height="74.301956"
-       x="1327.0707"
-       y="2120.3789"
+       x="1425.1591"
+       y="2286.6738"
        transform="matrix(1,0,-0.58984594,0.8075158,0,0)"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
        inkscape:export-xdpi="200"
@@ -832,7 +857,7 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="66.407539"
-       y="1747.8314"
+       y="1882.1172"
        id="text4204-1-4"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -841,7 +866,7 @@
          sodipodi:role="line"
          id="tspan4206-2-7"
          x="66.407539"
-         y="1747.8314"
+         y="1882.1172"
          style="font-size:15px">meta-learner</tspan></text>
     <text
        xml:space="preserve"
@@ -902,7 +927,7 @@
        inkscape:export-ydpi="200" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6)"
-       d="m 125.20204,956.87597 -0.13393,32.57986"
+       d="m 125.20204,1091.1617 -0.13393,32.5798"
        id="path4709-0-8-6-2"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -911,7 +936,7 @@
        inkscape:export-ydpi="200" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7)"
-       d="m 125.05596,1056.9108 -0.13393,23.8672"
+       d="m 125.05596,1191.1965 -0.13393,23.8672"
        id="path4709-0-8-6-2-0"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -920,7 +945,7 @@
        inkscape:export-ydpi="200" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8)"
-       d="m 125.23639,1172.1646 -0.13393,35.6102"
+       d="m 125.23639,1306.4503 -0.13393,35.6102"
        id="path4709-0-8-6-2-0-9"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -929,7 +954,7 @@
        inkscape:export-ydpi="200" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-9)"
-       d="m 120.65232,1355.2074 -0.13393,35.6102"
+       d="m 120.65232,1489.4931 -0.13393,35.6102"
        id="path4709-0-8-6-2-0-9-1"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -938,7 +963,7 @@
        inkscape:export-ydpi="200" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-6)"
-       d="m 123.13686,1529.3075 -0.13393,41.4339"
+       d="m 123.13686,1663.5932 -0.13393,41.4339"
        id="path4709-0-8-6-2-0-9-6"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -947,7 +972,7 @@
        inkscape:export-ydpi="200" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-3)"
-       d="m 122.0221,1660.3789 -0.13393,44.8278"
+       d="m 122.0221,1794.6646 -0.13393,44.8278"
        id="path4709-0-8-6-2-0-9-8"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc"
@@ -990,7 +1015,7 @@
        inkscape:export-ydpi="200" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker11742)"
-       d="m 27.779195,1465.0095 -67.779195,0 0.709346,-2.6473 0,-590 157.775424,0"
+       d="m 27.779195,1599.2952 -67.779195,0 0.709346,-2.6473 0,-590 157.775424,0"
        id="path11734"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc"
@@ -1201,7 +1226,7 @@
          style="font-size:15px">Final forecast</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker12337)"
-       d="m 120.71323,1772.601 0,49.7612 279.28677,0 0,-830 138.94036,0"
+       d="m 120.71323,1906.8867 0,49.7612 279.28677,0 0,-975.71428 138.94036,0"
        id="path12329"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc"
@@ -1296,7 +1321,7 @@
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="126.85929"
-       y="1554.4631"
+       y="1688.7489"
        id="text4204-1-4-9-6-8"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -1305,13 +1330,13 @@
          sodipodi:role="line"
          id="tspan4206-2-7-4-7-7"
          x="126.85929"
-         y="1554.4631"
+         y="1688.7489"
          style="font-size:15px">YES</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        x="-10.283598"
-       y="1460.1774"
+       y="1594.4631"
        id="text4204-1-4-9-6-5-4"
        sodipodi:linespacing="125%"
        inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
@@ -1319,8 +1344,43 @@
        inkscape:export-ydpi="200"><tspan
          sodipodi:role="line"
          x="-10.283598"
-         y="1460.1774"
+         y="1594.4631"
          style="font-size:15px"
          id="tspan15067-6">NO</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.11742973;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-3-8-69"
+       width="130"
+       height="74.301956"
+       x="748.46582"
+       y="1110.3855"
+       transform="matrix(1,0,-0.58984594,0.8075158,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="83.543182"
+       y="932.24579"
+       id="text4204-1-3"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-3"
+         x="83.543182"
+         y="932.24579"
+         style="font-size:15px">Reference Set</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-3)"
+       d="m 125.15128,956.9688 -0.13393,66.4199"
+       id="path4709-0-8-6-2-07"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
   </g>
 </svg>
