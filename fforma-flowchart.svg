@@ -1,0 +1,1326 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="295mm"
+   viewBox="0 0 744.09449 1045.2756"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="fforma-flowchart.svg">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker12337"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path12339"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker11742"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="TriangleOutL"
+       inkscape:collect="always">
+      <path
+         transform="scale(0.8,0.8)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         id="path11744"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path4857"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path4736"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-3"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-9"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-9"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-4"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-6"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-44"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-3"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-2"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-3-1"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-2-7"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-90"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-48"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-90-2"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-48-3"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-90-2-3"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-48-3-5"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-90-2-1"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-48-3-7"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-2-6-7-8-90-2-4"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-6-1-5-8-48-3-4"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutL-7-5-3-0"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4857-1-8-9-5"
+         d="m 5.77,0 -8.65,5 0,-10 8.65,5 z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="scale(0.8,0.8)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="329.3804"
+     inkscape:cy="-1069.7788"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="715"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4136" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-7.0866142)">
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138"
+       width="130"
+       height="60"
+       x="-154.38725"
+       y="-96.471748" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-1"
+       width="130"
+       height="60"
+       x="-152.67152"
+       y="-18.492062"
+       ry="30" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.11742973;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-3"
+       width="130"
+       height="74.301956"
+       x="-85.525383"
+       y="76.169373"
+       transform="matrix(1,0,-0.58984594,0.8075158,0,0)" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-1-1"
+       width="130"
+       height="60"
+       x="290.64722"
+       y="320.94263"
+       ry="30"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="332.12183"
+       y="356.40283"
+       id="text4204"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206"
+         x="332.12183"
+         y="356.40283">BEGIN</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.47896266;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4212"
+       width="93.662872"
+       height="94.390564"
+       x="169.65663"
+       y="-162.10838"
+       transform="matrix(-0.78925425,0.61406655,-0.80574888,-0.59225732,0,0)" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.2247982;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4212-3"
+       width="113.6263"
+       height="114.7439"
+       x="442.30356"
+       y="-965.6153"
+       transform="matrix(-0.81214323,0.58345811,-0.82741948,-0.56158437,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="349.18475"
+       y="786.42535"
+       id="text4204-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-1"
+         x="349.18475"
+         y="786.42535"
+         style="text-align:center;text-anchor:middle">Need to train</tspan><tspan
+         sodipodi:role="line"
+         x="349.18475"
+         y="805.17535"
+         id="tspan4247"
+         style="text-align:center;text-anchor:middle">the</tspan><tspan
+         sodipodi:role="line"
+         x="349.18475"
+         y="823.92535"
+         id="tspan4249"
+         style="text-align:center;text-anchor:middle"> meta-learner?</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.11742973;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-3-8"
+       width="130"
+       height="74.301956"
+       x="619.46735"
+       y="521.11774"
+       transform="matrix(1,0,-0.58984594,0.8075158,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="302.12183"
+       y="456.40283"
+       id="text4204-1"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2"
+         x="302.12183"
+         y="456.40283"
+         style="font-size:15px">Reference Set</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="310"
+       y="452.36221"
+       id="text4293"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4295"
+         x="310"
+         y="452.36221" /></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.64449072;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-3-8-2"
+       width="155.06203"
+       height="79.261436"
+       x="764.20282"
+       y="714.29315"
+       transform="matrix(1,0,-0.65953682,0.75167226,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="290.69327"
+       y="553.54572"
+       id="text4204-1-0"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-5"
+         x="290.69327"
+         y="553.54572"
+         style="font-size:15px">F = Functions</tspan><tspan
+         sodipodi:role="line"
+         x="290.69327"
+         y="572.29572"
+         style="font-size:15px"
+         id="tspan4318">for calculating </tspan><tspan
+         sodipodi:role="line"
+         x="290.69327"
+         y="591.04572"
+         style="font-size:15px"
+         id="tspan4320">features</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.64449072;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-3-8-2-9"
+       width="155.06203"
+       height="79.261436"
+       x="827.45691"
+       y="834.02618"
+       transform="matrix(1,0,-0.65953682,0.75167226,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="274.97897"
+       y="643.54572"
+       id="text4204-1-0-0"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-5-5"
+         x="274.97897"
+         y="643.54572"
+         style="font-size:15px">M = a pool of</tspan><tspan
+         sodipodi:role="line"
+         x="274.97897"
+         y="662.29572"
+         style="font-size:15px"
+         id="tspan4320-2">forecasting</tspan><tspan
+         sodipodi:role="line"
+         x="274.97897"
+         y="681.04572"
+         style="font-size:15px"
+         id="tspan4355"> methods</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-0"
+       width="130"
+       height="60"
+       x="59.493324"
+       y="896.70367"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="70.693275"
+       y="913.54572"
+       id="text4204-1-0-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-5-50"
+         x="70.693275"
+         y="913.54572"
+         style="font-size:15px">Take a series</tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="932.29572"
+         style="font-size:15px"
+         id="tspan4396">x from the </tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="951.04572"
+         style="font-size:15px"
+         id="tspan4320-26">Reference Set</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-0-5"
+       width="130"
+       height="60"
+       x="59.493324"
+       y="996.70367"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="70.693275"
+       y="1013.5457"
+       id="text4204-1-0-5-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1013.5457"
+         style="font-size:15px"
+         id="tspan4320-26-0">Split x into </tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1032.2957"
+         style="font-size:15px"
+         id="tspan4436">training and</tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1051.0458"
+         style="font-size:15px"
+         id="tspan4438">test periods</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.32131863;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-0-5-5"
+       width="129.37868"
+       height="82.235825"
+       x="61.232552"
+       y="1088.443"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="72.121849"
+       y="1104.9744"
+       id="text4204-1-0-5-5-7"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="72.121849"
+         y="1104.9744"
+         style="font-size:15px"
+         id="tspan4438-2">Calculate</tspan><tspan
+         sodipodi:role="line"
+         x="72.121849"
+         y="1123.7244"
+         style="font-size:15px"
+         id="tspan4487">features f from</tspan><tspan
+         sodipodi:role="line"
+         x="72.121849"
+         y="1142.4744"
+         style="font-size:15px"
+         id="tspan4491">the training</tspan><tspan
+         sodipodi:role="line"
+         x="72.121849"
+         y="1161.2244"
+         style="font-size:15px"
+         id="tspan4493"> period using F</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:5.54557467;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-0-5-5-4"
+       width="128.15442"
+       height="136.72586"
+       x="60.416107"
+       y="1216.1979"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="70.693275"
+       y="1232.1172"
+       id="text4204-1-0-5-5-7-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1232.1172"
+         style="font-size:15px"
+         id="tspan4493-4">Forecasts the</tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1250.8672"
+         style="font-size:15px"
+         id="tspan4540">training period</tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1269.6172"
+         style="font-size:15px"
+         id="tspan4534">of x using the </tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1288.3672"
+         style="font-size:15px"
+         id="tspan4536">methods in M</tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1307.1172"
+         style="font-size:15px"
+         id="tspan4542">and measure </tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1325.8672"
+         style="font-size:15px"
+         id="tspan4544">their error over</tspan><tspan
+         sodipodi:role="line"
+         x="70.693275"
+         y="1344.6172"
+         style="font-size:15px"
+         id="tspan4546">the test period</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.2247982;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4212-3-3"
+       width="113.6263"
+       height="114.7439"
+       x="1160.6454"
+       y="-1399.6282"
+       transform="matrix(-0.81214323,0.58345811,-0.82741948,-0.56158437,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="121.83993"
+       y="1449.5144"
+       id="text4204-4-9"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="121.83993"
+         y="1449.5144"
+         id="tspan4249-0"
+         style="text-align:center;text-anchor:middle">All series in</tspan><tspan
+         sodipodi:role="line"
+         x="121.83993"
+         y="1468.2644"
+         style="text-align:center;text-anchor:middle"
+         id="tspan4626">the Reference Set</tspan><tspan
+         sodipodi:role="line"
+         x="121.83993"
+         y="1487.0144"
+         style="text-align:center;text-anchor:middle"
+         id="tspan4628">are processed?</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.32131863;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-2"
+       width="129.37868"
+       height="82.235825"
+       x="63.167801"
+       y="1578.3871"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="123.2685"
+       y="1598.0858"
+       id="text4204-4-9-0"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="123.2685"
+         y="1598.0858"
+         style="text-align:center;text-anchor:middle"
+         id="tspan4628-1">Train</tspan><tspan
+         sodipodi:role="line"
+         x="123.2685"
+         y="1616.8358"
+         style="text-align:center;text-anchor:middle"
+         id="tspan4676">meta-learner</tspan><tspan
+         sodipodi:role="line"
+         x="123.2685"
+         y="1635.5858"
+         style="text-align:center;text-anchor:middle"
+         id="tspan4678">using features</tspan><tspan
+         sodipodi:role="line"
+         x="123.2685"
+         y="1654.3358"
+         style="text-align:center;text-anchor:middle"
+         id="tspan4680"> and errors</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.11742973;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-3-8-6"
+       width="130"
+       height="74.301956"
+       x="1327.0707"
+       y="2120.3789"
+       transform="matrix(1,0,-0.58984594,0.8075158,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="66.407539"
+       y="1747.8314"
+       id="text4204-1-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-7"
+         x="66.407539"
+         y="1747.8314"
+         style="font-size:15px">meta-learner</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-341.53009"
+       y="-115.0432"
+       id="text4703"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4705"
+         x="-341.53009"
+         y="-115.0432"
+         style="font-size:17.5px">https://www.lucidchart.com/pages/flowchart-symbols-meaning-explained</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL)"
+       d="m 360,382.3622 0,31.42857"
+       id="path4709"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7)"
+       d="m 360,481.64791 0,47.85715"
+       id="path4709-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5)"
+       d="m 360.17857,596.82648 -0.13393,22.85715"
+       id="path4709-0-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-3)"
+       d="m 253.87308,802.16769 -129.53234,0.29361 0.16497,87.08966"
+       id="path4709-0-8-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2)"
+       d="m 345.07577,687.91086 -0.13393,40.02974"
+       id="path4709-0-8-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6)"
+       d="m 125.20204,956.87597 -0.13393,32.57986"
+       id="path4709-0-8-6-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7)"
+       d="m 125.05596,1056.9108 -0.13393,23.8672"
+       id="path4709-0-8-6-2-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8)"
+       d="m 125.23639,1172.1646 -0.13393,35.6102"
+       id="path4709-0-8-6-2-0-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-9)"
+       d="m 120.65232,1355.2074 -0.13393,35.6102"
+       id="path4709-0-8-6-2-0-9-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-6)"
+       d="m 123.13686,1529.3075 -0.13393,41.4339"
+       id="path4709-0-8-6-2-0-9-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-3)"
+       d="m 122.0221,1660.3789 -0.13393,44.8278"
+       id="path4709-0-8-6-2-0-9-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.70000005;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-1-1-8"
+       width="130"
+       height="60"
+       x="456.60663"
+       y="1643.5967"
+       ry="30"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="498.08121"
+       y="1679.0569"
+       id="text4204-43"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-7"
+         x="498.08121"
+         y="1679.0569">END</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-3-1)"
+       d="m 532.0221,1595.13 -0.13393,41.0398"
+       id="path4709-0-8-6-2-0-9-8-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker11742)"
+       d="m 27.779195,1465.0095 -67.779195,0 0.709346,-2.6473 0,-590 157.775424,0"
+       id="path11734"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:5.09378576;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-3-8-6-6"
+       width="130"
+       height="74.301956"
+       x="1153.7058"
+       y="1105.1704"
+       transform="matrix(1,0,-0.58984594,0.8075158,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="491.85928"
+       y="928.03448"
+       id="text4204-1-4-9"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-7-4"
+         x="491.85928"
+         y="928.03448"
+         style="font-size:15px">meta-learner</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.32131863;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-0-5-5-41"
+       width="129.37868"
+       height="82.235825"
+       x="470.51825"
+       y="1014.8716"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="481.40756"
+       y="1031.403"
+       id="text4204-1-0-5-5-7-8"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="481.40756"
+         y="1031.403"
+         style="font-size:15px"
+         id="tspan4438-2-6">Calculate</tspan><tspan
+         sodipodi:role="line"
+         x="481.40756"
+         y="1050.153"
+         style="font-size:15px"
+         id="tspan4493-5">features f_z </tspan><tspan
+         sodipodi:role="line"
+         x="481.40756"
+         y="1068.903"
+         style="font-size:15px"
+         id="tspan11984">from z using F</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.56558323;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-0-5-5-41-9"
+       width="144.84869"
+       height="81.991562"
+       x="462.78326"
+       y="1156.4222"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="471.40756"
+       y="1174.2603"
+       id="text4204-1-0-5-5-7-8-0"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="471.40756"
+         y="1174.2603"
+         style="font-size:15px"
+         id="tspan12018">Use meta-learner</tspan><tspan
+         sodipodi:role="line"
+         x="471.40756"
+         y="1193.0103"
+         style="font-size:15px"
+         id="tspan12020">to produce</tspan><tspan
+         sodipodi:role="line"
+         x="471.40756"
+         y="1211.7603"
+         style="font-size:15px"
+         id="tspan12022">weights</tspan><tspan
+         sodipodi:role="line"
+         x="471.40756"
+         y="1230.5103"
+         style="font-size:15px"
+         id="tspan12026"> from f_z</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.32131863;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-0-5-5-41-91"
+       width="129.37868"
+       height="82.235825"
+       x="471.94681"
+       y="1291.3002"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="482.83612"
+       y="1307.8315"
+       id="text4204-1-0-5-5-7-8-2"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="482.83612"
+         y="1307.8315"
+         style="font-size:15px"
+         id="tspan4438-2-6-8">Calculate</tspan><tspan
+         sodipodi:role="line"
+         x="482.83612"
+         y="1326.5815"
+         style="font-size:15px"
+         id="tspan11984-2">forecasts of z </tspan><tspan
+         sodipodi:role="line"
+         x="482.83612"
+         y="1345.3315"
+         style="font-size:15px"
+         id="tspan12057">using methods</tspan><tspan
+         sodipodi:role="line"
+         x="482.83612"
+         y="1364.0815"
+         style="font-size:15px"
+         id="tspan12059">in M</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.32131863;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-0-5-5-41-91-7"
+       width="129.37868"
+       height="82.235825"
+       x="471.94681"
+       y="1422.0144"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="482.83612"
+       y="1438.5458"
+       id="text4204-1-0-5-5-7-8-2-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="482.83612"
+         y="1438.5458"
+         style="font-size:15px"
+         id="tspan12059-5">Combine the</tspan><tspan
+         sodipodi:role="line"
+         x="482.83612"
+         y="1457.2958"
+         style="font-size:15px"
+         id="tspan12100">forecasts using</tspan><tspan
+         sodipodi:role="line"
+         x="482.83612"
+         y="1476.0458"
+         style="font-size:15px"
+         id="tspan12102">the weights</tspan></text>
+    <rect
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:4.11742973;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4138-3-8-6-65"
+       width="130"
+       height="74.301956"
+       x="1608.8269"
+       y="1903.4762"
+       transform="matrix(1,0,-0.58984594,0.8075158,0,0)"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="476.10297"
+       y="1572.6792"
+       id="text4204-1-4-97"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-7-5"
+         x="476.10297"
+         y="1572.6792"
+         style="font-size:15px">Final forecast</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker12337)"
+       d="m 120.71323,1772.601 0,49.7612 279.28677,0 0,-830 138.94036,0"
+       id="path12329"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99900001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-90)"
+       d="m 545.03557,952.76865 -0.13393,54.17175"
+       id="path4709-0-8-6-2-0-9-60"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99900001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-90-2)"
+       d="m 550.03557,1096.7337 -0.13393,51.6464"
+       id="path4709-0-8-6-2-0-9-60-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99900001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-90-2-3)"
+       d="m 550.03557,1237.4158 -0.13393,45.9643"
+       id="path4709-0-8-6-2-0-9-60-7-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99900001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-90-2-1)"
+       d="m 550.03557,1373.2997 -0.13393,41.1661"
+       id="path4709-0-8-6-2-0-9-60-7-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99900001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-2-6-7-8-90-2-4)"
+       d="m 550.03557,1504.3098 -0.13393,26.0138"
+       id="path4709-0-8-6-2-0-9-60-7-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#TriangleOutL-7-5-3-0)"
+       d="m 439.80832,799.31055 106.80391,0.29361 -0.16497,87.08966"
+       id="path4709-0-8-1-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="188.28786"
+       y="795.17737"
+       id="text4204-1-4-9-6"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-7-4-7"
+         x="188.28786"
+         y="795.17737"
+         style="font-size:15px">YES</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="479.7164"
+       y="790.17737"
+       id="text4204-1-4-9-6-5"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="479.7164"
+         y="790.17737"
+         style="font-size:15px"
+         id="tspan15067">NO</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="126.85929"
+       y="1554.4631"
+       id="text4204-1-4-9-6-8"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         id="tspan4206-2-7-4-7-7"
+         x="126.85929"
+         y="1554.4631"
+         style="font-size:15px">YES</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-10.283598"
+       y="1460.1774"
+       id="text4204-1-4-9-6-5-4"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="C:\fforma-paper\fforma-flowchart.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200"><tspan
+         sodipodi:role="line"
+         x="-10.283598"
+         y="1460.1774"
+         style="font-size:15px"
+         id="tspan15067-6">NO</tspan></text>
+  </g>
+</svg>
