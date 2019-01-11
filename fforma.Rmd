@@ -216,7 +216,7 @@ Features corresponding only to seasonal time series are set to zero for non-seas
 
 ## Pool of forecasting methods
 
-We considered eight methods implemented in the `forecast` package in R [@forecast] for the pool of methods, $P$ in Algorithm \@ref(alg:algo-lab):
+We considered \textcolor{red}{nine} methods implemented in the `forecast` package in R [@forecast] for the pool of methods, $P$ in Algorithm \@ref(alg:algo-lab):
 
 1. \naive\ (`naive`);
 1. random walk with drift (`rwf` with drift=TRUE);
