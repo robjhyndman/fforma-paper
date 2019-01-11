@@ -225,7 +225,8 @@ We considered eight methods implemented in the `forecast` package in R [@forecas
 1. automated ARIMA algorithm (`auto.arima`);
 1. automated exponential smoothing algorithm (`ets`);
 1. TBATS model (`tbats`);
-1. STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`).
+1. STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`);
+1. \textcolor{red}{neural network time series forecasts (`nnetar`).}
 
 The R functions are given in parentheses. In all cases, the default settings are used. If any function returned an error when fitting the series (e.g. a series is constant), the `snaive` forecast method was used instead.
 
