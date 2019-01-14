@@ -47,7 +47,7 @@ output:
 
 There are essentially two general approaches for forecasting a time series: (i) generating forecasts from a single model; and (ii) combining forecasts from many models (forecast model averaging). There has been a vast literature on the latter motivated by the seminal work of @Bates1969-cu and followed by a plethora of empirical applications showing that combination forecasts are often superior to their individual counterparts [see, @Cle1989;@Timmermann06, for example]. Combining forecasts using a weighted average is considered a successful way of hedging against the risk of selecting a misspecified model. A major challenge is in selecting an appropriate set of weights, and many attempts to do this have been worse than simply using equal weights --- something that has become known as the ``forecast combination puzzle'' [see for example, @Smith2009]. We address the problem of selecting the weights by using a meta-learning algorithm based on time series features.
 
-There have been several previous attempts to use time series features combined with meta-learning for forecasting, \textcolor{red}{ both for model selection and combination} [see for example @prudencio2004using; @LEMKE20102006; @KucEtAl2016; and @Kang2017]. Recently, @fforms proposed the FFORMS (Feature-based FORecast Model Selection) framework that uses time series features combined with meta-learning for forecast-model selection. That is, features are used to select a single forecasting model. In this paper, we build on this framework by using meta-learning to select the weights for a weighted forecast combination. All candidate forecasting methods are applied, and the weights to be used in combining them are chosen based on the features of each time series. We call this framework FFORMA (Feature-based FORecast Model Averaging). FFORMA resulted in the second most accurate point forecasts and prediction intervals amongst all competitors in the M4 competition.
+There have been several previous attempts to use time series features combined with meta-learning for forecasting, both for model selection and combination [see for example @prudencio2004using; @LEMKE20102006; @KucEtAl2016; and @Kang2017]. Recently, @fforms proposed the FFORMS (Feature-based FORecast Model Selection) framework that uses time series features combined with meta-learning for forecast-model selection. That is, features are used to select a single forecasting model. In this paper, we build on this framework by using meta-learning to select the weights for a weighted forecast combination. All candidate forecasting methods are applied, and the weights to be used in combining them are chosen based on the features of each time series. We call this framework FFORMA (Feature-based FORecast Model Averaging). FFORMA resulted in the second most accurate point forecasts and prediction intervals amongst all competitors in the M4 competition.
 
 The rest of the paper is organized as follows. In \autoref{methodology} we describe the FFORMA framework in a general sense. \autoref{M4application} gives the details of our implementation of FFORMA in the M4 competition for generating both point and interval forecasts. This includes the required preprocessing steps, the set of features and forecast methods, as well as the specific implementation of the meta-learning model. We show empirical evidence on the performance of the approach in \autoref{conclusion} by quantifying the difference between our proposed learning model and a traditional classifier approach. \autoref{conclusion} also provides some final remarks and conclusions.
 
@@ -216,7 +216,7 @@ Features corresponding only to seasonal time series are set to zero for non-seas
 
 ## Pool of forecasting methods
 
-We considered \textcolor{red}{nine} methods implemented in the `forecast` package in R [@forecast] for the pool of methods, $P$ in Algorithm \@ref(alg:algo-lab):
+We considered nine methods implemented in the `forecast` package in R [@forecast] for the pool of methods, $P$ in Algorithm \@ref(alg:algo-lab):
 
 1. \naive\ (`naive`);
 1. random walk with drift (`rwf` with drift=TRUE);
@@ -226,7 +226,7 @@ We considered \textcolor{red}{nine} methods implemented in the `forecast` packag
 1. automated exponential smoothing algorithm (`ets`);
 1. TBATS model (`tbats`);
 1. STLM-AR Seasonal and Trend decomposition using Loess with AR modeling of the seasonally adjusted series (`stlm` with model function `ar`);
-1. \textcolor{red}{neural network time series forecasts (`nnetar`).}
+1. neural network time series forecasts (`nnetar`).
 
 The R functions are given in parentheses. In all cases, the default settings are used. If any function returned an error when fitting the series (e.g. a series is constant), the `snaive` forecast method was used instead.
 
